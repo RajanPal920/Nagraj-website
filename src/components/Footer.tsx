@@ -22,9 +22,14 @@ export function Footer() {
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <img
+                  src="/images/symbol.jpg"
+                  alt="Bhumi Steel Symbol"
+                  className="h-10 w-10 object-contain mix-blend-screen rounded-full"
+                />
+                <img
                   src="/images/logo.jpg"
                   alt="Bhumi Steel Logo"
-                  className="h-10 object-contain mix-blend-screen"
+                  className="h-8 object-contain mix-blend-screen"
                 />
               </div>
               <p className="font-body text-white/55 text-sm leading-relaxed max-w-xs">

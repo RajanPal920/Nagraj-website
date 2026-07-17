@@ -5,52 +5,45 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden bg-brand-green-dark"
       aria-label="Bhumi Steel Hero"
     >
-      {/* Dark metallic background */}
-      <div className="absolute inset-0 bg-steel-gradient" />
-
-      {/* Steel texture overlay */}
-      <div className="absolute inset-0 steel-texture opacity-60" />
-
-      {/* Diagonal accent stripe */}
+      {/* Full Bleed Background Image */}
       <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            -45deg,
-            transparent,
-            transparent 60px,
-            rgba(201,152,46,0.3) 60px,
-            rgba(201,152,46,0.3) 61px
-          )`,
-        }}
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url("/images/hero-banner.jpg")' }}
       />
 
-      {/* Gold bottom border line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gold-gradient" />
+      {/* Dark Green Gradient Overlay for Readability */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-r from-brand-green-dark/40 via-brand-green-dark/58 to-brand-green-dark/40" />
+      <div className="absolute inset-0 z-0 bg-brand-green-dark/30 mix-blend-multiply" />
 
-      {/* Content */}
-      <div className="relative z-10 container-xl px-4 sm:px-8 lg:px-16 xl:px-24 text-center lg:text-left">
-        <div className="max-w-3xl">
+      {/* Steel texture overlay */}
+      <div className="absolute inset-0 z-0 steel-texture opacity-40 mix-blend-overlay" />
+
+      {/* Gold bottom border line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gold-gradient z-20" />
+
+      {/* Content Container */}
+      <div className="relative z-10 container-xl px-4 sm:px-8 lg:px-16 xl:px-24 pt-24 pb-10 w-full">
+        <div className="max-w-2xl text-left">
           {/* Eyebrow */}
-          <div className="flex items-center gap-3 mb-6 justify-center lg:justify-start animate-fade-in">
+          <div className="flex items-center gap-3 mb-6 animate-fade-in">
             <div className="h-px w-12 bg-brand-gold" />
-            <span className="text-brand-gold font-display font-bold text-xs uppercase tracking-[0.3em]">
+            <span className="text-brand-gold font-display font-bold text-xs uppercase tracking-[0.3em] drop-shadow-md">
               Mumbai · Pune · Pan-India
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.05] mb-6 animate-fade-in-up">
+          <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.05] mb-6 animate-fade-in-up drop-shadow-lg">
             Precision Steel.
             <br />
             <span className="text-brand-gold">Proven Trust.</span>
           </h1>
 
           {/* Sub-headline */}
-          <p className="font-body text-white/75 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0 animate-fade-in-up">
+          <p className="font-body text-white/90 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl animate-fade-in-up drop-shadow-md">
             Bhumi Steel supplies quality pipes, tubes, flanges, fittings, and structural steel
             products to industrial clients across India — backed by registered offices in{' '}
             <span className="text-white font-semibold">Mumbai</span> and a branch in{' '}
@@ -58,7 +51,7 @@ export function Hero() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up">
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up">
             <Link
               to="/contact"
               id="hero-get-quote-cta"
@@ -70,7 +63,7 @@ export function Hero() {
             <Link
               to="/products"
               id="hero-view-products-cta"
-              className="btn-outline text-base"
+              className="btn-outline text-base bg-black/20 backdrop-blur-sm border-white/50 hover:border-white hover:bg-white"
             >
               View Products
             </Link>
@@ -81,7 +74,7 @@ export function Hero() {
       {/* Scroll indicator */}
       <a
         href="#about"
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 hover:text-brand-gold transition-colors duration-200 animate-bounce"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-gold transition-colors duration-200 animate-bounce z-20"
         aria-label="Scroll to About section"
       >
         <ChevronDown size={28} strokeWidth={1.5} />

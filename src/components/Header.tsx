@@ -27,19 +27,23 @@ export function Header() {
   return (
     <header
       id="header"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        isSolid
-          ? 'bg-brand-green shadow-lg py-3'
-          : 'bg-brand-green/95 py-4'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${isSolid
+        ? 'bg-brand-green shadow-lg py-3'
+        : 'bg-brand-green/95 py-4'
+        }`}
     >
       <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo Combination */}
         <Link to="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Bhumi Steel Home">
+          <img
+            src="/images/symbol.jpg"
+            alt="Bhumi Steel Symbol"
+            className="h-10 w-12 object-contain mix-blend-screen rounded-full"
+          />
           <img
             src="/images/logo.jpg"
             alt="Bhumi Steel Logo"
-            className="h-10 object-contain mix-blend-screen"
+            className="h-8 object-contain mix-blend-screen"
           />
         </Link>
 
@@ -49,9 +53,8 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className={`nav-link text-white hover:text-white ${
-                location.pathname === link.href ? 'after:w-full' : 'text-white/90'
-              }`}
+              className={`nav-link text-white hover:text-white ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
+                }`}
             >
               {link.label}
             </Link>
@@ -83,9 +86,8 @@ export function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${
-          mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}
+        className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
       >
         <nav className="bg-brand-green-dark border-t border-white/10 px-4 py-4 flex flex-col gap-1">
           {navLinks.map((link) => (
@@ -93,9 +95,8 @@ export function Header() {
               key={link.href}
               to={link.href}
               onClick={() => setMobileOpen(false)}
-              className={`text-white hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors ${
-                location.pathname === link.href ? 'bg-white/10' : 'text-white/90'
-              }`}
+              className={`text-white hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors ${location.pathname === link.href ? 'bg-white/10' : 'text-white/90'
+                }`}
             >
               {link.label}
             </Link>
