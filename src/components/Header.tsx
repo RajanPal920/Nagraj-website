@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Phone, Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Products', href: '#products' },
-  { label: 'Why Us', href: '#why-us' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Products', href: '/products' },
+  { label: 'Why Us', href: '/why-us' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  // Make header solid if not on homepage, or if scrolled on homepage
+  const isSolid = location.pathname !== '/' || scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -23,35 +28,33 @@ export function Header() {
     <header
       id="header"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        scrolled
+        isSolid
           ? 'bg-brand-green shadow-lg py-3'
           : 'bg-brand-green/95 py-4'
       }`}
     >
       <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-between">
         {/* Logo */}
-        <a href="#home" className="flex items-center gap-3 flex-shrink-0" aria-label="Bhumi Steel Home">
+        <Link to="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Bhumi Steel Home">
           <img
-            src="/logo.png"
+            src="/images/logo.jpg"
             alt="Bhumi Steel Logo"
-            className="h-10 w-10 object-contain"
+            className="h-10 object-contain mix-blend-screen"
           />
-          <div className="leading-none">
-            <span className="font-display font-black text-xl text-white tracking-tight">BHUMI</span>
-            <span className="font-display font-black text-xl text-brand-gold tracking-tight ml-1.5">STEEL</span>
-          </div>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
-              className="nav-link text-white/90 hover:text-white"
+              to={link.href}
+              className={`nav-link text-white hover:text-white ${
+                location.pathname === link.href ? 'after:w-full' : 'text-white/90'
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -86,14 +89,16 @@ export function Header() {
       >
         <nav className="bg-brand-green-dark border-t border-white/10 px-4 py-4 flex flex-col gap-1">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-white/90 hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors"
+              className={`text-white hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors ${
+                location.pathname === link.href ? 'bg-white/10' : 'text-white/90'
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <a
             href="tel:+912266362548"

@@ -1,4 +1,5 @@
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Hero() {
   return (
@@ -58,21 +59,21 @@ export function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               id="hero-get-quote-cta"
               className="btn-primary text-base"
             >
               Get a Quote
               <ArrowRight size={18} />
-            </a>
-            <a
-              href="#products"
+            </Link>
+            <Link
+              to="/products"
               id="hero-view-products-cta"
               className="btn-outline text-base"
             >
               View Products
-            </a>
+            </Link>
           </div>
         </div>
       </div>

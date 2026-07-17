@@ -1,24 +1,23 @@
+import { Routes, Route } from 'react-router-dom';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { ProductsPage } from './pages/ProductsPage';
+import { WhyUsPage } from './pages/WhyUsPage';
+import { ContactPage } from './pages/ContactPage';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { ProductGrid } from './components/ProductGrid';
-import { WhyChooseUs } from './components/WhyChooseUs';
-import { Locations } from './components/Locations';
-import { ContactBand } from './components/ContactBand';
 import { Footer } from './components/Footer';
 
 function App() {
   return (
     <>
       <Header />
-      <main>
-        <Hero />
-        <About />
-        <ProductGrid />
-        <WhyChooseUs />
-        <Locations />
-        <ContactBand />
-      </main>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/why-us" element={<WhyUsPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+      </Routes>
       <Footer />
     </>
   );

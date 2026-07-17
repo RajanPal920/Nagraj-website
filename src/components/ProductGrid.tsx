@@ -1,5 +1,6 @@
 import { products } from '../data/products';
 import { ProductCard } from './ProductCard';
+import { Link } from 'react-router-dom';
 
 export function ProductGrid() {
   return (
@@ -25,13 +26,13 @@ export function ProductGrid() {
 
         {/* Bottom CTA */}
         <div className="mt-12 text-center">
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             id="products-enquire-all-cta"
             className="btn-outline-green text-sm"
           >
             Request a Full Product Catalogue
-          </a>
+          </Link>
         </div>
       </div>
     </section>

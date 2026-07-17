@@ -1,5 +1,6 @@
 import type { ProductInfo } from '../data/products';
 import { ArrowRight, Cylinder, Circle, GitBranch, Minus, LayoutGrid, Square } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Map icon name strings to lucide components
 const iconMap: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>> = {
@@ -58,8 +59,8 @@ export function ProductCard({ product, index }: ProductCardProps) {
       </ul>
 
       {/* CTA */}
-      <a
-        href="#contact"
+      <Link
+        to="/contact"
         id={`product-card-${product.id}-enquire`}
         className="inline-flex items-center gap-1.5 text-sm font-display font-bold text-brand-gold hover:text-brand-green transition-colors duration-200 group/link"
       >
@@ -68,7 +69,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           size={14}
           className="transition-transform duration-200 group-hover/link:translate-x-1"
         />
-      </a>
+      </Link>
     </article>
   );
 }

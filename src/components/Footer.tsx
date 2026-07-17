@@ -1,11 +1,12 @@
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Products', href: '#products' },
-  { label: 'Why Us', href: '#why-us' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Products', href: '/products' },
+  { label: 'Why Us', href: '/why-us' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export function Footer() {
@@ -21,14 +22,10 @@ export function Footer() {
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <img
-                  src="/logo.png"
+                  src="/images/logo.jpg"
                   alt="Bhumi Steel Logo"
-                  className="h-10 w-10 object-contain"
+                  className="h-10 object-contain mix-blend-screen"
                 />
-                <div>
-                  <span className="font-display font-black text-xl text-white">BHUMI</span>
-                  <span className="font-display font-black text-xl text-brand-gold ml-1.5">STEEL</span>
-                </div>
               </div>
               <p className="font-body text-white/55 text-sm leading-relaxed max-w-xs">
                 Registered steel trading and supply company serving industrial buyers across
@@ -45,12 +42,12 @@ export function Footer() {
                 <ul className="space-y-2.5">
                   {navLinks.map((link) => (
                     <li key={link.href}>
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
                         className="font-body text-white/60 hover:text-white text-sm transition-colors duration-200"
                       >
                         {link.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
