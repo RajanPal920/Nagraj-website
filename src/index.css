@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body text-brand-charcoal bg-brand-white antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 px-4 sm:px-8 lg:px-16 xl:px-24;
+  }
+
+  .container-xl {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-brand-gold text-white font-display font-bold px-8 py-4 rounded-sm
+           hover:bg-brand-gold-light hover:text-brand-charcoal transition-all duration-300 shadow-gold
+           focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border-2 border-white text-white font-display font-bold px-8 py-4 rounded-sm
+           hover:bg-white hover:text-brand-green transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2;
+  }
+
+  .btn-outline-green {
+    @apply inline-flex items-center gap-2 border-2 border-brand-green text-brand-green font-display font-bold px-8 py-4 rounded-sm
+           hover:bg-brand-green hover:text-white transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2;
+  }
+
+  .section-label {
+    @apply text-brand-gold font-display font-bold text-sm uppercase tracking-[0.2em] mb-3;
+  }
+
+  .section-title {
+    @apply font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-green leading-tight;
+  }
+
+  .section-divider {
+    @apply w-16 h-1 bg-brand-gold mt-4 mb-6;
+  }
+
+  .card-base {
+    @apply bg-white rounded-sm border border-gray-100 shadow-card hover:shadow-card-hover
+           hover:-translate-y-1 hover:border-brand-gold transition-all duration-300;
+  }
+}
+
+/* Subtle steel texture overlay */
+.steel-texture {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.015) 2px,
+      rgba(255,255,255,0.015) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.01) 40px,
+      rgba(255,255,255,0.01) 41px
+    );
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-green rounded-full;
+}
+
+/* Nav underline effect */
+.nav-link {
+  @apply relative text-sm font-body font-semibold tracking-wide transition-colors duration-200;
+}
+.nav-link::after {
+  content: '';
+  @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-gold transition-all duration-300;
+}
+.nav-link:hover::after {
+  @apply w-full;
+}
