@@ -102,10 +102,10 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="font-body text-white/35 text-xs">
+          <p className="font-body text-white/55 text-xs">
             © {year} Bhumi Steel. All rights reserved.
           </p>
-          <p className="font-body text-white/30 text-xs">
+          <p className="font-body text-white/50 text-xs">
             Subject to Mumbai Jurisdiction
           </p>
         </div>

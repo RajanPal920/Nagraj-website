@@ -184,7 +184,7 @@ export function ProductPage() {
             </Link>
           </li>
           <li className="text-gray-300">/</li>
-          <li className="text-brand-green font-semibold truncate max-w-[200px] sm:max-w-xs">
+          <li className="text-gray-700 font-semibold truncate max-w-[200px] sm:max-w-xs">
             {product.title}
           </li>
         </ol>
@@ -442,7 +442,7 @@ export function ProductPage() {
                   <h3 className="font-display font-extrabold text-xl text-white mb-1 leading-tight">
                     Get a Quote
                   </h3>
-                  <p className="font-body text-white/60 text-xs mb-6 leading-relaxed">
+                  <p className="font-body text-white/80 text-xs mb-6 leading-relaxed">
                     Share your grade, size and quantity — we'll respond within one business day.
                   </p>
                   <Link

@@ -122,7 +122,7 @@ export function ContactBand() {
                     placeholder="e.g. Rajesh Mehta"
                     value={form.name}
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/30 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
+                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
                   />
                 </div>
 
@@ -140,7 +140,7 @@ export function ContactBand() {
                     placeholder="e.g. 98765 43210"
                     value={form.phone}
                     onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/30 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
+                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
                   />
                 </div>
 
@@ -157,7 +157,7 @@ export function ContactBand() {
                     placeholder="Describe your product requirement, grade, quantity, etc."
                     value={form.message}
                     onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/30 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200 resize-none"
+                    className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200 resize-none"
                   />
                 </div>
 

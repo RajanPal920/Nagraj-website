@@ -61,12 +61,12 @@ export function ProductsFilter({
               className="w-full pl-9 pr-4 py-2.5 text-sm font-body border border-gray-200 rounded-sm
                          bg-gray-50 focus:bg-white focus:border-brand-green focus:outline-none
                          focus:ring-2 focus:ring-brand-green/20 transition-all duration-200
-                         placeholder:text-gray-400"
+                         placeholder:text-gray-500"
             />
           </div>
 
           {/* Results count */}
-          <span className="text-xs font-body text-gray-400 whitespace-nowrap">
+          <span className="text-xs font-body text-gray-500 whitespace-nowrap">
             {isFiltered ? (
               <><span className="font-semibold text-brand-green">{filteredCount}</span> of {totalCount}</>
             ) : (
@@ -90,7 +90,7 @@ export function ProductsFilter({
 
         {/* Category chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 shrink-0 mr-1">
+          <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-500 shrink-0 mr-1">
             Category
           </span>
           {/* "All" chip */}
@@ -116,7 +116,7 @@ export function ProductsFilter({
 
         {/* Type chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 shrink-0 mr-1">
+          <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-500 shrink-0 mr-1">
             Type
           </span>
           <FilterChip

@@ -289,7 +289,7 @@ export function WhyUsPage() {
                   {others ? (
                     <CheckCircle2 size={20} className="text-brand-green" strokeWidth={2.5} />
                   ) : (
-                    <span className="font-body text-gray-300 text-lg leading-none">✕</span>
+                    <span className="font-body text-gray-500 text-lg leading-none">✕</span>
                   )}
                 </div>
               </div>
@@ -326,7 +326,7 @@ export function WhyUsPage() {
             "We source all our structural steel needs through Bhumi Steel — reliable
             documentation, quick turnaround, and pricing that actually makes sense."
           </blockquote>
-          <p className="font-body text-white/50 text-sm">
+          <p className="font-body text-white/75 text-sm">
             — Industrial Buyer, MIDC Bhosari, Pune
           </p>
         </div>
