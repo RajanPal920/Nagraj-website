@@ -1,15 +1,11 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Package, Tag, Layers, Image as ImageIcon, ChevronDown, ArrowRight } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { type ScrapedProduct } from '../data/scrapedProductsData';
 import { useProducts } from '../hooks/useProducts';
 import { ProductsFilter } from '../components/ProductsFilter';
 import { ScrapedProductCard } from '../components/ScrapedProductCard';
-import { ProductDetailDrawer } from '../components/ProductDetailDrawer';
 
 const PAGE_SIZE = 48;
-
-// We will compute stats dynamically inside the component
 
 export function ProductsPage() {
   const { products, categories, types, categoryCounts, typeCounts, loading, error } = useProducts();
@@ -20,7 +16,6 @@ export function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || '');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [activeProduct, setActiveProduct] = useState<ScrapedProduct | null>(null);
 
   useEffect(() => {
     setSearch(searchParams.get('search') || '');
@@ -61,7 +56,7 @@ export function ProductsPage() {
   return (
     <>
       {/* ── SEO ── */}
-      <title>Our Products | Bhumi Steel & Alloys</title>
+      <title>Our Products | Bhumi Steel &amp; Alloys</title>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
@@ -140,7 +135,6 @@ export function ProductsPage() {
                     key={product.slug}
                     product={product}
                     index={index}
-                    onViewDetails={setActiveProduct}
                   />
                 ))}
               </div>
@@ -215,12 +209,6 @@ export function ProductsPage() {
           </Link>
         </div>
       </section>
-
-      {/* ── Detail Drawer ─────────────────────────────────────────────────── */}
-      <ProductDetailDrawer
-        product={activeProduct}
-        onClose={() => setActiveProduct(null)}
-      />
     </>
   );
 }
