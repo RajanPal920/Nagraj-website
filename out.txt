@@ -1,0 +1,49 @@
+Data Model and Workflow
+Below are Mermaid diagrams illustrating the data model and workflow:
+Legal and Ethical Considerations
+Before scraping, we check robots.txt (it likely allows crawling since the sitemap is provided) and any 
+Terms of Use on textronsteelalloys.com. Our scraper identifies itself with a user-agent and uses polite
+delays to avoid overloading the server【74†L1702-L1710】. We only scrape publicly available product
+information (no login/auth needed). No personal or private data is targeted. Scraped data is used for
+legitimate purposes like analysis or import; we acknowledge that heavy scraping can impose load, so
+rate-limits and respectfulness are paramount. 
+Sources: Textron Steel & Alloys sitemap and product pages (primary content); Scrapy documentation on
+SitemapSpider and robots.txt【39†L857-L865】【74†L1702-L1710】; Wikipedia on sitemaps【30†L331-
+L339】. These informed the scraper design and guidelines.
+0..*
+0..*
+0..*
+0..*
+ProductCatalog
+Products : list
+ProductCategory
+name: string
+materials: list
+MaterialCategory
+name: string
+products: list
+Product
+url, title, slug, description_text, ...
+chemical_composition, mechanical_properties
+images, attachments
+ChemicalCompositionEntry
+MechanicalPropertyEntry
+Image
+Attachment
+Start
+Fetch robots.txt\nand
+sitemap location
+Fetch
+product-sitemap.xml
+Parse Sitemap XML\n(List
+of product URLs)
+For each URL: fetch page
+HTML
+Save raw HTML locally
+Parse HTML for fields
+Download images/PDFs
+Save record to
+JSON/CSV/DB
+Log status/errors
+All URLs processed
+12

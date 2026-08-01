@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Phone, Menu, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Phone, Menu, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useProducts } from '../hooks/useProducts';
+import type { ScrapedProduct } from '../data/scrapedProductsData';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -14,6 +16,21 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+
+  // Mega menu state
+  const { products, types } = useProducts();
+  const [activeType, setActiveType] = useState<string | null>(null);
+
+  const menuData = useMemo(() => {
+    if (!products) return {};
+    const data: Record<string, Record<string, ScrapedProduct[]>> = {};
+    products.forEach(p => {
+      if (!data[p.product_type]) data[p.product_type] = {};
+      if (!data[p.product_type][p.category]) data[p.product_type][p.category] = [];
+      data[p.product_type][p.category].push(p);
+    });
+    return data;
+  }, [products]);
 
   // Make header solid if not on homepage, or if scrolled on homepage
   const isSolid = location.pathname !== '/' || scrolled;
@@ -50,14 +67,79 @@ export function Header() {
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className={`nav-link text-white hover:text-white ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
-                }`}
-            >
-              {link.label}
-            </Link>
+            link.label === 'Products' ? (
+              <div key={link.href} className="group relative">
+                <Link
+                  to={link.href}
+                  className={`nav-link text-white hover:text-white flex items-center gap-1 ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
+                    }`}
+                >
+                  {link.label}
+                  <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200" />
+                </Link>
+
+                {/* Mega Menu Dropdown */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[800px] mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-50">
+                  <div className="bg-white shadow-2xl rounded-sm border border-gray-100 flex overflow-hidden h-[500px]">
+                    {/* Left Sidebar: Types */}
+                    <div className="w-1/3 bg-gray-50 border-r border-gray-100 py-4 overflow-y-auto scrollbar-thin">
+                      {types.map(t => (
+                        <button
+                          key={t}
+                          onMouseEnter={() => setActiveType(t)}
+                          className={`w-full text-left px-6 py-3 text-sm font-display font-semibold transition-colors
+                            ${(activeType === t) || (!activeType && types[0] === t)
+                              ? 'bg-white text-brand-green border-l-2 border-brand-green'
+                              : 'text-gray-600 hover:bg-white hover:text-brand-green border-l-2 border-transparent'
+                            }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Right Panel: Categories & Products */}
+                    <div className="w-2/3 p-6 bg-white overflow-y-auto scrollbar-thin">
+                      {(() => {
+                        const currentType = activeType || types[0];
+                        if (!currentType || !menuData[currentType]) return <p className="text-sm text-gray-400">Loading products...</p>;
+
+                        return Object.entries(menuData[currentType]).map(([catName, prods]) => (
+                          <div key={catName} className="mb-6 last:mb-0">
+                            <h4 className="font-display font-bold text-brand-charcoal border-b border-gray-100 pb-2 mb-3">
+                              {catName}
+                            </h4>
+                            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+                              {prods.map(p => (
+                                <li key={p.slug}>
+                                  {/* Link to Products page with query parameters so it auto-filters */}
+                                  <Link
+                                    to={`/products?type=${encodeURIComponent(currentType)}&category=${encodeURIComponent(catName)}&search=${encodeURIComponent(p.title)}`}
+                                    className="text-xs font-body text-gray-500 hover:text-brand-green transition-colors line-clamp-1"
+                                    title={p.title}
+                                  >
+                                    {p.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`nav-link text-white hover:text-white ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
+                  }`}
+              >
+                {link.label}
+              </Link>
+            )
           ))}
         </nav>
 
@@ -86,10 +168,10 @@ export function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
           }`}
       >
-        <nav className="bg-brand-green-dark border-t border-white/10 px-4 py-4 flex flex-col gap-1">
+        <nav className="bg-brand-green-dark border-t border-white/10 px-4 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
           {navLinks.map((link) => (
             <Link
               key={link.href}
