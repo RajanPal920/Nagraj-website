@@ -119,6 +119,12 @@ export function Header() {
               <Link
                 key={link.href}
                 to={link.href}
+                onClick={(e) => {
+                  if (location.pathname === link.href) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
                 className={`nav-link text-white hover:text-white ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
                   }`}
               >
@@ -161,7 +167,13 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              onClick={() => setMobileOpen(false)}
+              onClick={(e) => {
+                if (location.pathname === link.href) {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                setMobileOpen(false);
+              }}
               className={`text-white hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors ${location.pathname === link.href ? 'bg-white/10' : 'text-white/90'
                 }`}
             >
