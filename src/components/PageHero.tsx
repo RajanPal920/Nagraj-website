@@ -6,9 +6,10 @@ interface PageHeroProps {
   title: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
+  bgImage?: string;
 }
 
-export function PageHero({ id, label, title, description, children }: PageHeroProps) {
+export function PageHero({ id, label, title, description, children, bgImage = '/images/hero-banner.jpg' }: PageHeroProps) {
   return (
     <section
       id={id}
@@ -16,8 +17,8 @@ export function PageHero({ id, label, title, description, children }: PageHeroPr
     >
       {/* Full Bleed Background Image */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url("/images/hero-banner.jpg")' }}
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat animate-bg-pan"
+        style={{ backgroundImage: `url("${bgImage}")` }}
       />
 
       {/* Dark Green Gradient Overlay for Readability */}

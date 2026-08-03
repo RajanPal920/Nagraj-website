@@ -136,6 +136,7 @@ export function WhyUsPage() {
         label="Why Bhumi Steel"
         title={<>Built on<br/><span className="text-brand-gold">Quality & Trust</span></>}
         description="From exact material matching to on-time dispatch, we remove the friction from industrial steel procurement. Here is why leading manufacturers choose us."
+        bgImage="/images/forging.jpg"
       />
 
       {/* ── 7 Pillars ────────────────────────────────────────────────────── */}

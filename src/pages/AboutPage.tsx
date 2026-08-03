@@ -131,12 +131,13 @@ export function AboutPage() {
         label="Who We Are"
         title={<>An Established Name&nbsp;in<br/><span className="text-brand-gold">Steel Trading</span></>}
         description="Bhumi Steel & Alloys is a registered B2B steel trading and supply company headquartered in Mumbai with a branch in Pune's MIDC Bhosari industrial corridor. We supply structural and process steel to industrial buyers across India."
+        bgImage="/images/warehouse.jpg"
       >
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
           {stats.map(({ value, label, icon: Icon }) => (
             <div
               key={label}
-              className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-5 py-4 group hover:bg-brand-gold/20 hover:border-brand-gold/40 transition-all duration-300"
+              className="bg-white/15 backdrop-blur-md rounded-sm border border-white/20 px-5 py-4 group hover:bg-brand-gold/25 hover:border-brand-gold/50 transition-all duration-300"
             >
               <Icon
                 size={18}
@@ -144,7 +145,7 @@ export function AboutPage() {
                 strokeWidth={1.75}
               />
               <div className="font-display font-extrabold text-2xl text-white">{value}</div>
-              <div className="font-body text-gray-600 text-xs mt-0.5">{label}</div>
+              <div className="font-body text-white/80 text-xs mt-0.5 font-medium">{label}</div>
             </div>
           ))}
         </div>
