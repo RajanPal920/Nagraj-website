@@ -151,7 +151,7 @@ function Level2CategoryList({ type, typeTree }: { type: string, typeTree: Record
 
             {/* Categories */}
             <div className="space-y-10">
-              {group.categories.map((cat, idx) => (
+              {group.categories.map((cat) => (
                 <CategoryCard key={cat.category} type={type} categoryNode={cat} />
               ))}
             </div>
