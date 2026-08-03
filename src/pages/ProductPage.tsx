@@ -16,7 +16,8 @@ import {
   Phone,
 } from 'lucide-react';
 import { useProduct } from '../hooks/useProduct';
-import { getCategoryLabel, FALLBACK_IMAGE } from '../data/scrapedProductsData';
+import { FALLBACK_IMAGE } from '../data/scrapedProductsData';
+import { getCategoryDisplayLabel, getTypeDisplayLabel } from '../data/categoryConfig';
 
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
 
@@ -145,7 +146,8 @@ export function ProductPage() {
   }
 
   /* ── Data prep ── */
-  const categoryLabel = getCategoryLabel(product.category);
+  const categoryLabel = getCategoryDisplayLabel(product.category);
+  const typeLabel = getTypeDisplayLabel(product.product_type);
   const isSpecialized = product.category !== 'Products';
   const descriptionText = cleanText(product.description_text);
   const hasChem = product.chemical_composition?.length > 0;
@@ -184,7 +186,25 @@ export function ProductPage() {
             </Link>
           </li>
           <li className="text-gray-300">/</li>
-          <li className="text-gray-700 font-semibold truncate max-w-[200px] sm:max-w-xs">
+          <li>
+            <Link
+              to={`/products?category=${encodeURIComponent(product.category)}`}
+              className="hover:text-brand-green transition-colors"
+            >
+              {categoryLabel}
+            </Link>
+          </li>
+          <li className="text-gray-300">/</li>
+          <li>
+            <Link
+              to={`/products?category=${encodeURIComponent(product.category)}&type=${encodeURIComponent(product.product_type)}`}
+              className="hover:text-brand-green transition-colors"
+            >
+              {typeLabel}
+            </Link>
+          </li>
+          <li className="text-gray-300">/</li>
+          <li className="text-gray-700 font-semibold truncate max-w-[160px] sm:max-w-xs">
             {product.title}
           </li>
         </ol>
@@ -235,7 +255,7 @@ export function ProductPage() {
                 {categoryLabel}
               </span>
               <span className="text-xs font-display font-bold px-2.5 py-1 rounded-sm bg-brand-green text-white">
-                {product.product_type}
+                {typeLabel}
               </span>
             </div>
 
@@ -484,6 +504,10 @@ export function ProductPage() {
                   <div>
                     <p className="font-body text-gray-400 text-xs mb-1">Category</p>
                     <p className="font-display font-bold text-brand-charcoal text-sm">{categoryLabel}</p>
+                  </div>
+                  <div>
+                    <p className="font-body text-gray-400 text-xs mb-1">Product Form</p>
+                    <p className="font-display font-bold text-brand-green text-sm">{typeLabel}</p>
                   </div>
                   {product.material_grades?.length > 0 && (
                     <div>
