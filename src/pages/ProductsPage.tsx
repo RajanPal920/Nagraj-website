@@ -152,7 +152,7 @@ function Level2CategoryList({ type, typeTree }: { type: string, typeTree: Record
             {/* Categories */}
             <div className="space-y-10">
               {group.categories.map((cat, idx) => (
-                <CategoryCard key={cat.category} type={type} categoryNode={cat} index={idx} />
+                <CategoryCard key={cat.category} type={type} categoryNode={cat} />
               ))}
             </div>
           </div>
@@ -166,7 +166,7 @@ function Level2CategoryList({ type, typeTree }: { type: string, typeTree: Record
 // Category Card (Mix Layout)
 // ──────────────────────────────────────────────────────────────────────────────
 
-function CategoryCard({ type, categoryNode, index }: { type: string, categoryNode: TypeCategoryNode, index: number }) {
+function CategoryCard({ type, categoryNode }: { type: string, categoryNode: TypeCategoryNode }) {
   const { label, products, category } = categoryNode;
   const titleDisplay = `${label} ${type}`;
   const image = getProductImage(type, category, `${label} ${type}`);

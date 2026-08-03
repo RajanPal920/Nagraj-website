@@ -103,6 +103,9 @@ export function Footer() {
           <p className="font-body text-white/70 text-xs">
             Subject to Mumbai Jurisdiction
           </p>
+          <p className="font-body text-white/50 text-[10px] mt-2">
+            Designed & Developed at SunMarg
+          </p>
         </div>
       </div>
     </footer>

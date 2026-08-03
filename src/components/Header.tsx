@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, Menu, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
-import type { ScrapedProduct } from '../data/scrapedProductsData';
+
 
 const navLinks = [
   { label: 'Home', href: '/' },
