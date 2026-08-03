@@ -67,5 +67,6 @@ export function getCategoryLabel(raw: string): string {
   return CATEGORY_DISPLAY[raw] ?? raw;
 }
 
-export const FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1506509939527-0dbf62fb438f?auto=format&fit=crop&q=80&w=800';
+// ─── Fallback image ───────────────────────────────────────────────────────────
+// Used only as a last resort. For per-type clean images, see productImages.ts.
+export const FALLBACK_IMAGE = '/images/bar.jpg';

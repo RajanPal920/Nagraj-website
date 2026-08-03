@@ -26,7 +26,7 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 bg-brand-gold text-white font-display font-bold px-8 py-4 rounded-sm
+    @apply inline-flex items-center gap-2 bg-brand-gold text-brand-charcoal font-display font-bold px-8 py-4 rounded-sm
            hover:bg-brand-gold-light hover:text-brand-charcoal transition-all duration-300 shadow-gold
            focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2;
   }
@@ -44,7 +44,7 @@
   }
 
   .section-label {
-    @apply text-brand-gold font-display font-bold text-sm uppercase tracking-[0.2em] mb-3;
+    @apply text-brand-green font-display font-bold text-sm uppercase tracking-[0.2em] mb-3;
   }
 
   .section-title {
@@ -58,6 +58,10 @@
   .card-base {
     @apply bg-white rounded-sm border border-gray-100 shadow-card hover:shadow-card-hover
            hover:-translate-y-1 hover:border-brand-gold transition-all duration-300;
+  }
+
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-sm;
   }
 }
 
@@ -101,4 +105,77 @@
 }
 .nav-link:hover::after {
   @apply w-full;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revealLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bgPan {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes chevronBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; /* Starts hidden */
+  }
+
+  .animate-reveal-left {
+    animation: revealLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  .animate-bg-pan {
+    animation: bgPan 20s ease-in-out infinite alternate;
+  }
+
+  .animate-chevron {
+    animation: chevronBounce 2s infinite;
+  }
+
+  .stagger-1 { animation-delay: 100ms; }
+  .stagger-2 { animation-delay: 200ms; }
+  .stagger-3 { animation-delay: 300ms; }
+  .stagger-4 { animation-delay: 400ms; }
+  
+  .is-visible {
+    /* Trigger class applied by Intersection Observer */
+  }
 }

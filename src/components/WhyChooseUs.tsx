@@ -1,4 +1,5 @@
 import { ShieldCheck, Clock3, IndianRupee, Globe2 } from 'lucide-react';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 const features = [
   {
@@ -32,6 +33,9 @@ const features = [
 ];
 
 export function WhyChooseUs() {
+  const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>();
+  const [gridRef, gridVisible] = useIntersectionObserver<HTMLDivElement>();
+
   return (
     <section id="why-us" className="section-padding bg-brand-green relative overflow-hidden">
       {/* Background texture */}
@@ -53,7 +57,10 @@ export function WhyChooseUs() {
 
       <div className="container-xl relative z-10">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div 
+          ref={headerRef}
+          className={`text-center mb-14 ${headerVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+        >
           <p className="text-brand-gold font-display font-bold text-sm uppercase tracking-[0.2em] mb-3">
             Why Bhumi Steel
           </p>
@@ -68,12 +75,12 @@ export function WhyChooseUs() {
         </div>
 
         {/* Feature grid */}
-        <div className="grid sm:grid-cols-2 gap-6">
-          {features.map(({ id, icon: Icon, title, description }) => (
+        <div ref={gridRef} className="grid sm:grid-cols-2 gap-6">
+          {features.map(({ id, icon: Icon, title, description }, index) => (
             <div
               key={id}
               id={`why-us-${id}`}
-              className="bg-white/8 hover:bg-white/12 border border-white/10 hover:border-brand-gold/40 rounded-sm p-8 group transition-all duration-300"
+              className={`glass-panel p-8 group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-brand-gold/50 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : 'opacity-0'}`}
             >
               <div className="flex items-start gap-5">
                 {/* Icon */}

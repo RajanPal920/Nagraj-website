@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { PageHero } from '../components/PageHero';
 import {
   Phone,
   Mail,
@@ -15,15 +16,22 @@ const contactDetails = [
     id: 'phone-landline',
     icon: Phone,
     label: 'Landline',
-    display: '22 6636 2548',
+    display: '022 6636 2548',
     href: 'tel:+912266362548',
   },
   {
-    id: 'phone-mobile',
+    id: 'phone-mobile-1',
     icon: Phone,
-    label: 'Mobile',
-    display: '70215 40962 · 97304 26918',
+    label: 'Mobile 1',
+    display: '70215 40962',
     href: 'tel:+917021540962',
+  },
+  {
+    id: 'phone-mobile-2',
+    icon: Phone,
+    label: 'Mobile 2',
+    display: '97304 26918',
+    href: 'tel:+919730426918',
   },
   {
     id: 'email',
@@ -91,32 +99,12 @@ export function ContactPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
+            <PageHero
         id="contact-hero"
-        className="bg-steel-gradient steel-texture relative overflow-hidden py-28 px-4 sm:px-8 lg:px-16 xl:px-24"
-      >
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gold-gradient" />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <p className="section-label">Reach Us</p>
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-5 max-w-2xl">
-            Get In Touch
-          </h1>
-          <div className="w-16 h-1 bg-brand-gold mb-7" />
-          <p className="font-body text-gray-300 text-lg max-w-xl leading-relaxed">
-            Share your requirement and we'll respond with specifications and
-            pricing within one business day. For urgent needs, call us directly.
-          </p>
-        </div>
-      </section>
+        label="Reach Us"
+        title="Get In Touch"
+        description="Share your requirement and we'll respond with specifications and pricing within one business day. For urgent needs, call us directly."
+      />
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <section
@@ -152,7 +140,7 @@ export function ContactPage() {
                         />
                       </div>
                       <div>
-                        <p className="font-body text-gray-400 text-xs mb-0.5">{label}</p>
+                        <p className="font-body text-gray-600 text-xs mb-0.5">{label}</p>
                         <p className="font-display font-bold text-brand-charcoal text-base group-hover:text-brand-green transition-colors duration-200">
                           {display}
                         </p>
@@ -199,7 +187,7 @@ export function ContactPage() {
                         </address>
                       </div>
                       <div className="pt-3 border-t border-gray-200">
-                        <p className="font-body text-[11px] text-gray-400 italic">{note}</p>
+                        <p className="font-body text-[11px] text-gray-600 italic">{note}</p>
                       </div>
                     </div>
                   ))}
@@ -224,7 +212,7 @@ export function ContactPage() {
                 <h2 className="font-display font-extrabold text-2xl text-white mb-1">
                   Send Us Your Requirement
                 </h2>
-                <p className="font-body text-white/50 text-sm mb-7">
+                <p className="font-body text-white/80 text-sm mb-7">
                   We respond within one business day.
                 </p>
 
@@ -278,7 +266,7 @@ export function ContactPage() {
                         placeholder="e.g. Rajesh Mehta"
                         value={form.name}
                         onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/70 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
                       />
                     </div>
 
@@ -297,7 +285,7 @@ export function ContactPage() {
                         placeholder="e.g. 98765 43210"
                         value={form.phone}
                         onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/70 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
                       />
                     </div>
 
@@ -316,7 +304,7 @@ export function ContactPage() {
                         placeholder="e.g. rajesh@company.com"
                         value={form.email}
                         onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/70 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200"
                       />
                     </div>
 
@@ -334,7 +322,7 @@ export function ContactPage() {
                         placeholder="Describe the product, grade, size, quantity, or any specific requirement…"
                         value={form.message}
                         onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200 resize-none"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/70 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-brand-gold focus:bg-white/15 transition-all duration-200 resize-none"
                       />
                     </div>
 
@@ -347,12 +335,9 @@ export function ContactPage() {
                       <Send size={15} />
                     </button>
 
-                    <p className="font-body text-white/30 text-[11px] text-center leading-relaxed pt-1">
-                      This form is UI-only. For a guaranteed response, also email us at{' '}
-                      <a
-                        href="mailto:bhumisteel11@gmail.com"
-                        className="text-brand-gold/70 hover:text-brand-gold transition-colors"
-                      >
+                    <p className="font-body text-white/60 text-xs text-center mt-6">
+                      *This form is UI-only. For a guaranteed response, also email{' '}
+                      <a href="mailto:bhumisteel11@gmail.com" className="text-brand-gold hover:underline">
                         bhumisteel11@gmail.com
                       </a>
                     </p>

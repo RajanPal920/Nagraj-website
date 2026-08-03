@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { X, ExternalLink, ArrowRight, Beaker, Gauge } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ScrapedProduct } from '../data/scrapedProductsData';
-import { getCategoryLabel, FALLBACK_IMAGE } from '../data/scrapedProductsData';
+import { getCategoryLabel } from '../data/scrapedProductsData';
+import { getProductImage } from '../data/productImages';
 
 interface ProductDetailDrawerProps {
   product: ScrapedProduct | null;
@@ -33,7 +34,7 @@ export function ProductDetailDrawer({ product, onClose }: ProductDetailDrawerPro
 
   if (!product) return null;
 
-  const imageUrl = product.images?.[0]?.url ?? FALLBACK_IMAGE;
+  const imageUrl = getProductImage(product.product_type, product.category, product.title);
   const categoryLabel = getCategoryLabel(product.category);
   const isSpecialized = product.category !== 'Products';
 
@@ -72,7 +73,7 @@ export function ProductDetailDrawer({ product, onClose }: ProductDetailDrawerPro
             src={imageUrl}
             alt={product.title}
             className="w-full h-full object-cover"
-            onError={(e) => { e.currentTarget.src = FALLBACK_IMAGE; }}
+            onError={(e) => { e.currentTarget.src = getProductImage(product.product_type, product.category, product.title); }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 

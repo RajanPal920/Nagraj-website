@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PageHero } from '../components/PageHero';
 import {
   ShieldCheck,
   Clock3,
@@ -130,59 +131,12 @@ export function WhyUsPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
+            <PageHero
         id="why-us-hero"
-        className="bg-steel-gradient steel-texture relative overflow-hidden py-32 px-4 sm:px-8 lg:px-16 xl:px-24"
-      >
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        {/* Diagonal gold lines */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 80px,
-              rgba(201,152,46,0.6) 80px,
-              rgba(201,152,46,0.6) 81px
-            )`,
-          }}
-        />
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gold-gradient" />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <p className="section-label">Why Bhumi Steel</p>
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6 max-w-3xl">
-            Built on
-            <br />
-            <span className="text-brand-gold">Reliability.</span>
-          </h1>
-          <div className="w-16 h-1 bg-brand-gold mb-8" />
-          <p className="font-body text-gray-300 text-lg max-w-2xl leading-relaxed mb-12">
-            Industrial buyers choose Bhumi Steel for our consistent product quality,
-            transparent pricing, full compliance, and dependable delivery — backed by
-            verified mills and proper documentation on every order.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/contact" id="why-us-hero-cta" className="btn-primary">
-              Request a Quote
-              <ArrowRight size={16} />
-            </Link>
-            <Link to="/products" id="why-us-hero-products" className="btn-outline">
-              Browse Our Catalogue
-            </Link>
-          </div>
-        </div>
-      </section>
+        label="Why Bhumi Steel"
+        title={<>Built on<br/><span className="text-brand-gold">Quality & Trust</span></>}
+        description="From exact material matching to on-time dispatch, we remove the friction from industrial steel procurement. Here is why leading manufacturers choose us."
+      />
 
       {/* ── 7 Pillars ────────────────────────────────────────────────────── */}
       <section id="why-us-pillars" className="section-padding bg-white">

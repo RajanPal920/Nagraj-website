@@ -18,19 +18,8 @@ export function Header() {
   const location = useLocation();
 
   // Mega menu state
-  const { products, types } = useProducts();
+  const { types, typeTree } = useProducts();
   const [activeType, setActiveType] = useState<string | null>(null);
-
-  const menuData = useMemo(() => {
-    if (!products) return {};
-    const data: Record<string, Record<string, ScrapedProduct[]>> = {};
-    products.forEach(p => {
-      if (!data[p.product_type]) data[p.product_type] = {};
-      if (!data[p.product_type][p.category]) data[p.product_type][p.category] = [];
-      data[p.product_type][p.category].push(p);
-    });
-    return data;
-  }, [products]);
 
   // Make header solid if not on homepage, or if scrolled on homepage
   const isSolid = location.pathname !== '/' || scrolled;
@@ -53,14 +42,9 @@ export function Header() {
         {/* Logo Combination */}
         <Link to="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Bhumi Steel Home">
           <img
-            src="/images/symbol.jpg"
-            alt="Bhumi Steel Symbol"
-            className="h-10 w-12 object-contain mix-blend-screen rounded-full"
-          />
-          <img
-            src="/images/logo.jpg"
+            src="/images/logo.png"
             alt="Bhumi Steel Logo"
-            className="h-8 object-contain mix-blend-screen"
+            className="h-10 sm:h-12 lg:h-14 object-contain mix-blend-screen"
           />
         </Link>
 
@@ -84,41 +68,42 @@ export function Header() {
                     {/* Left Sidebar: Types */}
                     <div className="w-1/3 bg-gray-50 border-r border-gray-100 py-4 overflow-y-auto scrollbar-thin">
                       {types.map(t => (
-                        <button
+                        <Link
+                          to={`/products?type=${encodeURIComponent(t)}`}
                           key={t}
                           onMouseEnter={() => setActiveType(t)}
-                          className={`w-full text-left px-6 py-3 text-sm font-display font-semibold transition-colors
+                          className={`block w-full text-left px-6 py-3 text-sm font-display font-semibold transition-colors
                             ${(activeType === t) || (!activeType && types[0] === t)
                               ? 'bg-white text-brand-green border-l-2 border-brand-green'
                               : 'text-gray-600 hover:bg-white hover:text-brand-green border-l-2 border-transparent'
                             }`}
                         >
                           {t}
-                        </button>
+                        </Link>
                       ))}
                     </div>
 
-                    {/* Right Panel: Categories & Products */}
-                    <div className="w-2/3 p-6 bg-white overflow-y-auto scrollbar-thin">
+                    {/* Right Panel: Material Groups & Categories */}
+                    <div className="w-2/3 p-8 bg-white overflow-y-auto scrollbar-thin">
                       {(() => {
                         const currentType = activeType || types[0];
-                        if (!currentType || !menuData[currentType]) return <p className="text-sm text-gray-400">Loading products...</p>;
+                        const groups = typeTree[currentType];
+                        if (!groups || groups.length === 0) return <p className="text-sm text-gray-400">Loading categories...</p>;
 
-                        return Object.entries(menuData[currentType]).map(([catName, prods]) => (
-                          <div key={catName} className="mb-6 last:mb-0">
-                            <h4 className="font-display font-bold text-brand-charcoal border-b border-gray-100 pb-2 mb-3">
-                              {catName}
+                        return groups.map(group => (
+                          <div key={group.group} className="mb-8 last:mb-0">
+                            <h4 className="font-display font-bold text-brand-charcoal text-lg border-b border-gray-100 pb-2 mb-4">
+                              {group.group}
                             </h4>
-                            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-                              {prods.map(p => (
-                                <li key={p.slug}>
-                                  {/* Link to Products page with query parameters so it auto-filters */}
+                            <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
+                              {group.categories.map(cat => (
+                                <li key={cat.category}>
                                   <Link
-                                    to={`/products?type=${encodeURIComponent(currentType)}&category=${encodeURIComponent(catName)}&search=${encodeURIComponent(p.title)}`}
-                                    className="text-xs font-body text-gray-500 hover:text-brand-green transition-colors line-clamp-1"
-                                    title={p.title}
+                                    to={`/products?type=${encodeURIComponent(currentType)}#${encodeURIComponent(cat.category)}`}
+                                    className="flex items-center gap-2 text-sm font-body text-gray-600 hover:text-brand-green transition-colors"
                                   >
-                                    {p.title}
+                                    <span className="w-1 h-1 rounded-full bg-brand-green opacity-50" />
+                                    {cat.label} {currentType}
                                   </Link>
                                 </li>
                               ))}
@@ -151,7 +136,7 @@ export function Header() {
           aria-label="Call Bhumi Steel"
         >
           <Phone size={14} strokeWidth={2.5} />
-          22 6636 2548
+          022 6636 2548
         </a>
 
         {/* Mobile hamburger */}
@@ -188,7 +173,7 @@ export function Header() {
             className="mt-2 flex items-center gap-2 bg-brand-gold text-white font-display font-bold text-sm px-4 py-3 rounded-sm"
           >
             <Phone size={14} strokeWidth={2.5} />
-            Call: 22 6636 2548
+            Call: 022 6636 2548
           </a>
         </nav>
       </div>

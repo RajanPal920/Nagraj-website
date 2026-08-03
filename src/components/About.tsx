@@ -1,4 +1,5 @@
 import { MapPin, Package, Building2, TrendingUp } from 'lucide-react';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 const credentials = [
   {
@@ -28,12 +29,18 @@ const credentials = [
 ];
 
 export function About() {
+  const [textRef, textVisible] = useIntersectionObserver<HTMLDivElement>();
+  const [imageRef, imageVisible] = useIntersectionObserver<HTMLDivElement>();
+
   return (
     <section id="about" className="section-padding bg-white">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Text */}
-          <div className="order-2 lg:order-1">
+          <div 
+            ref={textRef}
+            className={`order-2 lg:order-1 ${textVisible ? 'animate-reveal-left' : 'opacity-0'}`}
+          >
             <p className="section-label">About Bhumi Steel</p>
             <h2 className="section-title">
               An Established Name in Steel Trading
@@ -55,10 +62,10 @@ export function About() {
 
             {/* Credential badges */}
             <div className="grid grid-cols-2 gap-5 mt-10">
-              {credentials.map(({ icon: Icon, value, label, sub }) => (
+              {credentials.map(({ icon: Icon, value, label, sub }, index) => (
                 <div
                   key={label}
-                  className="card-base p-6 group"
+                  className={`card-base p-6 group ${textVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : 'opacity-0'}`}
                 >
                   <div className="mb-4 w-10 h-10 rounded-sm bg-brand-green/10 flex items-center justify-center group-hover:bg-brand-green transition-colors duration-300">
                     <Icon
@@ -80,7 +87,10 @@ export function About() {
           </div>
 
           {/* Right: Image */}
-          <div className="order-1 lg:order-2 relative w-full h-[500px] lg:h-[700px] rounded-sm overflow-hidden shadow-2xl">
+          <div 
+            ref={imageRef}
+            className={`order-1 lg:order-2 relative w-full h-[500px] lg:h-[700px] rounded-sm overflow-hidden shadow-2xl ${imageVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+          >
             {/* Fallback color */}
             <div className="absolute inset-0 bg-gray-100" />
             <img 

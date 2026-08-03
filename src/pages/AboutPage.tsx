@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PageHero } from '../components/PageHero';
 import {
   Building2,
   MapPin,
@@ -125,55 +126,29 @@ export function AboutPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
+            <PageHero
         id="about-hero"
-        className="bg-steel-gradient steel-texture relative overflow-hidden py-32 px-4 sm:px-8 lg:px-16 xl:px-24"
+        label="Who We Are"
+        title={<>An Established Name&nbsp;in<br/><span className="text-brand-gold">Steel Trading</span></>}
+        description="Bhumi Steel & Alloys is a registered B2B steel trading and supply company headquartered in Mumbai with a branch in Pune's MIDC Bhosari industrial corridor. We supply structural and process steel to industrial buyers across India."
       >
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        {/* Gold top bar */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gold-gradient" />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <p className="section-label">Who We Are</p>
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6 max-w-3xl">
-            An Established Name&nbsp;in
-            <br />
-            <span className="text-brand-gold">Steel Trading</span>
-          </h1>
-          <div className="w-16 h-1 bg-brand-gold mb-8" />
-          <p className="font-body text-gray-300 text-lg max-w-2xl leading-relaxed mb-12">
-            Bhumi Steel &amp; Alloys is a registered B2B steel trading and supply company
-            headquartered in Mumbai with a branch in Pune's MIDC Bhosari industrial corridor.
-            We supply structural and process steel to industrial buyers across India.
-          </p>
-
-          {/* Stat tiles */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
-            {stats.map(({ value, label, icon: Icon }) => (
-              <div
-                key={label}
-                className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-5 py-4 group hover:bg-brand-gold/20 hover:border-brand-gold/40 transition-all duration-300"
-              >
-                <Icon
-                  size={18}
-                  className="text-brand-gold mb-2 group-hover:scale-110 transition-transform duration-300"
-                  strokeWidth={1.75}
-                />
-                <div className="font-display font-extrabold text-2xl text-white">{value}</div>
-                <div className="font-body text-gray-400 text-xs mt-0.5">{label}</div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
+          {stats.map(({ value, label, icon: Icon }) => (
+            <div
+              key={label}
+              className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-5 py-4 group hover:bg-brand-gold/20 hover:border-brand-gold/40 transition-all duration-300"
+            >
+              <Icon
+                size={18}
+                className="text-brand-gold mb-2 group-hover:scale-110 transition-transform duration-300"
+                strokeWidth={1.75}
+              />
+              <div className="font-display font-extrabold text-2xl text-white">{value}</div>
+              <div className="font-body text-gray-600 text-xs mt-0.5">{label}</div>
+            </div>
+          ))}
         </div>
-      </section>
+      </PageHero>
 
       {/* ── Our Story ────────────────────────────────────────────────────── */}
       <section id="about-story" className="section-padding bg-white">
@@ -384,7 +359,7 @@ export function AboutPage() {
                 </div>
 
                 <div className="pt-5 border-t border-gray-100">
-                  <p className="font-body text-xs text-gray-400 italic">{note}</p>
+                  <p className="font-body text-xs text-gray-600 italic">{note}</p>
                 </div>
               </div>
             ))}

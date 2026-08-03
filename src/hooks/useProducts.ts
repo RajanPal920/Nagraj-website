@@ -28,6 +28,21 @@ export interface CategoryGroupNode {
   categories: CategoryNode[];
 }
 
+
+export interface TypeCategoryNode {
+  category: string;
+  label: string;
+  group: string;
+  products: ScrapedProduct[];
+}
+
+export interface TypeGroupNode {
+  group: string;
+  categories: TypeCategoryNode[];
+}
+
+export type TypeTree = Record<string, TypeGroupNode[]>;
+
 interface UseProductsReturn {
   products: ScrapedProduct[];
   loading: boolean;
@@ -40,6 +55,7 @@ interface UseProductsReturn {
   typeCounts: Record<string, number>;
   /** Hierarchical tree: group → category → product_type */
   categoryTree: CategoryGroupNode[];
+  typeTree: TypeTree;
 }
 
 // ── Module-level cache ────────────────────────────────────────────────────────
@@ -168,5 +184,57 @@ export function useProducts(): UseProductsReturn {
     return groupNodes;
   }, [products]);
 
-  return { products, loading, error, categories, types, categoryCounts, typeCounts, categoryTree };
+
+  const typeTree = useMemo((): TypeTree => {
+    const tree: TypeTree = {};
+    
+    // Group all products by Type -> Category
+    const rawMap: Record<string, Record<string, ScrapedProduct[]>> = {};
+    products.forEach(p => {
+      if (!rawMap[p.product_type]) rawMap[p.product_type] = {};
+      if (!rawMap[p.product_type][p.category]) rawMap[p.product_type][p.category] = [];
+      rawMap[p.product_type][p.category].push(p);
+    });
+
+    // Build the hierarchical tree: Type -> Group -> Category
+    Object.keys(rawMap).forEach(type => {
+      const typeCategories = rawMap[type];
+      const knownCats = new Set(Object.values(CATEGORY_GROUPS).flat());
+      
+      const groupNodes: TypeGroupNode[] = GROUP_ORDER.map(group => {
+        const groupCats = CATEGORY_GROUPS[group] ?? [];
+        const categoryNodes: TypeCategoryNode[] = groupCats
+          .filter(cat => typeCategories[cat] !== undefined)
+          .map(cat => ({
+            category: cat,
+            label: getCategoryDisplayLabel(cat),
+            group,
+            products: typeCategories[cat]
+          }));
+          
+        return { group, categories: categoryNodes };
+      }).filter(g => g.categories.length > 0);
+
+      // Other group
+      const otherCats = Object.keys(typeCategories)
+        .filter(cat => !knownCats.has(cat))
+        .map(cat => ({
+          category: cat,
+          label: getCategoryDisplayLabel(cat),
+          group: 'Other',
+          products: typeCategories[cat]
+        }));
+        
+      if (otherCats.length > 0) {
+        groupNodes.push({ group: 'Other', categories: otherCats });
+      }
+
+      tree[type] = groupNodes;
+    });
+
+    return tree;
+  }, [products]);
+
+  return { products, loading, error, categories, types, categoryCounts, typeCounts, categoryTree, typeTree };
 }
+

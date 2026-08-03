@@ -1,270 +1,194 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { Package, ChevronDown, ArrowRight, X } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useProducts } from '../hooks/useProducts';
-import { ProductsFilter, MobileFilterTrigger } from '../components/ProductsFilter';
-import { ScrapedProductCard } from '../components/ScrapedProductCard';
-import { getCategoryDisplayLabel, getTypeDisplayLabel } from '../data/categoryConfig';
-
-const PAGE_SIZE = 48;
+import { useEffect } from 'react';
+import { useSearchParams, Link, useLocation } from 'react-router-dom';
+import { useProducts, type TypeCategoryNode, type TypeGroupNode } from '../hooks/useProducts';
+import { PageHero } from '../components/PageHero';
+import { getProductImage } from '../data/productImages';
 
 export function ProductsPage() {
-  const {
-    products,
-    categories,
-    typeCounts,
-    categoryTree,
-    loading,
-    error,
-  } = useProducts();
   const [searchParams] = useSearchParams();
+  const selectedType = searchParams.get('type') || '';
 
-  // ── Filter state ──────────────────────────────────────────────────────────
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
-  const [selectedType, setSelectedType] = useState(searchParams.get('type') || '');
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-
-  useEffect(() => {
-    setSearch(searchParams.get('search') || '');
-    setSelectedCategory(searchParams.get('category') || '');
-    setSelectedType(searchParams.get('type') || '');
-  }, [searchParams]);
-
+  const { products, types, typeTree, loading } = useProducts();
   const TOTAL = products.length;
 
-  // ── Filtered products ─────────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    return products.filter((p) => {
-      if (selectedCategory && p.category !== selectedCategory) return false;
-      if (selectedType && p.product_type !== selectedType) return false;
-      if (q) {
-        return (
-          p.title.toLowerCase().includes(q) ||
-          p.meta_description.toLowerCase().includes(q) ||
-          p.slug.toLowerCase().includes(q) ||
-          (p.material_grades ?? []).some((g) => g.toLowerCase().includes(q))
-        );
-      }
-      return true;
-    });
-  }, [products, search, selectedCategory, selectedType]);
+  const location = useLocation();
 
-  const visible = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
-  const isFiltered = !!(search || selectedCategory || selectedType);
-
-  // Reset visible count when filters change
-  const handleSearch = useCallback((v: string) => { setSearch(v); setVisibleCount(PAGE_SIZE); }, []);
-  const handleCategory = useCallback((v: string) => { setSelectedCategory(v); setVisibleCount(PAGE_SIZE); }, []);
-  const handleType = useCallback((v: string) => { setSelectedType(v); setVisibleCount(PAGE_SIZE); }, []);
-
-  // ── Active filter label ───────────────────────────────────────────────────
-  const activeLabel = useMemo(() => {
-    if (selectedCategory && selectedType) {
-      return `${getCategoryDisplayLabel(selectedCategory)} → ${getTypeDisplayLabel(selectedType)}`;
+  // Scroll to hash or top when type/hash changes
+  useEffect(() => {
+    if (loading) return;
+    if (location.hash) {
+      setTimeout(() => {
+        const id = decodeURIComponent(location.hash.replace('#', ''));
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    if (selectedCategory) return getCategoryDisplayLabel(selectedCategory);
-    if (search) return `"${search}"`;
-    return null;
-  }, [selectedCategory, selectedType, search]);
+  }, [selectedType, location.hash, loading]);
 
   return (
-    <>
-      {/* ── SEO ── */}
-      <title>Our Products | Bhumi Steel &amp; Alloys</title>
-      <meta
-        name="description"
-        content="Browse 417+ steel and alloy products — bars, plates, pipes, fittings, flanges and more across stainless steel, alloy steel, titanium, nickel alloys and other grades."
-      />
-
+    <div className="bg-white min-h-screen">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
+      <PageHero
         id="products-hero"
-        className="bg-steel-gradient steel-texture relative overflow-hidden py-20 px-4 sm:px-8 lg:px-16 xl:px-24"
+        label={selectedType ? selectedType.toUpperCase() : "FULL CATALOGUE"}
+        title={<>{TOTAL > 0 ? TOTAL : '417'}+ Products.<br /><span className="text-brand-gold">All Specifications.</span></>}
+        description={
+          selectedType
+            ? `Browse our complete range of ${selectedType.toLowerCase()} across all material grades.`
+            : "Bars, plates, pipes, fittings, flanges and forgings across stainless steel, alloy steel, titanium, nickel alloys and more — all in stock."
+        }
       >
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <p className="section-label mb-2">Full Catalogue</p>
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-4">
-            {TOTAL > 0 ? TOTAL : '417'} Products.<br />
-            <span className="text-brand-gold">All Specifications.</span>
-          </h1>
-          <p className="font-body text-gray-300 text-lg max-w-2xl leading-relaxed mb-8">
-            Bars, plates, pipes, fittings, flanges and forgings across stainless steel,
-            alloy steel, titanium, nickel alloys and more — all in stock.
-          </p>
-
-          {/* Stat tiles */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg">
-            {[
-              { value: TOTAL || 417, label: 'Products' },
-              { value: categories.length || 25, label: 'Material Families' },
-              { value: Object.keys(typeCounts).length || 8, label: 'Product Forms' },
-            ].map(({ value, label }) => (
-              <div key={label} className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-4 py-3">
-                <div className="font-display font-extrabold text-2xl text-white">{value}</div>
-                <div className="font-body text-gray-400 text-xs">{label}</div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg mt-4">
+          {[
+            { value: TOTAL || 417, label: 'Products' },
+            { value: 25, label: 'Material Families' },
+            { value: types.length || 8, label: 'Product Forms' },
+          ].map(({ value, label }) => (
+            <div key={label} className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-4 py-3">
+              <div className="font-display font-extrabold text-2xl text-white">{value}</div>
+              <div className="font-body text-gray-400 text-xs">{label}</div>
+            </div>
+          ))}
         </div>
-      </section>
+      </PageHero>
 
-      {/* ── Body: sidebar + grid ─────────────────────────────────────────── */}
-      <div className="flex min-h-[70vh] bg-gray-50">
-
-        {/* ── Sidebar filter ── */}
-        <ProductsFilter
-          search={search}
-          onSearch={handleSearch}
-          selectedCategory={selectedCategory}
-          onCategory={handleCategory}
-          selectedType={selectedType}
-          onType={handleType}
-          totalCount={TOTAL}
-          filteredCount={filtered.length}
-          categoryTree={categoryTree}
-          mobileOpen={mobileFilterOpen}
-          onMobileClose={() => setMobileFilterOpen(false)}
-        />
-
-        {/* ── Main content ── */}
-        <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6">
-
-          {/* Top bar: mobile filter toggle + active filter + count */}
-          <div className="flex items-center gap-3 mb-6 flex-wrap">
-            <MobileFilterTrigger
-              onClick={() => setMobileFilterOpen(true)}
-              filteredCount={filtered.length}
-              totalCount={TOTAL}
-              isFiltered={isFiltered}
-            />
-
-            {/* Active filter breadcrumb */}
-            {activeLabel && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-display font-semibold text-brand-charcoal">
-                  {activeLabel}
-                </span>
-                <button
-                  onClick={() => { handleCategory(''); handleType(''); handleSearch(''); }}
-                  className="p-0.5 rounded-full hover:bg-gray-200 transition-colors"
-                  aria-label="Clear filter"
-                >
-                  <X size={13} className="text-gray-400" />
-                </button>
-              </div>
-            )}
-
-            {/* Result count */}
-            <span className="text-xs font-body text-gray-400 ml-auto">
-              {isFiltered
-                ? <><span className="font-semibold text-brand-green">{filtered.length}</span> of {TOTAL} products</>
-                : <><span className="font-semibold text-brand-charcoal">{TOTAL}</span> products</>
-              }
-            </span>
-          </div>
-
-          {/* ── Product Grid ── */}
+      {/* ── Main Content ─────────────────────────────────────────────────── */}
+      <div className="bg-gray-50 py-16">
+        <div className="max-w-[1300px] mx-auto px-4 xl:px-8">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-12 h-12 border-4 border-brand-green/20 border-t-brand-green rounded-full animate-spin mb-4" />
-              <p className="font-body text-gray-400 text-sm">Loading products...</p>
+            <div className="flex justify-center py-20">
+              <div className="w-8 h-8 border-4 border-brand-green border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : error ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <p className="font-body text-brand-red text-sm mb-4">Error loading products: {error}</p>
-            </div>
-          ) : visible.length > 0 ? (
-            <>
-              <div
-                id="products-grid-section"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5"
-              >
-                {visible.map((product, index) => (
-                  <ScrapedProductCard
-                    key={product.slug}
-                    product={product}
-                    index={index}
-                  />
-                ))}
-              </div>
-
-              {/* Load More */}
-              {hasMore && (
-                <div className="mt-12 text-center">
-                  <p className="font-body text-gray-400 text-sm mb-4">
-                    Showing {visible.length} of {filtered.length} products
-                  </p>
-                  <button
-                    id="products-load-more"
-                    onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                    className="btn-outline-green inline-flex items-center gap-2 text-sm py-3"
-                  >
-                    Load More Products
-                    <ChevronDown size={16} />
-                  </button>
-                </div>
-              )}
-
-              {!hasMore && filtered.length > PAGE_SIZE && (
-                <p className="mt-10 text-center font-body text-gray-400 text-sm">
-                  All {filtered.length} matching products shown.
-                </p>
-              )}
-            </>
+          ) : !selectedType ? (
+            <Level1TypeGrid types={types} typeTree={typeTree} />
           ) : (
-            /* Empty state */
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                <Package size={28} className="text-gray-300" />
-              </div>
-              <h3 className="font-display font-bold text-brand-charcoal text-lg mb-2">
-                No products found
-              </h3>
-              <p className="font-body text-gray-400 text-sm max-w-xs mb-6">
-                Try adjusting your search or clearing the filters.
-              </p>
-              <button
-                onClick={() => { handleSearch(''); handleCategory(''); handleType(''); }}
-                className="btn-outline-green text-sm py-2.5 px-6"
-              >
-                Clear All Filters
-              </button>
-            </div>
+            <Level2CategoryList type={selectedType} typeTree={typeTree} />
           )}
-        </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Level 1: Product Types Grid
+// ──────────────────────────────────────────────────────────────────────────────
+
+function Level1TypeGrid({ types, typeTree }: { types: string[], typeTree: Record<string, TypeGroupNode[]> }) {
+  return (
+    <div>
+      <div className="mb-10 text-center">
+        <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-brand-charcoal mb-4">Select Product Form</h2>
+        <div className="w-16 h-1 bg-brand-gold mx-auto" />
       </div>
 
-      {/* ── Enquire CTA strip ─────────────────────────────────────────────── */}
-      <section
-        id="products-cta-strip"
-        className="bg-brand-green py-16 px-4 sm:px-8 lg:px-16 xl:px-24"
-      >
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="font-display font-extrabold text-2xl text-white mb-1">
-              Can't find what you need?
-            </h2>
-            <p className="font-body text-gray-300 text-sm">
-              We source and supply custom grades. Tell us your requirement.
-            </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {types.map(type => {
+          const groups = typeTree[type] || [];
+          const count = groups.reduce((acc, g) => acc + g.categories.reduce((c, cat) => c + cat.products.length, 0), 0);
+          const image = getProductImage(type, undefined, type);
+
+          return (
+            <Link
+              to={`/products?type=${encodeURIComponent(type)}`}
+              key={type}
+              className="group block rounded-sm border border-gray-100 bg-white overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="h-56 bg-gray-100 overflow-hidden relative">
+                <img src={image} alt={type} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <div className="absolute inset-0 bg-brand-green-dark/10 group-hover:bg-transparent transition-colors duration-500" />
+              </div>
+              <div className="p-6">
+                <h3 className="font-display font-bold text-xl text-brand-charcoal group-hover:text-brand-green transition-colors">{type}</h3>
+                <p className="font-body text-gray-500 text-sm mt-2">{count} Specifications Available</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Level 2: Mixed Layout Category List
+// ──────────────────────────────────────────────────────────────────────────────
+
+function Level2CategoryList({ type, typeTree }: { type: string, typeTree: Record<string, TypeGroupNode[]> }) {
+  const groups = typeTree[type];
+
+  if (!groups || groups.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <h3 className="font-display font-bold text-2xl text-brand-charcoal mb-4">No categories found for {type}</h3>
+        <Link to="/products" className="text-brand-green hover:underline">← Back to all types</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-12 flex items-center justify-between">
+        <Link to="/products" className="inline-flex items-center gap-2 text-sm font-display font-bold text-gray-500 hover:text-brand-green transition-colors">
+          <span className="text-lg leading-none">←</span> Back to Forms
+        </Link>
+      </div>
+
+      <div className="space-y-20">
+        {groups.map(group => (
+          <div key={group.group}>
+            {/* Group Header */}
+            <div className="mb-10">
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-brand-green mb-4 capitalize">
+                {group.group.toLowerCase()}
+              </h2>
+              <div className="w-20 h-1 bg-brand-gold" />
+            </div>
+
+            {/* Categories */}
+            <div className="space-y-10">
+              {group.categories.map((cat, idx) => (
+                <CategoryCard key={cat.category} type={type} categoryNode={cat} index={idx} />
+              ))}
+            </div>
           </div>
-          <Link
-            to="/contact"
-            id="products-cta-strip-enquire"
-            className="btn-primary shrink-0"
-          >
-            Request a Quote
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-    </>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Category Card (Mix Layout)
+// ──────────────────────────────────────────────────────────────────────────────
+
+function CategoryCard({ type, categoryNode, index }: { type: string, categoryNode: TypeCategoryNode, index: number }) {
+  const { label, products, category } = categoryNode;
+  const titleDisplay = `${label} ${type}`;
+  const image = getProductImage(type, category, `${label} ${type}`);
+
+  return (
+    <div id={category} className="flex flex-col lg:flex-row bg-white border-y border-r border-gray-100 border-l-[12px] border-l-brand-green shadow-sm hover:shadow-card transition-shadow duration-300 p-6 lg:p-8 gap-8 scroll-mt-32">
+      <div className="flex-shrink-0 w-full lg:w-[200px] flex items-center justify-center bg-gray-50 rounded-sm p-4 border border-gray-100">
+        <img src={image} alt={titleDisplay} className="w-full h-full max-w-[200px] max-h-[200px] aspect-square object-cover" loading="lazy" />
+      </div>
+      <div className="flex-grow">
+        <h3 className="font-display font-bold text-2xl text-brand-charcoal mb-6 capitalize">{titleDisplay.toLowerCase()}</h3>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-3 gap-x-6">
+          {products.map(p => (
+            <li key={p.slug}>
+              <Link to={`/products/${p.slug}`} className="group flex items-start gap-2 font-body text-sm font-semibold text-brand-charcoal hover:text-brand-green transition-colors">
+                <span className="text-brand-green flex-shrink-0 font-bold">➔]</span>
+                <span className="line-clamp-2">{p.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }

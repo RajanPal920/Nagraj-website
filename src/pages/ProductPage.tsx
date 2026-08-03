@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,13 +10,11 @@ import {
   FileText,
   Wrench,
   Package,
-  ChevronLeft,
-  ChevronRight,
   Phone,
 } from 'lucide-react';
 import { useProduct } from '../hooks/useProduct';
-import { FALLBACK_IMAGE } from '../data/scrapedProductsData';
 import { getCategoryDisplayLabel, getTypeDisplayLabel } from '../data/categoryConfig';
+import { getProductImage } from '../data/productImages';
 
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
 
@@ -110,7 +107,6 @@ function Skeleton() {
 export function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const { product, loading, error } = useProduct(slug);
-  const [activeImage, setActiveImage] = useState(0);
 
   /* Loading */
   if (loading) return <Skeleton />;
@@ -119,7 +115,7 @@ export function ProductPage() {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20 px-4">
-        <Package size={48} className="text-gray-300" strokeWidth={1} />
+        <Package size={48} className="text-gray-400" strokeWidth={1} />
         <h1 className="font-display font-bold text-xl text-brand-charcoal">Failed to load products</h1>
         <p className="font-body text-gray-400 text-sm">{error}</p>
         <Link to="/products" className="btn-outline-green text-sm py-2.5 px-6">
@@ -133,7 +129,7 @@ export function ProductPage() {
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20 px-4">
-        <Package size={48} className="text-gray-300" strokeWidth={1} />
+        <Package size={48} className="text-gray-400" strokeWidth={1} />
         <h1 className="font-display font-bold text-2xl text-brand-charcoal">Product Not Found</h1>
         <p className="font-body text-gray-400 text-sm max-w-xs text-center">
           We couldn't find a product matching <strong>{slug}</strong>. It may have been moved.
@@ -152,8 +148,8 @@ export function ProductPage() {
   const descriptionText = cleanText(product.description_text);
   const hasChem = product.chemical_composition?.length > 0;
   const hasMech = product.mechanical_properties?.length > 0;
-  const images = product.images?.length ? product.images : [{ url: FALLBACK_IMAGE, alt: product.title }];
-  const hasGallery = images.length > 1;
+  // Always use clean local image — title is passed so inferVisualType() can correct scraper mislabels
+  const heroImage = getProductImage(product.product_type, product.category, product.title);
 
   const packingText = product.packing && !looksLikeCityDump(product.packing)
     ? product.packing
@@ -179,13 +175,13 @@ export function ProductPage() {
               Home
             </Link>
           </li>
-          <li className="text-gray-300">/</li>
+          <li className="text-gray-400">/</li>
           <li>
             <Link to="/products" className="hover:text-brand-green transition-colors">
               Products
             </Link>
           </li>
-          <li className="text-gray-300">/</li>
+          <li className="text-gray-400">/</li>
           <li>
             <Link
               to={`/products?category=${encodeURIComponent(product.category)}`}
@@ -194,7 +190,7 @@ export function ProductPage() {
               {categoryLabel}
             </Link>
           </li>
-          <li className="text-gray-300">/</li>
+          <li className="text-gray-400">/</li>
           <li>
             <Link
               to={`/products?category=${encodeURIComponent(product.category)}&type=${encodeURIComponent(product.product_type)}`}
@@ -203,7 +199,7 @@ export function ProductPage() {
               {typeLabel}
             </Link>
           </li>
-          <li className="text-gray-300">/</li>
+          <li className="text-gray-400">/</li>
           <li className="text-gray-700 font-semibold truncate max-w-[160px] sm:max-w-xs">
             {product.title}
           </li>
@@ -213,37 +209,14 @@ export function ProductPage() {
       <div className="bg-white">
         {/* ── Hero ────────────────────────────────────────────────────── */}
         <section id="product-hero" className="relative">
-          {/* Hero image */}
+          {/* Hero image — clean local type-mapped image (no watermarks) */}
           <div className="relative w-full h-72 sm:h-96 lg:h-[480px] bg-gray-100 overflow-hidden">
             <img
-              src={images[activeImage]?.url ?? FALLBACK_IMAGE}
-              alt={images[activeImage]?.alt ?? product.title}
-              className="w-full h-full object-cover transition-opacity duration-500"
-              onError={(e) => { e.currentTarget.src = FALLBACK_IMAGE; }}
+              src={heroImage}
+              alt={`${typeLabel} — ${product.title}`}
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-
-            {/* Gallery arrows */}
-            {hasGallery && (
-              <>
-                <button
-                  onClick={() => setActiveImage((i) => (i - 1 + images.length) % images.length)}
-                  id="product-hero-img-prev"
-                  aria-label="Previous image"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={() => setActiveImage((i) => (i + 1) % images.length)}
-                  id="product-hero-img-next"
-                  aria-label="Next image"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            )}
 
             {/* Badges */}
             <div className="absolute top-4 left-4 flex gap-2">
@@ -266,30 +239,8 @@ export function ProductPage() {
               </h1>
             </div>
           </div>
-
-          {/* Thumbnail strip */}
-          {hasGallery && (
-            <div className="flex gap-2 px-4 sm:px-8 lg:px-16 xl:px-24 py-3 bg-gray-50 border-b border-gray-100 overflow-x-auto scrollbar-thin">
-              {images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  aria-label={`View image ${i + 1}`}
-                  className={`flex-shrink-0 w-16 h-16 rounded-sm overflow-hidden border-2 transition-all duration-200 ${
-                    i === activeImage ? 'border-brand-gold' : 'border-transparent opacity-60 hover:opacity-100'
-                  }`}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.alt}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.currentTarget.src = FALLBACK_IMAGE; }}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
         </section>
+
 
         {/* ── Body ────────────────────────────────────────────────────── */}
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-12 lg:py-16">
@@ -412,7 +363,7 @@ export function ProductPage() {
                             <td className="px-4 py-2.5 font-medium text-brand-charcoal">{entry.property_name}</td>
                             <td className="px-4 py-2.5 text-gray-600">{entry.value || '—'}</td>
                             <td className="px-4 py-2.5 text-gray-500">{entry.unit || '—'}</td>
-                            <td className="px-4 py-2.5 text-gray-400 text-xs">{entry.condition || '—'}</td>
+                            <td className="px-4 py-2.5 text-gray-600 text-xs">{entry.condition || '—'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -477,7 +428,7 @@ export function ProductPage() {
 
                 {/* Call card */}
                 <div className="bg-gray-50 rounded-sm border border-gray-100 p-5 shadow-card">
-                  <p className="font-body text-gray-400 text-xs mb-3">Prefer to call?</p>
+                  <p className="font-body text-gray-600 text-xs mb-3">Prefer to call?</p>
                   <a
                     href="tel:+912266362548"
                     id={`product-${product.slug}-call`}
@@ -488,9 +439,9 @@ export function ProductPage() {
                     </div>
                     <div>
                       <p className="font-display font-bold text-brand-charcoal text-sm group-hover:text-brand-green transition-colors">
-                        22 6636 2548
+                        022 6636 2548
                       </p>
-                      <p className="font-body text-gray-400 text-xs">Mumbai office</p>
+                      <p className="font-body text-gray-600 text-xs">Mumbai office</p>
                     </div>
                   </a>
                 </div>
@@ -498,20 +449,20 @@ export function ProductPage() {
                 {/* Product type badge */}
                 <div className="bg-white rounded-sm border border-gray-100 p-5 shadow-card space-y-3">
                   <div>
-                    <p className="font-body text-gray-400 text-xs mb-1">Product Type</p>
+                    <p className="font-body text-gray-600 text-xs mb-1">Product Type</p>
                     <p className="font-display font-bold text-brand-green text-sm">{product.product_type}</p>
                   </div>
                   <div>
-                    <p className="font-body text-gray-400 text-xs mb-1">Category</p>
+                    <p className="font-body text-gray-600 text-xs mb-1">Category</p>
                     <p className="font-display font-bold text-brand-charcoal text-sm">{categoryLabel}</p>
                   </div>
                   <div>
-                    <p className="font-body text-gray-400 text-xs mb-1">Product Form</p>
+                    <p className="font-body text-gray-600 text-xs mb-1">Product Form</p>
                     <p className="font-display font-bold text-brand-green text-sm">{typeLabel}</p>
                   </div>
                   {product.material_grades?.length > 0 && (
                     <div>
-                      <p className="font-body text-gray-400 text-xs mb-2">Key Grades</p>
+                      <p className="font-body text-gray-600 text-xs mb-2">Key Grades</p>
                       <div className="flex flex-wrap gap-1.5">
                         {product.material_grades.slice(0, 5).map((g, i) => (
                           <span key={i} className="text-xs font-body bg-brand-green/8 text-brand-green border border-brand-green/20 px-2 py-0.5 rounded-sm">

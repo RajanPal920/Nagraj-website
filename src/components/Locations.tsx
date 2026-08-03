@@ -84,7 +84,7 @@ export function Locations() {
 
               {/* Note */}
               <div className="pt-5 border-t border-gray-200">
-                <p className="font-body text-xs text-gray-400 italic">{note}</p>
+                <p className="font-body text-xs text-gray-600 italic">{note}</p>
               </div>
             </div>
           ))}
