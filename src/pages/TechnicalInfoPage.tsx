@@ -2,18 +2,16 @@ import { useState } from "react";
 import { PageHero } from "../components/PageHero";
 import {
   Beaker,
-  Gauge,
-  FileText,
   ChevronRight,
   ChevronDown,
   Download,
-  Table,
-  BookOpen,
-  Flame,
+  FileText,
   Layers,
+  BookOpen,
 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
-// Technical Data Sections
 const technicalSections = [
   {
     id: "chemical-composition",
@@ -32,6 +30,9 @@ const technicalSections = [
             si: "0.75",
             cr: "18.0-20.0",
             ni: "8.0-10.5",
+            mo: "—",
+            ti: "—",
+            nb: "—",
           },
           {
             grade: "SS 304L",
@@ -40,6 +41,9 @@ const technicalSections = [
             si: "0.75",
             cr: "18.0-20.0",
             ni: "8.0-12.0",
+            mo: "—",
+            ti: "—",
+            nb: "—",
           },
           {
             grade: "SS 316",
@@ -49,6 +53,8 @@ const technicalSections = [
             cr: "16.0-18.0",
             ni: "10.0-14.0",
             mo: "2.0-3.0",
+            ti: "—",
+            nb: "—",
           },
           {
             grade: "SS 316L",
@@ -58,6 +64,8 @@ const technicalSections = [
             cr: "16.0-18.0",
             ni: "10.0-14.0",
             mo: "2.0-3.0",
+            ti: "—",
+            nb: "—",
           },
           {
             grade: "SS 321",
@@ -66,7 +74,9 @@ const technicalSections = [
             si: "0.75",
             cr: "17.0-19.0",
             ni: "9.0-12.0",
+            mo: "—",
             ti: "5(C+N)",
+            nb: "—",
           },
           {
             grade: "SS 347",
@@ -75,6 +85,8 @@ const technicalSections = [
             si: "0.75",
             cr: "17.0-19.0",
             ni: "9.0-12.0",
+            mo: "—",
+            ti: "—",
             nb: "10(C+N)",
           },
         ],
@@ -86,29 +98,381 @@ const technicalSections = [
           {
             grade: "SS 201",
             c: "0.15",
-            mn: "5.50-7.50",
+            mn: "5.5-7.5",
+            p: "0.06",
+            s: "0.03",
+            si: "1",
+            cr: "16.00-18.00",
+            ni: "3.50-5.50",
+            n_ppm: "2500",
+            others: "—",
+          },
+          {
+            grade: "SS 201L",
+            c: "0.03",
+            mn: "5.5-7.5",
+            p: "0.045",
+            s: "0.03",
             si: "0.75",
-            cr: "16.0-18.0",
-            ni: "3.5-5.5",
-            n: "0.25",
+            cr: "16.00-18.00",
+            ni: "3.50-5.50",
+            n_ppm: "2500",
+            others: "—",
+          },
+          {
+            grade: "SS 201LN",
+            c: "0.03",
+            mn: "6.4-7.5",
+            p: "0.045",
+            s: "0.015",
+            si: "0.75",
+            cr: "16.00-17.50",
+            ni: "4.00-5.00",
+            n_ppm: "1000-2500",
+            others: "Cu = 1.0 Max",
           },
           {
             grade: "SS 202",
             c: "0.15",
-            mn: "7.50-10.0",
-            si: "0.75",
-            cr: "17.0-19.0",
-            ni: "4.0-6.0",
-            n: "0.25",
+            mn: "7.5-10.0",
+            p: "0.06",
+            s: "0.03",
+            si: "1",
+            cr: "17.00-19.00",
+            ni: "4.00-6.00",
+            n_ppm: "2500",
+            others: "—",
           },
           {
-            grade: "SS 205",
-            c: "0.12-0.25",
-            mn: "14.0-15.5",
+            grade: "SS 204Cu",
+            c: "0.1",
+            mn: "6.5-9.0",
+            p: "0.06",
+            s: "0.01",
             si: "0.75",
-            cr: "16.5-18.0",
-            ni: "1.0-1.7",
-            n: "0.32-0.40",
+            cr: "16.00-17.50",
+            ni: "1.50-3.50",
+            n_ppm: "1000-2000",
+            others: "Cu – 2.0-4.0",
+          },
+          {
+            grade: "JSLAUS (J1)",
+            c: "0.08",
+            mn: "6.0-8.0",
+            p: "0.07",
+            s: "0.01",
+            si: "0.75",
+            cr: "16.00-18.00",
+            ni: "4.00-6.00",
+            n_ppm: "1000",
+            others: "Cu – 1.5-2.0",
+          },
+          {
+            grade: "SS J4",
+            c: "0.1",
+            mn: "8.50-10.0",
+            p: "0.08",
+            s: "0.01",
+            si: "0.75",
+            cr: "15.00-16.00",
+            ni: "1.00-2.00",
+            n_ppm: "2000",
+            others: "Cu = 1.5-2.0",
+          },
+          {
+            grade: "JSL U DD",
+            c: "0.15(max)",
+            mn: "9.7 to 10.7",
+            p: "0.10(max)",
+            s: "0.03(max)",
+            si: "0.75(max)",
+            cr: "15.1 to 16.0",
+            ni: "0.45 to 0.60",
+            others: "Cu = 1.75-2.50 / N=0.2 Max",
+          },
+          {
+            grade: "JSL U SD",
+            c: "0.15(max)",
+            mn: "9.7 to 10.30",
+            p: "0.10(max)",
+            s: "0.03(max)",
+            si: "0.75(max)",
+            cr: "13.25 to 14.25",
+            ni: "0.40 to 0.50",
+            others: "Cu = 1.00-1.50 / N=0.2 Max",
+          },
+          {
+            grade: "SS JT",
+            c: "0.1",
+            mn: "9.0-10.0",
+            p: "0.1",
+            s: "0.01",
+            si: "0.75",
+            cr: "14.5-16.5",
+            ni: "0.25-0.35",
+            n_ppm: "2000",
+            others: "Cu = .40-1.00",
+          },
+        ],
+      },
+      {
+        id: "ss-400-series",
+        title: "SS 400 Series (Martensitic & Ferritic)",
+        data: [
+          {
+            grade: "SS410",
+            c: "0.08-0.15",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "11.50-13.50",
+            ni: "0.75",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS415",
+            c: "0.05",
+            mn: "0.50-1.00",
+            p: "0.030",
+            s: "0.030",
+            si: "0.60",
+            cr: "11.50-14.00",
+            ni: "3.50-5.50",
+            mo: "0.50-1.00",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS420",
+            c: "0.15 min",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "12.00-14.00",
+            ni: "0.75",
+            mo: "0.50",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS420J1",
+            c: "0.16-0.25",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "12.00-14.00",
+            ni: "0.60",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS420J2",
+            c: "0.26-0.40",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "12.00-14.00",
+            ni: "0.60",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS420MoV",
+            c: "0.45-0.55",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.015",
+            si: "1.00",
+            cr: "14.00-15.00",
+            mo: "0.50-0.80",
+            n_ppm: "—",
+            others: "V=0.10-0.20",
+          },
+          {
+            grade: "SS431",
+            c: "0.20",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "15.00-17.00",
+            ni: "1.25-2.50",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS405",
+            c: "0.08",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "11.50-14.50",
+            ni: "0.60",
+            mo: "—",
+            n_ppm: "—",
+            others: "AI=0.10-0.30",
+          },
+          {
+            grade: "SS409L",
+            c: "0.03",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.020",
+            si: "1.00",
+            cr: "10.50-11.70",
+            ni: "0.50",
+            mo: "—",
+            n_ppm: "300",
+            others: "Ti=6X (C+N) Min, 0.75 Max",
+          },
+          {
+            grade: "SS409Ni",
+            c: "0.03",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "10.50-11.70",
+            ni: "0.50-1.00",
+            mo: "—",
+            n_ppm: "300",
+            others: "Ti=6X(C+N) Min, 0.75 Max",
+          },
+          {
+            grade: "SS410S",
+            c: "0.08",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "11.50-13.50",
+            ni: "0.60",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS430",
+            c: "0.12",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "16.00-18.00",
+            ni: "0.75",
+            mo: "—",
+            n_ppm: "—",
+            others: "—",
+          },
+          {
+            grade: "SS432",
+            c: "0.025",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "17.00-20.00",
+            mo: "0.40-.80",
+            n_ppm: "250",
+            others: "Ti/Nb=8X(C+N) Min, 0.80 Max",
+          },
+          {
+            grade: "SS436",
+            c: "0.12",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "16.00-18.00",
+            mo: "0.75-1.25",
+            n_ppm: "—",
+            others: "Nb= 5XC Min., 0.70 Max.",
+          },
+          {
+            grade: "SS436L",
+            c: "0.025",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "16.00-19.00",
+            mo: "0.75-1.25",
+            n_ppm: "250",
+            others: "% Nb or & Ti or % combination = 8X (C+N) Min, 0.80 Max",
+          },
+          {
+            grade: "SS439",
+            c: "0.03",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "17.00-19.00",
+            ni: "0.50",
+            mo: "—",
+            n_ppm: "300",
+            others: "Ti=0.20+4X (C+N)",
+          },
+          {
+            grade: "SS441",
+            c: "0.03",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.015",
+            si: "1.00",
+            cr: "17.50-18.50",
+            mo: "—",
+            n_ppm: "—",
+            others: "Nb=3X% C+0.3 Min.",
+          },
+          {
+            grade: "SS444",
+            c: "0.025",
+            mn: "1.00",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "17.50-19.50",
+            ni: "1.00",
+            mo: "1.75-2.50",
+            n_ppm: "350",
+            others: "(Ti+Nb) 0.20+4(C+N)",
+          },
+          {
+            grade: "SS446",
+            c: "0.20",
+            mn: "1.50",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "23.00-27.00",
+            ni: "0.75",
+            mo: "—",
+            n_ppm: "2500",
+            others: "—",
+          },
+          {
+            grade: "SS409M",
+            c: "0.03",
+            mn: "0.8-1.5",
+            p: "0.040",
+            s: "0.030",
+            si: "1.00",
+            cr: "10.50-12.50",
+            ni: "1.50",
+            mo: "—",
+            n_ppm: "300",
+            others: "Ti=0.75 Max",
           },
         ],
       },
@@ -285,6 +649,133 @@ export function TechnicalInfoPage() {
     );
   };
 
+  // PDF Download Function
+  const downloadTechnicalData = () => {
+    const doc = new jsPDF("landscape", "mm", "a4");
+
+    // Add Company Header
+    doc.setFontSize(18);
+    doc.setTextColor(178, 34, 34); // brand-red
+    doc.text("Nagraj Metal Industries", 14, 20);
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    doc.text("Technical Data Sheets", 14, 28);
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text(
+      "www.nagrajmetal.com | sales@nagrajmetal.com | +91 7073875529",
+      14,
+      35,
+    );
+    doc.line(14, 38, 280, 38);
+
+    let yPosition = 45;
+
+    technicalSections.forEach((section) => {
+      // Check if we need a new page
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+        // Add header on new page
+        doc.setFontSize(11);
+        doc.setTextColor(178, 34, 34);
+        doc.text("Nagraj Metal Industries - Technical Data Sheets", 14, 15);
+        doc.line(14, 18, 280, 18);
+        yPosition = 25;
+      }
+
+      // Section Title
+      doc.setFontSize(14);
+      doc.setTextColor(178, 34, 34);
+      doc.text(section.title, 14, yPosition);
+      yPosition += 8;
+
+      section.subsections.forEach((subsection) => {
+        // Check if we need a new page
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+          doc.setFontSize(11);
+          doc.setTextColor(178, 34, 34);
+          doc.text("Nagraj Metal Industries - Technical Data Sheets", 14, 15);
+          doc.line(14, 18, 280, 18);
+          yPosition = 25;
+        }
+
+        // Subsection Title
+        doc.setFontSize(11);
+        doc.setTextColor(50, 50, 50);
+        doc.text(subsection.title, 14, yPosition);
+        yPosition += 6;
+
+        // Prepare table data
+        const headers = Object.keys(subsection.data[0] || {});
+        const rows = subsection.data.map((row) => Object.values(row));
+
+        // Generate table
+        autoTable(doc, {
+          head: [headers.map((h) => h.replace(/_/g, " ").toUpperCase())],
+          body: rows,
+          startY: yPosition,
+          theme: "striped",
+          headStyles: {
+            fillColor: [178, 34, 34],
+            textColor: [255, 255, 255],
+            fontSize: 7,
+            halign: "center",
+          },
+          bodyStyles: {
+            fontSize: 6.5,
+            cellPadding: 1.5,
+          },
+          columnStyles: {
+            0: { cellWidth: "auto" },
+          },
+          margin: { left: 14, right: 14 },
+          styles: {
+            overflow: "linebreak",
+            cellPadding: 1.5,
+          },
+          didDrawPage: () => {
+            // Add footer on each page
+            const pageCount = doc.getNumberOfPages();
+            const currentPage = pageCount;
+            doc.setFontSize(7);
+            doc.setTextColor(150, 150, 150);
+            doc.text(
+              `Page ${currentPage} of ${doc.getNumberOfPages()}`,
+              doc.internal.pageSize.getWidth() / 2,
+              doc.internal.pageSize.getHeight() - 10,
+              { align: "center" },
+            );
+          },
+        });
+
+        // @ts-ignore - jspdf-autotable adds this property
+        yPosition = doc.lastAutoTable.finalY + 8;
+      });
+
+      yPosition += 4;
+    });
+
+    // Add footer to last page
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(7);
+      doc.setTextColor(150, 150, 150);
+      doc.text(
+        `Page ${i} of ${pageCount}`,
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" },
+      );
+    }
+
+    // Save the PDF
+    doc.save("Nagraj-Metal-Industries-Technical-Data.pdf");
+  };
+
   return (
     <>
       <title>Technical Information | Nagraj Metal Industries</title>
@@ -322,7 +813,7 @@ export function TechnicalInfoPage() {
           </div>
 
           {/* Technical Sections */}
-          <div className="max-w-5xl mx-auto space-y-6">
+          <div className="max-w-6xl mx-auto space-y-6">
             {technicalSections.map((section) => {
               const isOpen = openSections.includes(section.id);
               const Icon = section.icon;
@@ -330,38 +821,47 @@ export function TechnicalInfoPage() {
               return (
                 <div
                   key={section.id}
-                  className="bg-gray-50 rounded-sm border border-gray-200 overflow-hidden"
+                  className="bg-white rounded-sm border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
                 >
                   {/* Section Header */}
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center justify-between p-6 hover:bg-gray-100 transition-colors duration-200 text-left"
+                    className="w-full flex items-center justify-between p-5 sm:p-6 hover:bg-gray-50 transition-colors duration-200 text-left"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                       <div className="w-10 h-10 rounded-sm bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                         <Icon size={20} className="text-brand-red" />
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-brand-charcoal text-lg">
+                        <h3 className="font-display font-bold text-brand-charcoal text-base sm:text-lg">
                           {section.title}
                         </h3>
-                        <p className="font-body text-gray-500 text-sm">
+                        <p className="font-body text-gray-500 text-xs sm:text-sm">
                           {section.description}
                         </p>
                       </div>
                     </div>
                     {isOpen ? (
-                      <ChevronDown size={20} className="text-gray-400" />
+                      <ChevronDown
+                        size={20}
+                        className="text-gray-400 flex-shrink-0"
+                      />
                     ) : (
-                      <ChevronRight size={20} className="text-gray-400" />
+                      <ChevronRight
+                        size={20}
+                        className="text-gray-400 flex-shrink-0"
+                      />
                     )}
                   </button>
 
                   {/* Section Content */}
                   {isOpen && (
-                    <div className="p-6 pt-0 border-t border-gray-200">
-                      {section.subsections.map((subsection) => (
-                        <div key={subsection.id} className="mb-8 last:mb-0">
+                    <div className="px-4 sm:px-6 pb-6 pt-4 border-t border-gray-200">
+                      {section.subsections.map((subsection, idx) => (
+                        <div
+                          key={subsection.id}
+                          className={idx > 0 ? "mt-8" : ""}
+                        >
                           <h4 className="font-display font-bold text-brand-red text-sm uppercase tracking-wider mb-4">
                             {subsection.title}
                           </h4>
@@ -373,10 +873,14 @@ export function TechnicalInfoPage() {
                                     (key) => (
                                       <th
                                         key={key}
-                                        className="px-4 py-3 text-left font-display font-bold text-xs uppercase tracking-wider"
+                                        className="px-3 sm:px-4 py-2.5 sm:py-3 text-left font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap"
                                       >
-                                        {key.charAt(0).toUpperCase() +
-                                          key.slice(1)}
+                                        {key === "n_ppm"
+                                          ? "N (PPM)"
+                                          : key === "cr"
+                                            ? "Cr"
+                                            : key.charAt(0).toUpperCase() +
+                                              key.slice(1)}
                                       </th>
                                     ),
                                   )}
@@ -396,7 +900,7 @@ export function TechnicalInfoPage() {
                                       (value, colIndex) => (
                                         <td
                                           key={colIndex}
-                                          className="px-4 py-2.5 text-gray-700 text-xs"
+                                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-gray-700 text-[11px] sm:text-xs whitespace-nowrap"
                                         >
                                           {value}
                                         </td>
@@ -417,9 +921,9 @@ export function TechnicalInfoPage() {
           </div>
 
           {/* Download Section */}
-          <div className="mt-16 bg-brand-red/5 border border-brand-red/20 rounded-sm p-8 max-w-3xl mx-auto text-center">
+          <div className="mt-16 bg-brand-red/5 border border-brand-red/20 rounded-sm p-6 sm:p-8 max-w-3xl mx-auto text-center">
             <FileText size={32} className="text-brand-red mx-auto mb-4" />
-            <h3 className="font-display font-bold text-brand-charcoal text-xl mb-2">
+            <h3 className="font-display font-bold text-brand-charcoal text-lg sm:text-xl mb-2">
               Need Complete Technical Data?
             </h3>
             <p className="font-body text-gray-600 text-sm mb-6">
@@ -427,17 +931,16 @@ export function TechnicalInfoPage() {
               specific material specifications.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/technical-data-sheets.pdf"
-                download
-                className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200"
+              <button
+                onClick={downloadTechnicalData}
+                className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
               >
                 <Download size={16} />
                 Download Data Sheets
-              </a>
+              </button>
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
               >
                 Contact for More Info
               </a>
