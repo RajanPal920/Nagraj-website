@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Phone, Menu, X, ChevronDown } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { useProducts } from '../hooks/useProducts';
-
+import { useState, useEffect } from "react";
+import { Phone, Menu, X, ChevronDown } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useProducts } from "../hooks/useProducts";
 
 const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Products', href: '/products' },
-  { label: 'Why Us', href: '/why-us' },
-  { label: 'Contact', href: '/contact' },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Products", href: "/products" },
+  { label: "Why Us", href: "/why-us" },
+  { label: "Certificates", href: "/certificates" },
+  { label: "Technical Info", href: "/technical-info" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Header() {
@@ -22,44 +23,58 @@ export function Header() {
   const [activeType, setActiveType] = useState<string | null>(null);
 
   // Make header solid if not on homepage, or if scrolled on homepage
-  const isSolid = location.pathname !== '/' || scrolled;
+  const isSolid = location.pathname !== "/" || scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
       id="header"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${isSolid
-        ? 'bg-brand-green shadow-lg py-3'
-        : 'bg-brand-green/95 py-4'
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
+        isSolid ? "bg-brand-red shadow-lg py-3" : "bg-brand-red/95 py-4"
+      }`}
     >
       <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-between">
         {/* Logo Combination */}
-        <Link to="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Bhumi Steel Home">
-          <img
-            src="/images/logo.png"
-            alt="Bhumi Steel Logo"
-            className="h-10 sm:h-12 lg:h-14 object-contain mix-blend-screen"
-          />
+        <Link
+          to="/"
+          className="flex items-center gap-3 flex-shrink-0"
+          aria-label="Nagraj Metal Industries Home"
+        >
+          <div className=" p-1.5 rounded-sm shadow-md bg-white">
+            <img
+              src="/images/logo.png"
+              alt="Nagraj Metal Industries Logo"
+              className="h-10 sm:h-12 lg:h-14 object-contain"
+            />
+          </div>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            link.label === 'Products' ? (
+        <nav
+          className="hidden lg:flex items-center gap-8"
+          aria-label="Main navigation"
+        >
+          {navLinks.map((link) =>
+            link.label === "Products" ? (
               <div key={link.href} className="group relative">
                 <Link
                   to={link.href}
-                  className={`nav-link text-white hover:text-white flex items-center gap-1 ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
-                    }`}
+                  className={`nav-link text-black hover:text-black/70 flex items-center gap-1 transition-colors duration-200 font-semibold ${
+                    location.pathname === link.href
+                      ? "text-black after:w-full"
+                      : "text-black/90 hover:text-black"
+                  }`}
                 >
                   {link.label}
-                  <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200" />
+                  <ChevronDown
+                    size={14}
+                    className="group-hover:rotate-180 transition-transform duration-200 text-current"
+                  />
                 </Link>
 
                 {/* Mega Menu Dropdown */}
@@ -67,15 +82,17 @@ export function Header() {
                   <div className="bg-white shadow-2xl rounded-sm border border-gray-100 flex overflow-hidden h-[500px]">
                     {/* Left Sidebar: Types */}
                     <div className="w-1/3 bg-gray-50 border-r border-gray-100 py-4 overflow-y-auto scrollbar-thin">
-                      {types.map(t => (
+                      {types.map((t) => (
                         <Link
                           to={`/products?type=${encodeURIComponent(t)}`}
                           key={t}
                           onMouseEnter={() => setActiveType(t)}
-                          className={`block w-full text-left px-6 py-3 text-sm font-display font-semibold transition-colors
-                            ${(activeType === t) || (!activeType && types[0] === t)
-                              ? 'bg-white text-brand-green border-l-2 border-brand-green'
-                              : 'text-gray-600 hover:bg-white hover:text-brand-green border-l-2 border-transparent'
+                          className={`block w-full text-left px-6 py-3 text-sm font-display font-semibold transition-all duration-200
+                            ${
+                              activeType === t ||
+                              (!activeType && types[0] === t)
+                                ? "bg-brand-red text-white border-l-4 border-black"
+                                : "text-black hover:bg-brand-red/10 hover:text-brand-red border-l-4 border-transparent hover:border-brand-red/30"
                             }`}
                         >
                           {t}
@@ -88,22 +105,29 @@ export function Header() {
                       {(() => {
                         const currentType = activeType || types[0];
                         const groups = typeTree[currentType];
-                        if (!groups || groups.length === 0) return <p className="text-sm text-gray-400">Loading categories...</p>;
+                        if (!groups || groups.length === 0)
+                          return (
+                            <p className="text-sm text-gray-400">
+                              Loading categories...
+                            </p>
+                          );
 
-                        return groups.map(group => (
+                        return groups.map((group) => (
                           <div key={group.group} className="mb-8 last:mb-0">
-                            <h4 className="font-display font-bold text-brand-charcoal text-lg border-b border-gray-100 pb-2 mb-4">
+                            <h4 className="font-display font-bold text-brand-red text-lg border-b border-brand-red/20 pb-2 mb-4">
                               {group.group}
                             </h4>
                             <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
-                              {group.categories.map(cat => (
+                              {group.categories.map((cat) => (
                                 <li key={cat.category}>
                                   <Link
                                     to={`/products?type=${encodeURIComponent(currentType)}#${encodeURIComponent(cat.category)}`}
-                                    className="flex items-center gap-2 text-sm font-body text-gray-600 hover:text-brand-green transition-colors"
+                                    className="flex items-center gap-2 text-sm font-body text-black/80 hover:text-brand-red transition-colors duration-200 group/link"
                                   >
-                                    <span className="w-1 h-1 rounded-full bg-brand-green opacity-50" />
-                                    {cat.label} {currentType}
+                                    <span className="w-1.5 h-1.5 rounded-full bg-brand-red/40 group-hover/link:bg-brand-red transition-colors" />
+                                    <span className="group-hover/link:translate-x-1 transition-transform">
+                                      {cat.label} {currentType}
+                                    </span>
                                   </Link>
                                 </li>
                               ))}
@@ -122,35 +146,38 @@ export function Header() {
                 onClick={(e) => {
                   if (location.pathname === link.href) {
                     e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
-                className={`nav-link text-white hover:text-white ${location.pathname === link.href ? 'after:w-full' : 'text-white/90'
-                  }`}
+                className={`nav-link text-black hover:text-black/70 transition-colors duration-200 font-semibold ${
+                  location.pathname === link.href
+                    ? "text-black after:w-full"
+                    : "text-black/90 hover:text-black"
+                }`}
               >
                 {link.label}
               </Link>
-            )
-          ))}
+            ),
+          )}
         </nav>
 
         {/* Phone CTA */}
         <a
-          href="tel:+912266362548"
+          href="tel:+917073875529"
           id="header-phone-cta"
-          className="hidden lg:flex items-center gap-2 bg-brand-gold hover:bg-brand-gold-light text-white hover:text-brand-charcoal font-display font-bold text-sm px-4 py-2.5 rounded-sm transition-all duration-200"
-          aria-label="Call Bhumi Steel"
+          className="hidden lg:flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-2.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl"
+          aria-label="Call Nagraj Metal Industries"
         >
           <Phone size={14} strokeWidth={2.5} />
-          022 6636 2548
+          7073875529
         </a>
 
         {/* Mobile hamburger */}
         <button
           id="mobile-menu-toggle"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-white p-2 rounded-sm hover:bg-white/10 transition-colors"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          className="lg:hidden text-black hover:text-black/70 p-2 rounded-sm hover:bg-black/10 transition-colors"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -159,10 +186,11 @@ export function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-          }`}
+        className={`lg:hidden overflow-hidden transition-all duration-300 ${
+          mobileOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
-        <nav className="bg-brand-green-dark border-t border-white/10 px-4 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
+        <nav className="bg-white border-t border-black/10 px-4 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -170,22 +198,25 @@ export function Header() {
               onClick={(e) => {
                 if (location.pathname === link.href) {
                   e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }
                 setMobileOpen(false);
               }}
-              className={`text-white hover:text-white font-body font-semibold text-base py-3 px-4 rounded-sm hover:bg-white/10 transition-colors ${location.pathname === link.href ? 'bg-white/10' : 'text-white/90'
-                }`}
+              className={`font-body font-semibold text-base py-3 px-4 rounded-sm transition-all duration-200 ${
+                location.pathname === link.href
+                  ? "bg-brand-red/10 text-brand-red border-l-4 border-brand-red"
+                  : "text-black/90 hover:text-brand-red hover:bg-brand-red/5 border-l-4 border-transparent hover:border-brand-red/30"
+              }`}
             >
               {link.label}
             </Link>
           ))}
           <a
-            href="tel:+912266362548"
-            className="mt-2 flex items-center gap-2 bg-brand-gold text-white font-display font-bold text-sm px-4 py-3 rounded-sm"
+            href="tel:+917073875529"
+            className="mt-2 flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-3 rounded-sm shadow-lg hover:shadow-xl transition-all"
           >
             <Phone size={14} strokeWidth={2.5} />
-            Call: 022 6636 2548
+            Call: 7073875529
           </a>
         </nav>
       </div>

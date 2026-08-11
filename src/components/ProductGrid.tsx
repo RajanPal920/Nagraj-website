@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { useProducts } from '../hooks/useProducts';
-import { getProductImage } from '../data/productImages';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { useProducts } from "../hooks/useProducts";
+import { getProductImage } from "../data/productImages";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 
 export function ProductGrid() {
   const { types, typeTree, loading } = useProducts();
@@ -11,58 +11,68 @@ export function ProductGrid() {
 
   return (
     <section id="products" className="section-padding bg-gray-50">
-      <div className="container-xl">
+      <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
         {/* Header */}
-        <div 
-          ref={headerRef} 
-          className={`text-center mb-14 ${headerVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+        <div
+          ref={headerRef}
+          className={`text-center mb-14 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
-          <p className="section-label">Our Range</p>
-          <h2 className="section-title mx-auto">Product Categories</h2>
-          <div className="section-divider mx-auto" />
+          <p className="section-label text-brand-red">Our Range</p>
+          <h2 className="section-title text-brand-charcoal mx-auto">
+            Product <span className="text-brand-red">Categories</span>
+          </h2>
+          <div className="section-divider mx-auto bg-brand-red" />
           <p className="font-body text-gray-500 text-base max-w-2xl mx-auto">
-            From structural profiles to high-pressure seamless pipes, Bhumi Steel
-            stocks and supplies the full spectrum of industrial steel products.
+            From structural profiles to high-pressure seamless pipes, Nagraj
+            Metal Industries stocks and supplies the full spectrum of industrial
+            steel products.
           </p>
         </div>
 
         {/* Grid */}
         <div ref={gridRef} className="min-h-[200px]">
           {loading ? (
-            <div className="text-center py-12 text-gray-400 font-body">Loading catalogue...</div>
+            <div className="text-center py-12 text-gray-400 font-body">
+              Loading catalogue...
+            </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {types.map((type, index) => {
                 const groups = typeTree[type] || [];
-                const count = groups.reduce((acc, g) => acc + g.categories.reduce((c, cat) => c + cat.products.length, 0), 0);
+                const count = groups.reduce(
+                  (acc, g) =>
+                    acc +
+                    g.categories.reduce((c, cat) => c + cat.products.length, 0),
+                  0,
+                );
                 const image = getProductImage(type, undefined, type);
-                const topGroups = groups.map(g => g.group).slice(0, 3);
+                const topGroups = groups.map((g) => g.group).slice(0, 3);
 
                 return (
                   <article
                     key={type}
-                    id={`home-product-card-${type.toLowerCase().replace(/\s+/g, '-')}`}
-                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-sm border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : 'opacity-0'}`}
+                    id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}`}
+                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-sm border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}`}
                   >
                     {/* Image Header */}
                     <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-                      <img 
-                        src={image} 
+                      <img
+                        src={image}
                         alt={type}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      {/* Removed the red gradient overlay */}
                     </div>
 
                     <div className="p-6 flex flex-col flex-1">
                       {/* Name */}
-                      <h3 className="font-display font-bold text-xl text-brand-charcoal mb-1 group-hover:text-brand-green transition-colors duration-200">
+                      <h3 className="font-display font-bold text-xl text-brand-charcoal mb-1 group-hover:text-brand-red transition-colors duration-200">
                         {type}
                       </h3>
 
                       {/* Count */}
-                      <p className="font-body text-xs font-semibold text-brand-gold uppercase tracking-wider mb-4">
+                      <p className="font-body text-xs font-semibold text-brand-red uppercase tracking-wider mb-4">
                         {count} Specifications Available
                       </p>
 
@@ -72,7 +82,7 @@ export function ProductGrid() {
                           {topGroups.map((g) => (
                             <li
                               key={g}
-                              className="text-xs font-body font-medium text-brand-green bg-brand-green/8 px-2 py-0.5 rounded-sm border border-brand-green/15"
+                              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2 py-0.5 rounded-sm border border-brand-red/15"
                             >
                               {g}
                             </li>
@@ -84,11 +94,14 @@ export function ProductGrid() {
                       <div className="mt-auto pt-2">
                         <Link
                           to={`/products?type=${encodeURIComponent(type)}`}
-                          id={`home-product-card-${type.toLowerCase().replace(/\s+/g, '-')}-link`}
-                          className="inline-flex items-center gap-1.5 text-sm font-display font-bold text-brand-green hover:text-brand-green-dark transition-colors duration-200 group/link"
+                          id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}-link`}
+                          className="inline-flex items-center gap-1.5 text-sm font-display font-bold text-brand-red hover:text-brand-red-dark transition-colors duration-200 group/link"
                         >
                           Explore {type}
-                          <ArrowRight size={14} className="transition-transform group-hover/link:translate-x-1" />
+                          <ArrowRight
+                            size={14}
+                            className="transition-transform group-hover/link:translate-x-1"
+                          />
                         </Link>
                       </div>
                     </div>
@@ -104,9 +117,10 @@ export function ProductGrid() {
           <Link
             to="/products"
             id="products-view-full-catalogue-cta"
-            className="btn-outline-green text-sm"
+            className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
           >
             View Full Product Catalogue
+            <ArrowRight size={16} />
           </Link>
         </div>
       </div>

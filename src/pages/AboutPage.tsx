@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { PageHero } from '../components/PageHero';
+import { Link } from "react-router-dom";
+import { PageHero } from "../components/PageHero";
 import {
   Building2,
   MapPin,
@@ -10,107 +10,91 @@ import {
   ArrowRight,
   Scale,
   Layers,
-} from 'lucide-react';
+  Eye,
+  Target,
+  Award,
+  Truck,
+  FlaskConical,
+} from "lucide-react";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
 
 const stats = [
-  { value: '417+', label: 'Products in Catalogue', icon: Package },
-  { value: '2', label: 'Office Locations', icon: Building2 },
-  { value: 'Pan-India', label: 'Dispatch Network', icon: MapPin },
-  { value: 'B2B', label: 'Exclusive Focus', icon: TrendingUp },
+  { value: "10+", label: "Years of Excellence", icon: Award },
+  { value: "ISO", label: "9001:2015 Certified", icon: ShieldCheck },
+  { value: "Pan-India", label: "Supply Network", icon: MapPin },
+  { value: "B2B", label: "Exclusive Focus", icon: TrendingUp },
 ];
 
 const milestones = [
   {
     icon: Building2,
-    title: 'Registered in Mumbai',
+    title: "Established Over a Decade Ago",
     description:
-      'Principal office established at Jalaram Niwas, 1st Kumbharwada, Mumbai – in the heart of the commercial district.',
-  },
-  {
-    icon: MapPin,
-    title: 'Expanded to Pune',
-    description:
-      'Branch office opened at MIDC Bhosari, Pune — right inside the industrial belt, closer to manufacturing clients.',
-  },
-  {
-    icon: Package,
-    title: 'Full Catalogue Build-out',
-    description:
-      'Portfolio grew from core pipes and flanges to 417+ products across 6 categories: bars, pipes, plates, fittings, flanges, and forgings.',
+      "Nagraj Metal Industries was established to cater to growing demands of industrial raw materials with a team of young visionaries.",
   },
   {
     icon: ShieldCheck,
-    title: 'MTC-Backed Sourcing',
+    title: "ISO 9001:2015 Certified",
     description:
-      'Formalised a mill-to-client traceability process with Material Test Certificates for every batch — no compromises on documentation.',
+      "Proudly ISO CERTIFIED COMPANY registered with semi-govt., govt., private & multinational companies.",
+  },
+  {
+    icon: Package,
+    title: "Manufacturers, Suppliers & Exporters",
+    description:
+      "Became one of the most reliable sources for quality with huge stocks and comprehensive product range.",
   },
   {
     icon: Users,
-    title: 'Trusted by Industry',
+    title: "Trusted by Industry Leaders",
     description:
-      'Serving industrial buyers across Maharashtra and pan-India, from fabricators and EPC contractors to process industry OEMs.',
+      "Serving industrial buyers across India, from fabricators and EPC contractors to process industry OEMs.",
   },
 ];
 
 const offices = [
   {
-    id: 'mumbai',
-    type: 'Registered Office',
-    city: 'Mumbai',
+    id: "mumbai",
+    type: "Registered Office",
+    city: "Mumbai",
     address: [
-      'Jalaram Niwas,',
-      'Plot No. 2, 1st Floor, Office No. 1,',
-      '1st Kumbharwada,',
-      'Mumbai – 400 004.',
+      "Jalaram Niwas,",
+      "Plot No. 2, 1st Floor, Office No. 1,",
+      "1st Kumbharwada,",
+      "Mumbai – 400 004.",
     ],
-    note: 'Subject to Mumbai Jurisdiction',
-    accent: 'from-brand-green to-brand-green-dark',
-    border: 'border-brand-green',
-    badge: 'bg-brand-green',
-  },
-  {
-    id: 'pune',
-    type: 'Branch Office',
-    city: 'Pune',
-    address: [
-      'Shop No. 3, Sai Nagar Complex,',
-      'Plot No. J-66, Opp. J-35,',
-      'Block MIDC, Bhosari,',
-      'Pune, Maharashtra.',
-    ],
-    note: 'MIDC Bhosari Industrial Belt',
-    accent: 'from-brand-gold to-brand-gold-light',
-    border: 'border-brand-gold',
-    badge: 'bg-brand-gold',
+    note: "Subject to Mumbai Jurisdiction",
+    accent: "from-brand-red to-brand-red-dark",
+    border: "border-brand-red",
+    badge: "bg-brand-red",
   },
 ];
 
 const values = [
   {
     icon: Scale,
-    title: 'Compliance-First',
+    title: "Compliance-First",
     description:
-      'All transactions are documented, GST-compliant, and subject to Mumbai jurisdiction. We operate with full transparency.',
+      "All transactions are documented, GST-compliant, and subject to Mumbai jurisdiction. We operate with full transparency.",
   },
   {
     icon: ShieldCheck,
-    title: 'Quality Traceability',
+    title: "Quality Traceability",
     description:
-      'Every product comes with verified MTCs. We source from reputed mills and pass full documentation to every buyer.',
+      "Every product comes with verified MTCs and testing from govt. approved laboratories. Ready for third-party inspection.",
   },
   {
     icon: Layers,
-    title: 'Breadth of Range',
+    title: "Breadth of Range",
     description:
-      'From seamless pipes to nickel alloy forgings — our catalogue covers the full spectrum of industrial steel needs.',
+      "From stainless steel to nickel alloys — our catalogue covers the full spectrum of industrial steel needs.",
   },
   {
     icon: Users,
-    title: 'Buyer-Centric',
+    title: "Buyer-Centric",
     description:
-      'We don\'t just sell material. We assist with grade selection, equivalent standards, and project procurement strategy.',
+      "We assist with grade selection, equivalent standards, and project procurement strategy for every client.",
   },
 ];
 
@@ -119,33 +103,43 @@ const values = [
 export function AboutPage() {
   return (
     <>
-      <title>About Bhumi Steel & Alloys | Mumbai & Pune Steel Traders</title>
+      <title>About Nagraj Metal Industries | Mumbai & Pune Steel Traders</title>
       <meta
         name="description"
-        content="Learn about Bhumi Steel & Alloys — a registered B2B steel trading company with offices in Mumbai and Pune, supplying 417+ products across India."
+        content="Learn about Nagraj Metal Industries — a registered B2B steel trading company with offices in Mumbai and Pune, supplying quality steel products across India."
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-            <PageHero
+      <PageHero
         id="about-hero"
         label="Who We Are"
-        title={<>An Established Name&nbsp;in<br/><span className="text-brand-gold">Steel Trading</span></>}
-        description="Bhumi Steel & Alloys is a registered B2B steel trading and supply company headquartered in Mumbai with a branch in Pune's MIDC Bhosari industrial corridor. We supply structural and process steel to industrial buyers across India."
+        title={
+          <>
+            Dynamic Group with
+            <br />
+            <span className="text-brand-red">Young Visionaries</span>
+          </>
+        }
+        description="Nagraj Metal Industries is a dynamic group established over a decade ago to cater to growing demands of industrial raw materials. We are ISO 9001:2015 Certified and registered with semi-govt., govt., private & multinational companies."
         bgImage="/images/warehouse.jpg"
       >
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
           {stats.map(({ value, label, icon: Icon }) => (
             <div
               key={label}
-              className="bg-white/15 backdrop-blur-md rounded-sm border border-white/20 px-5 py-4 group hover:bg-brand-gold/25 hover:border-brand-gold/50 transition-all duration-300"
+              className="bg-white/15 backdrop-blur-md rounded-sm border border-white/20 px-5 py-4 group hover:bg-white/25 hover:border-white/50 transition-all duration-300"
             >
               <Icon
                 size={18}
-                className="text-brand-gold mb-2 group-hover:scale-110 transition-transform duration-300"
+                className="text-white mb-2 group-hover:scale-110 transition-transform duration-300"
                 strokeWidth={1.75}
               />
-              <div className="font-display font-extrabold text-2xl text-white">{value}</div>
-              <div className="font-body text-white/80 text-xs mt-0.5 font-medium">{label}</div>
+              <div className="font-display font-extrabold text-2xl text-white">
+                {value}
+              </div>
+              <div className="font-body text-white/80 text-xs mt-0.5 font-medium">
+                {label}
+              </div>
             </div>
           ))}
         </div>
@@ -153,9 +147,8 @@ export function AboutPage() {
 
       {/* ── Our Story ────────────────────────────────────────────────────── */}
       <section id="about-story" className="section-padding bg-white">
-        <div className="container-xl">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-
             {/* Left: Image */}
             <div className="relative w-full h-[460px] rounded-sm overflow-hidden shadow-2xl">
               <div className="absolute inset-0 bg-gray-100" />
@@ -163,18 +156,18 @@ export function AboutPage() {
                 src="/images/warehouse.jpg"
                 onError={(e) => {
                   e.currentTarget.src =
-                    'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1000';
+                    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1000";
                 }}
-                alt="Bhumi Steel warehouse facility"
+                alt="Nagraj Metal Industries warehouse facility"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/50 to-transparent pointer-events-none" />
+              {/* Gradient overlay removed */}
 
               {/* Floating badge */}
               <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-sm flex items-center gap-4">
-                <div className="h-12 w-1 bg-brand-gold rounded-full flex-shrink-0" />
+                <div className="h-12 w-1 bg-brand-red rounded-full flex-shrink-0" />
                 <div>
-                  <p className="font-display font-bold text-brand-green text-sm">
+                  <p className="font-display font-bold text-brand-red text-sm">
                     Registered Office
                   </p>
                   <p className="font-body text-gray-500 text-sm">
@@ -186,31 +179,49 @@ export function AboutPage() {
 
             {/* Right: Text */}
             <div>
-              <p className="section-label">Our Story</p>
-              <h2 className="section-title">
-                Built for Industrial Steel Buyers
+              <p className="section-label text-brand-red">About Us</p>
+              <h2 className="section-title text-brand-charcoal">
+                Dynamic Group with{" "}
+                <span className="text-brand-red">Young Visionaries</span>
               </h2>
-              <div className="section-divider" />
+              <div className="section-divider bg-brand-red" />
 
-              <p className="font-body text-gray-600 text-base leading-relaxed mb-5">
-                Bhumi Steel &amp; Alloys was founded with a single purpose: to serve industrial
-                buyers who need accurate product specifications, honest pricing, and reliable
-                dispatch — without the friction of dealing with unverified suppliers.
+              <p className="font-body text-gray-600 text-base leading-relaxed mb-4">
+                Nagraj Metal Industries is a dynamic group, established over a
+                decade ago to cater to growing demands of industrial raw
+                materials. We have a team of{" "}
+                <strong className="text-brand-charcoal">
+                  young visionaries
+                </strong>{" "}
+                who endeavor for excellence in every aspect related to our
+                products.
               </p>
-              <p className="font-body text-gray-600 text-base leading-relaxed mb-5">
-                Operating out of <strong className="text-brand-charcoal">Mumbai</strong> and
-                the MIDC Bhosari industrial belt in{' '}
-                <strong className="text-brand-charcoal">Pune</strong>, we've built a
-                catalogue of 417+ products spanning stainless steel, alloy steel, carbon
-                steel, titanium, nickel alloys, and more.
+              <p className="font-body text-gray-600 text-base leading-relaxed mb-4">
+                As{" "}
+                <strong className="text-brand-charcoal">
+                  Manufacturers, Suppliers & Exporters
+                </strong>{" "}
+                with huge stocks, Nagraj Metal Industries has become one of the
+                most reliable sources for quality within a short span. We are an
+                <span className="text-brand-red font-semibold">
+                  {" "}
+                  ISO 9001:2015 CERTIFIED COMPANY
+                </span>{" "}
+                and are registered with the best of semi-govt., govt., private &
+                multinational companies.
               </p>
-              <p className="font-body text-gray-600 text-base leading-relaxed mb-8">
-                Every transaction is GST-compliant, documented, and subject to Mumbai
-                jurisdiction. We work exclusively in the B2B segment — serving fabricators,
-                EPC contractors, OEMs, and project procurement teams.
+              <p className="font-body text-gray-600 text-base leading-relaxed mb-6">
+                Our aim is to provide our buyers with everything in stainless
+                steel under one roof. We have tied up with one of the best
+                manufacturers of steel to supply high-quality & tested
+                material/products to our customers at competitive rates.
               </p>
 
-              <Link to="/contact" id="about-story-cta" className="btn-outline-green">
+              <Link
+                to="/contact"
+                id="about-story-cta"
+                className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+              >
                 Enquire Now
                 <ArrowRight size={16} />
               </Link>
@@ -221,21 +232,23 @@ export function AboutPage() {
 
       {/* ── Our Journey / Milestones ─────────────────────────────────────── */}
       <section id="about-journey" className="section-padding bg-gray-50">
-        <div className="container-xl">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
-            <p className="section-label">Our Journey</p>
-            <h2 className="section-title mx-auto">How We've Grown</h2>
-            <div className="section-divider mx-auto" />
+            <p className="section-label text-brand-red">Our Journey</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              How We've <span className="text-brand-red">Grown</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
             <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              From a focused Mumbai trading desk to a multi-office, 417-product operation serving
-              buyers across India.
+              From a focused Mumbai trading desk to an ISO-certified,
+              multi-product operation serving buyers across India.
             </p>
           </div>
 
           {/* Vertical timeline */}
           <div className="relative max-w-3xl mx-auto">
             {/* Vertical line */}
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-green via-brand-gold to-transparent hidden sm:block" />
+            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-red via-brand-red/50 to-transparent hidden sm:block" />
 
             <div className="space-y-8">
               {milestones.map(({ icon: Icon, title, description }, i) => (
@@ -245,22 +258,26 @@ export function AboutPage() {
                   className="relative flex items-start gap-6 sm:gap-10 group"
                 >
                   {/* Circle node */}
-                  <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-brand-green group-hover:border-brand-gold group-hover:bg-brand-gold/5 shadow-card transition-all duration-300 items-center justify-center z-10">
+                  <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-brand-red group-hover:border-brand-red-dark group-hover:bg-brand-red/5 shadow-card transition-all duration-300 items-center justify-center z-10">
                     <Icon
                       size={22}
-                      className="text-brand-green group-hover:text-brand-gold transition-colors duration-300"
+                      className="text-brand-red group-hover:text-brand-red-dark transition-colors duration-300"
                       strokeWidth={1.75}
                     />
                   </div>
 
                   {/* Mobile icon */}
-                  <div className="sm:hidden flex-shrink-0 w-10 h-10 rounded-full bg-brand-green/10 border border-brand-green flex items-center justify-center">
-                    <Icon size={18} className="text-brand-green" strokeWidth={1.75} />
+                  <div className="sm:hidden flex-shrink-0 w-10 h-10 rounded-full bg-brand-red/10 border border-brand-red flex items-center justify-center">
+                    <Icon
+                      size={18}
+                      className="text-brand-red"
+                      strokeWidth={1.75}
+                    />
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 bg-white rounded-sm border border-gray-100 shadow-card group-hover:shadow-card-hover group-hover:-translate-y-0.5 group-hover:border-brand-gold/30 transition-all duration-300 p-6">
-                    <h3 className="font-display font-bold text-brand-green text-lg mb-2">
+                  <div className="flex-1 bg-white rounded-sm border border-gray-100 shadow-card group-hover:shadow-card-hover group-hover:-translate-y-0.5 group-hover:border-brand-red/30 transition-all duration-300 p-6">
+                    <h3 className="font-display font-bold text-brand-red text-lg mb-2">
                       {title}
                     </h3>
                     <p className="font-body text-gray-500 text-sm leading-relaxed">
@@ -274,29 +291,90 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ── Values ───────────────────────────────────────────────────────── */}
-      <section id="about-values" className="section-padding bg-white">
-        <div className="container-xl">
+      {/* ── Vision & Mission ─────────────────────────────────────────────── */}
+      <section id="about-vision-mission" className="section-padding bg-white">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
-            <p className="section-label">Our Values</p>
-            <h2 className="section-title mx-auto">What Drives Us</h2>
-            <div className="section-divider mx-auto" />
+            <p className="section-label text-brand-red">Our Direction</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              Vision & <span className="text-brand-red">Mission</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Vision */}
+            <div className="bg-gray-50 rounded-sm border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 rounded-sm bg-brand-red/10 flex items-center justify-center mb-5">
+                <Eye size={28} className="text-brand-red" strokeWidth={1.75} />
+              </div>
+              <h3 className="font-display font-bold text-xl text-brand-charcoal mb-3">
+                Our Vision
+              </h3>
+              <p className="font-body text-gray-600 text-sm leading-relaxed">
+                To become an enterprising organization in the field of Ferrous &
+                Non-ferrous products. To be known more for our quality of
+                products and excellent service. Maintaining an uncompromising
+                attitude towards quality of our products and service back-up.
+              </p>
+            </div>
+
+            {/* Mission */}
+            <div className="bg-gray-50 rounded-sm border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 rounded-sm bg-brand-red/10 flex items-center justify-center mb-5">
+                <Target
+                  size={28}
+                  className="text-brand-red"
+                  strokeWidth={1.75}
+                />
+              </div>
+              <h3 className="font-display font-bold text-xl text-brand-charcoal mb-3">
+                Our Mission
+              </h3>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3 text-sm text-gray-600">
+                  <span className="text-brand-red font-bold">•</span>
+                  <span>To provide quality products at reasonable price</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-gray-600">
+                  <span className="text-brand-red font-bold">•</span>
+                  <span>As per schedule and maintain good relationship</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-gray-600">
+                  <span className="text-brand-red font-bold">•</span>
+                  <span>With the best people in steel business</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Values ───────────────────────────────────────────────────────── */}
+      <section id="about-values" className="section-padding bg-gray-50">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
+          <div className="text-center mb-14">
+            <p className="section-label text-brand-red">Our Values</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              What <span className="text-brand-red">Drives Us</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
-                className="card-base p-7 group text-center"
+                className="card-base p-7 group text-center bg-white"
               >
-                <div className="mx-auto mb-5 w-14 h-14 rounded-sm bg-brand-green/8 flex items-center justify-center group-hover:bg-brand-green transition-colors duration-300">
+                <div className="mx-auto mb-5 w-14 h-14 rounded-sm bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
                   <Icon
                     size={24}
-                    className="text-brand-green group-hover:text-white transition-colors duration-300"
+                    className="text-brand-red group-hover:text-white transition-colors duration-300"
                     strokeWidth={1.75}
                   />
                 </div>
-                <h3 className="font-display font-bold text-brand-green text-base mb-3">
+                <h3 className="font-display font-bold text-brand-red text-base mb-3">
                   {title}
                 </h3>
                 <p className="font-body text-gray-500 text-sm leading-relaxed">
@@ -308,20 +386,92 @@ export function AboutPage() {
         </div>
       </section>
 
+      {/* ── Capabilities ──────────────────────────────────────────────────── */}
+      <section id="about-capabilities" className="section-padding bg-white">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
+          <div className="text-center mb-14">
+            <p className="section-label text-brand-red">Our Capabilities</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              What We <span className="text-brand-red">Offer</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <Truck size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                Export Documentation
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                CT3/ARE4/H forms for exports arranged
+              </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <Scale size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                GST Invoices
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                Modvat/GST invoices for excise benefits
+              </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <FlaskConical size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                Laboratory Testing
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                Chemical, physical, mechanical, ultrasonic, micro, IGC tests
+              </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <ShieldCheck size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                Third-Party Inspection
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                Ready for any third-party inspection
+              </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <Package size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                Import Assistance
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                Help import material/products adhering to your preference
+              </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+              <Users size={24} className="text-brand-red mb-3" />
+              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
+                Govt. Approved Labs
+              </h4>
+              <p className="font-body text-gray-500 text-xs">
+                Testing from govt. approved Laboratories
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Offices ──────────────────────────────────────────────────────── */}
       <section id="about-offices" className="section-padding bg-gray-50">
-        <div className="container-xl">
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
-            <p className="section-label">Where We Are</p>
-            <h2 className="section-title mx-auto">Our Offices</h2>
-            <div className="section-divider mx-auto" />
+            <p className="section-label text-brand-red">Where We Are</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              Our <span className="text-brand-red">Offices</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
             <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              Two offices — one in Mumbai's commercial heart, one in Pune's industrial
-              corridor — to serve you wherever your projects are.
+              Based in Mumbai, serving industrial clients across India with
+              quality steel products and reliable service.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             {offices.map(({ id, type, city, address, note, border, badge }) => (
               <div
                 key={id}
@@ -337,8 +487,12 @@ export function AboutPage() {
                 </div>
 
                 <div className="flex items-center gap-2 mb-4">
-                  <Building2 size={18} className="text-brand-green" strokeWidth={1.75} />
-                  <h3 className="font-display font-extrabold text-2xl text-brand-green">
+                  <Building2
+                    size={18}
+                    className="text-brand-red"
+                    strokeWidth={1.75}
+                  />
+                  <h3 className="font-display font-extrabold text-2xl text-brand-red">
                     {city}
                   </h3>
                 </div>
@@ -346,7 +500,7 @@ export function AboutPage() {
                 <div className="flex gap-3 mb-6">
                   <MapPin
                     size={16}
-                    className="text-brand-gold flex-shrink-0 mt-0.5"
+                    className="text-brand-red flex-shrink-0 mt-0.5"
                     strokeWidth={2}
                   />
                   <address className="not-italic font-body text-gray-600 text-sm leading-relaxed">
@@ -360,7 +514,9 @@ export function AboutPage() {
                 </div>
 
                 <div className="pt-5 border-t border-gray-100">
-                  <p className="font-body text-xs text-gray-600 italic">{note}</p>
+                  <p className="font-body text-xs text-gray-600 italic">
+                    {note}
+                  </p>
                 </div>
               </div>
             ))}
@@ -371,31 +527,39 @@ export function AboutPage() {
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="about-cta"
-        className="bg-brand-green py-20 px-4 sm:px-8 lg:px-16 xl:px-24 relative overflow-hidden"
+        className="bg-brand-red py-20 px-4 sm:px-8 lg:px-16 xl:px-24 relative overflow-hidden"
       >
-        <div className="absolute inset-0 steel-texture opacity-30" />
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gold-gradient" />
+        <div className="absolute inset-0 steel-texture opacity-20" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-brand-red-dark" />
 
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col sm:flex-row items-center justify-between gap-8">
           <div>
-            <p className="text-brand-gold font-display font-bold text-sm uppercase tracking-[0.2em] mb-2">
+            <p className="text-white/80 font-display font-bold text-sm uppercase tracking-[0.2em] mb-2">
               Ready to Work Together?
             </p>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight">
               Let's discuss your requirement.
             </h2>
-            <p className="font-body text-gray-300 text-base mt-3 max-w-md">
-              Share your grade, size, and quantity — we'll respond with pricing and
-              availability within one business day.
+            <p className="font-body text-white/70 text-base mt-3 max-w-md">
+              Share your grade, size, and quantity — we'll respond with pricing
+              and availability within one business day.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-            <Link to="/contact" id="about-cta-contact" className="btn-primary">
+            <Link
+              to="/contact"
+              id="about-cta-contact"
+              className="bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+            >
               Request a Quote
               <ArrowRight size={16} />
             </Link>
-            <Link to="/products" id="about-cta-products" className="btn-outline">
+            <Link
+              to="/products"
+              id="about-cta-products"
+              className="bg-white/10 backdrop-blur-sm border-2 border-white/50 hover:border-white hover:bg-white/20 text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
+            >
               Browse Products
             </Link>
           </div>
