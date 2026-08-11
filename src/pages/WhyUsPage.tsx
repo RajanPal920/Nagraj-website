@@ -84,7 +84,7 @@ const pillars = [
     points: [
       "Ready stock for fast-moving grades",
       "Dispatch coordination pan-India",
-      "Prompt response from Mumbai & Pune offices",
+      "Prompt response from Mumbai office",
     ],
   },
   {
@@ -104,10 +104,10 @@ const pillars = [
     id: "reach",
     icon: Globe2,
     title: "Pan-India Reach",
-    headline: "Mumbai · Pune · Everywhere",
-    description: `Our dual-office setup in Mumbai and Pune's MIDC Bhosari belt lets us serve fabricators, OEMs, and EPC contractors across western India and beyond.`,
+    headline: "Mumbai · Everywhere",
+    description: `Our office in Mumbai lets us serve fabricators, OEMs, and EPC contractors across western India and beyond.`,
     points: [
-      "Offices in Mumbai & MIDC Bhosari, Pune",
+      "Office in Mumbai",
       "Serving clients across Maharashtra & India",
       "B2B focus — built for industrial buyers",
     ],

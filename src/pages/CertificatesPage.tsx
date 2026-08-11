@@ -9,14 +9,23 @@ const certificates = [
     title: "Udyam Registration",
     description: "MSME Registration Certificate",
     icon: Award,
-    image: "/images/certificates/udyam.png",
-    file: "/certificates/udyam.pdf",
+    image: "/images/certificates/udyam.jpg",
     registrationNumber: "UDYAM-MH-XX-00-0000000",
   },
 ];
 
 export function CertificatesPage() {
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
+
+  // Function to download certificate image
+  const downloadCertificate = (imageUrl: string, fileName: string) => {
+    const link = document.createElement("a");
+    link.href = imageUrl;
+    link.download = `${fileName}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <>
@@ -102,14 +111,15 @@ export function CertificatesPage() {
                       <Eye size={18} />
                       View Certificate
                     </button>
-                    <a
-                      href={cert.file}
-                      download
+                    <button
+                      onClick={() =>
+                        downloadCertificate(cert.image, "Udyam-Certificate")
+                      }
                       className="flex-1 flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-3 rounded-sm transition-all duration-200 text-sm sm:text-base"
                     >
                       <Download size={18} />
                       Download
-                    </a>
+                    </button>
                   </div>
                 </div>
               );
@@ -149,14 +159,20 @@ export function CertificatesPage() {
                   />
                 </div>
                 <div className="mt-4 flex justify-end">
-                  <a
-                    href={certificates.find((c) => c.id === selectedCert)?.file}
-                    download
+                  <button
+                    onClick={() => {
+                      const cert = certificates.find(
+                        (c) => c.id === selectedCert,
+                      );
+                      if (cert) {
+                        downloadCertificate(cert.image, "Udyam-Certificate");
+                      }
+                    }}
                     className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-sm transition-all duration-200 flex items-center gap-2 text-sm sm:text-base"
                   >
                     <Download size={16} />
                     Download Certificate
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
