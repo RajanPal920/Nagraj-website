@@ -45,7 +45,7 @@ export function Header() {
           className="flex items-center gap-3 flex-shrink-0"
           aria-label="Nagraj Metal Industries Home"
         >
-          <div className=" p-1.5 rounded-sm shadow-md bg-white">
+          <div className=" p-1.5 rounded-lg shadow-md bg-white">
             <img
               src="/images/logo.png"
               alt="Nagraj Metal Industries Logo"
@@ -165,7 +165,7 @@ export function Header() {
         <a
           href="tel:+917073875529"
           id="header-phone-cta"
-          className="hidden lg:flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-2.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="hidden lg:flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-2.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
           aria-label="Call Nagraj Metal Industries"
         >
           <Phone size={14} strokeWidth={2.5} />

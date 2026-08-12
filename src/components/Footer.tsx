@@ -21,11 +21,11 @@ export function Footer() {
             {/* Brand column */}
             <div>
               <div className="flex items-center gap-3 mb-5">
-                <div className="bg-white p-2 rounded-sm">
+                <div className="bg-white p-2 rounded-lg">
                   <img
                     src="/images/logo.png"
                     alt="Nagraj Metal Industries Logo"
-                    className="h-10 sm:h-12 lg:h-14 object-contain"
+                    className="h-10 sm:h-12  lg:h-14 object-contain"
                   />
                 </div>
               </div>
