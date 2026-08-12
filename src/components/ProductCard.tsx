@@ -45,7 +45,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           {product.highlights.map((h) => (
             <li
               key={h}
-              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2.5 py-1 rounded-sm border border-brand-red/15"
+              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2.5 py-1 rounded-lg border border-brand-red/15"
             >
               {h}
             </li>

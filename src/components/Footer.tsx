@@ -72,7 +72,8 @@ export function Footer() {
                   />
                   <div className="font-body text-white/70 text-sm">
                     <span className="text-white font-semibold">Mr. Rajesh Padhiyar </span>
-                    <span className="text-xs"> (CEO)</span>
+                    <span className="text-xs"> 
+                      (CEO)</span>
                   </div>
                 </div>
 

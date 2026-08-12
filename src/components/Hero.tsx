@@ -12,7 +12,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] h-[100svh] sm:min-h-screen sm:h-screen flex items-center justify-center overflow-hidden bg-brand-red-dark"
+      className="relative min-h-[100svh] h-[100svh] sm:min-h-screen sm:h-screen flex items-end justify-center overflow-hidden bg-brand-red-dark"
       aria-label="Nagraj Metal Industries Hero"
     >
       {/* Full Bleed Background Image - Full width on all devices */}
@@ -21,30 +21,25 @@ export function Hero() {
         style={{ backgroundImage: 'url("/images/hero-banner.jpg")' }}
       />
 
-      {/* Half Overlay from Bottom - No Border */}
       {/* Diagonal Half Overlay - No Border */}
-      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-brand-red/40 via-brand-red/20 to-transparent z-5"></div>{" "}
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-brand-red/40 via-brand-red/20 to-transparent z-5"></div>
+
       {/* Steel texture overlay */}
       <div className="absolute inset-0 z-0 steel-texture opacity-40 mix-blend-overlay" />
+
       {/* Red bottom border line */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
-      {/* Content Container */}
-      <div className="relative z-10 container-xl px-4 sm:px-8 lg:px-16 xl:px-24 py-12 sm:py-16 w-full mt-[100px] sm:mt-[150px] md:mt-[180px] lg:mt-[200px]">
+
+      {/* Content Container - Positioned at bottom */}
+      <div className="relative z-10 container-xl px-4 sm:px-8 lg:px-16 xl:px-24 pb-4 sm:pb-6 w-full">
         <div className="max-w-3xl mx-auto sm:mx-0 text-center sm:text-left">
           {/* ISO Certification Badge */}
-          <div className="inline-flex items-center gap-2 bg-brand-red/20 backdrop-blur-sm border border-brand-red/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full animate-fade-in-up stagger-1">
+          <div className="inline-flex mb-3 items-center gap-2 bg-brand-red/20 backdrop-blur-sm border border-brand-red/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full animate-fade-in-up stagger-1">
             <Award size={10} className="text-brand-red" />
             <span className="text-white font-display font-bold text-[8px] sm:text-xs uppercase tracking-wider">
               ISO Certified Company
             </span>
           </div>
-
-          {/* Headline */}
-          <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.05] uppercase mb-2 sm:mb-3 animate-fade-in-up stagger-2 drop-shadow-lg">
-            Nagraj Metal
-            <br />
-            <span className="text-brand-red">Industries</span>
-          </h1>
 
           {/* Tagline */}
           <p className="text-brand-red font-display font-semibold text-[10px] sm:text-sm md:text-base uppercase tracking-[0.15em] mb-2 sm:mb-3 animate-fade-in-up stagger-2">
@@ -55,7 +50,7 @@ export function Hero() {
           <p className="font-body text-white text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed mb-4 sm:mb-5 animate-fade-in-up stagger-3 drop-shadow-md max-w-full sm:max-w-xl mx-auto sm:mx-0">
             Established over a decade ago to cater to growing demands of
             industrial raw materials. As{" "}
-            <span className="text-brand-red font-semibold">
+            <span className="text-red-600 font-bold">
               Manufacturers, Suppliers & Exporters
             </span>{" "}
             with huge stocks, we have become one of the most reliable sources
@@ -83,11 +78,11 @@ export function Hero() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up stagger-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up stagger-4 ">
             <Link
               to="/contact"
               id="hero-get-quote-cta"
-              className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm sm:text-base"
+              className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm sm:text-base"
             >
               Get a Quote
               <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -95,7 +90,7 @@ export function Hero() {
             <Link
               to="/products"
               id="hero-view-products-cta"
-              className="bg-white/10 backdrop-blur-sm border-2 border-white/50 hover:border-white hover:bg-white/30 text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-sm sm:text-base"
+              className="bg-white/10 backdrop-blur-sm border-2 border-white/50 hover:border-white hover:bg-white/50 text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-sm sm:text-base"
             >
               View Products
             </Link>
@@ -124,10 +119,11 @@ export function Hero() {
           </div>
         </div>
       </div>
+
       {/* Scroll indicator */}
       <a
         href="#about"
-        className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
+        className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
         aria-label="Scroll to About section"
       >
         <ChevronDown

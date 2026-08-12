@@ -362,7 +362,7 @@ export function ProductPage() {
               {hasChem && (
                 <section id="product-chemical-composition">
                   <SectionHeading icon={Beaker} label="Chemical Composition" />
-                  <div className="overflow-x-auto rounded-sm border border-gray-100 shadow-card">
+                  <div className="overflow-x-auto rounded-lg border border-gray-100 shadow-card">
                     <table className="w-full text-sm font-body">
                       <thead className="bg-brand-red text-white">
                         <tr>
@@ -410,7 +410,7 @@ export function ProductPage() {
               {hasMech && (
                 <section id="product-mechanical-properties">
                   <SectionHeading icon={Gauge} label="Mechanical Properties" />
-                  <div className="overflow-x-auto rounded-sm border border-gray-100 shadow-card">
+                  <div className="overflow-x-auto rounded-lg border border-gray-100 shadow-card">
                     <table className="w-full text-sm font-body">
                       <thead className="bg-brand-red text-white">
                         <tr>
@@ -489,7 +489,7 @@ export function ProductPage() {
             <aside className="lg:col-span-1">
               <div className="sticky top-24 space-y-4">
                 {/* Enquiry card */}
-                <div className="bg-brand-red rounded-sm p-7 shadow-card-hover">
+                <div className="bg-brand-red rounded-lg p-7 shadow-card-hover">
                   <p className="text-white/80 font-display font-bold text-xs uppercase tracking-[0.2em] mb-2">
                     Interested in this product?
                   </p>
@@ -503,7 +503,7 @@ export function ProductPage() {
                   <Link
                     to="/contact"
                     id={`product-${product.slug}-enquire`}
-                    className="bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm w-full"
+                    className="bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm w-full"
                   >
                     Enquire Now
                     <ArrowRight size={15} />
@@ -511,7 +511,7 @@ export function ProductPage() {
                 </div>
 
                 {/* Call card */}
-                <div className="bg-gray-50 rounded-sm border border-gray-100 p-5 shadow-card">
+                <div className="bg-gray-50 rounded-lg border border-gray-100 p-5 shadow-card">
                   <p className="font-body text-gray-600 text-xs mb-3">
                     Prefer to call?
                   </p>
@@ -520,7 +520,7 @@ export function ProductPage() {
                     id={`product-${product.slug}-call`}
                     className="flex items-center gap-3 group"
                   >
-                    <div className="w-9 h-9 rounded-sm bg-brand-red/15 border border-brand-red/30 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
+                    <div className="w-9 h-9 rounded-lg bg-brand-red/15 border border-brand-red/30 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
                       <Phone
                         size={15}
                         className="text-brand-red group-hover:text-white transition-colors"
@@ -539,7 +539,7 @@ export function ProductPage() {
                 </div>
 
                 {/* Product type badge */}
-                <div className="bg-white rounded-sm border border-gray-100 p-5 shadow-card space-y-3">
+                <div className="bg-white rounded-lg border border-gray-100 p-5 shadow-card space-y-3">
                   <div>
                     <p className="font-body text-gray-600 text-xs mb-1">
                       Product Type
@@ -573,7 +573,7 @@ export function ProductPage() {
                         {product.material_grades.slice(0, 5).map((g, i) => (
                           <span
                             key={i}
-                            className="text-xs font-body bg-brand-red/8 text-brand-red border border-brand-red/20 px-2 py-0.5 rounded-sm"
+                            className="text-xs font-body bg-brand-red/8 text-brand-red border border-brand-red/20 px-2 py-0.5 rounded-lg"
                           >
                             {g}
                           </span>

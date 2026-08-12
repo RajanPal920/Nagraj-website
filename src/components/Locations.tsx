@@ -65,7 +65,7 @@ export function Locations() {
         {/* Single Container with Office Details and Contact Information */}
         <div
           ref={gridRef}
-          className={`max-w-4xl mx-auto bg-white rounded-sm shadow-card p-6 sm:p-8 border border-gray-100 ${gridVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`max-w-4xl mx-auto bg-white rounded-lg shadow-card p-6 sm:p-8 border border-gray-100 ${gridVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
           {/* ISO Badge */}
           <div className="text-center mb-4 sm:mb-6">
@@ -89,11 +89,11 @@ export function Locations() {
               <div
                 key={id}
                 id={`office-${id}`}
-                className={`rounded-sm border-t-4 border-brand-red bg-gray-50 p-4 sm:p-5 hover:shadow-card-hover transition-all duration-300 ${gridVisible ? `animate-fade-in-up stagger-${(index % 2) + 1}` : "opacity-0"}`}
+                className={`rounded-lg border-t-4 border-brand-red bg-gray-50 p-4 sm:p-5 hover:shadow-card-hover transition-all duration-300 ${gridVisible ? `animate-fade-in-up stagger-${(index % 2) + 1}` : "opacity-0"}`}
               >
                 {/* Badge */}
                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <div className="bg-brand-red text-white text-[10px] font-display font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
+                  <div className="bg-brand-red text-white text-[10px] font-display font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider">
                     {type}
                   </div>
                   <div className="flex items-center gap-1 text-[10px] text-gray-400">
@@ -145,7 +145,7 @@ export function Locations() {
           {/* Contact Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 sm:pt-6 border-t border-gray-200">
             {/* Contact Person */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-sm hover:bg-brand-red/5 transition-colors">
+            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                 <User
                   size={16}
@@ -166,7 +166,7 @@ export function Locations() {
             </div>
 
             {/* Phone */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-sm hover:bg-brand-red/5 transition-colors">
+            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                 <Phone
                   size={16}
@@ -193,7 +193,7 @@ export function Locations() {
             </div>
 
             {/* Email */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-sm hover:bg-brand-red/5 transition-colors">
+            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                 <Mail
                   size={16}
@@ -214,7 +214,7 @@ export function Locations() {
             </div>
 
             {/* Location */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-sm hover:bg-brand-red/5 transition-colors">
+            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                 <MapPin
                   size={16}

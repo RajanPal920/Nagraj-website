@@ -189,7 +189,7 @@ export function WhyUsPage() {
                   }`}
                 >
                   {/* Icon */}
-                  <div className="mb-5 w-14 h-14 rounded-sm bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300 flex-shrink-0">
+                  <div className="mb-5 w-14 h-14 rounded-lg bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300 flex-shrink-0">
                     <Icon
                       size={24}
                       className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -246,7 +246,7 @@ export function WhyUsPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white border border-gray-200 rounded-sm p-6 text-center hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
               <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
                 <Package size={28} className="text-brand-red" />
               </div>
@@ -257,7 +257,7 @@ export function WhyUsPage() {
                 Stringent quality control measures
               </p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-sm p-6 text-center hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
               <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
                 <Ruler size={28} className="text-brand-red" />
               </div>
@@ -268,7 +268,7 @@ export function WhyUsPage() {
                 Accurate dimensions & mechanical properties
               </p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-sm p-6 text-center hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
               <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
                 <FileCheck2 size={28} className="text-brand-red" />
               </div>
@@ -279,7 +279,7 @@ export function WhyUsPage() {
                 Certification and supplementary tests
               </p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-sm p-6 text-center hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
               <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
                 <FlaskConical size={28} className="text-brand-red" />
               </div>
@@ -293,7 +293,7 @@ export function WhyUsPage() {
           </div>
 
           {/* Quality Statement */}
-          <div className="mt-10 bg-brand-red/5 border border-brand-red/20 rounded-sm p-8 max-w-3xl mx-auto text-center">
+          <div className="mt-10 bg-brand-red/5 border border-brand-red/20 rounded-lg p-8 max-w-3xl mx-auto text-center">
             <p className="font-body text-brand-charcoal text-sm leading-relaxed italic">
               "The impeccable quality standards of our product range as well as
               services have contributed immensely to the success of our
@@ -340,7 +340,7 @@ export function WhyUsPage() {
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section id="why-us-cta" className="section-padding bg-white">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
-          <div className="bg-gray-50 rounded-sm border border-gray-100 shadow-card p-10 sm:p-16 text-center max-w-3xl mx-auto">
+          <div className="bg-gray-50 rounded-lg border border-gray-100 shadow-card p-10 sm:p-16 text-center max-w-3xl mx-auto">
             <p className="section-label text-brand-red flex justify-center">
               Start Today
             </p>
@@ -357,7 +357,7 @@ export function WhyUsPage() {
               <Link
                 to="/contact"
                 id="why-us-cta-enquire"
-                className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+                className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
               >
                 Send an Enquiry
                 <ArrowRight size={16} />
@@ -365,7 +365,7 @@ export function WhyUsPage() {
               <Link
                 to="/products"
                 id="why-us-cta-catalogue"
-                className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
+                className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
               >
                 View Full Catalogue
               </Link>

@@ -93,7 +93,7 @@ export function ProductDetailDrawer({
           {/* Badges over image */}
           <div className="absolute top-4 left-4 flex gap-2">
             <span
-              className={`text-xs font-display font-bold px-2.5 py-1 rounded-sm
+              className={`text-xs font-display font-bold px-2.5 py-1 rounded-lg
               ${
                 isSpecialized
                   ? "bg-brand-red text-white"
@@ -102,7 +102,7 @@ export function ProductDetailDrawer({
             >
               {categoryLabel}
             </span>
-            <span className="text-xs font-display font-bold px-2.5 py-1 rounded-sm bg-brand-red text-white">
+            <span className="text-xs font-display font-bold px-2.5 py-1 rounded-lg bg-brand-red text-white">
               {product.product_type}
             </span>
           </div>
@@ -167,7 +167,7 @@ export function ProductDetailDrawer({
                 <Beaker size={15} className="text-brand-red" />
                 Chemical Composition
               </h3>
-              <div className="overflow-x-auto rounded border border-gray-100">
+              <div className="overflow-x-auto rounded-lg border border-gray-100">
                 <table className="w-full text-xs font-body">
                   <thead className="bg-brand-red text-white">
                     <tr>
@@ -209,7 +209,7 @@ export function ProductDetailDrawer({
                 <Gauge size={15} className="text-brand-red" />
                 Mechanical Properties
               </h3>
-              <div className="overflow-x-auto rounded border border-gray-100">
+              <div className="overflow-x-auto rounded-lg border border-gray-100">
                 <table className="w-full text-xs font-body">
                   <thead className="bg-brand-red text-white">
                     <tr>
@@ -263,7 +263,7 @@ export function ProductDetailDrawer({
             to="/contact"
             id={`product-drawer-${product.slug}-enquire`}
             onClick={onClose}
-            className="flex-1 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
+            className="flex-1 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
           >
             Enquire About This Product
             <ArrowRight size={15} />
@@ -271,7 +271,7 @@ export function ProductDetailDrawer({
           <button
             onClick={onClose}
             className="px-4 py-3 border-2 border-gray-200 text-gray-500 font-display font-bold text-sm
-                       rounded-sm hover:border-brand-red hover:text-brand-red transition-all duration-200"
+                       rounded-lg hover:border-brand-red hover:text-brand-red transition-all duration-200"
           >
             Close
           </button>

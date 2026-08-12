@@ -106,11 +106,11 @@ export function WhyChooseUs() {
             <div
               key={id}
               id={`why-us-${id}`}
-              className={`bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-sm group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-white/20 ${gridVisible ? `animate-fade-in-up stagger-${(index % 6) + 1}` : "opacity-0"}`}
+              className={`bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-lg group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-white/20 ${gridVisible ? `animate-fade-in-up stagger-${(index % 6) + 1}` : "opacity-0"}`}
             >
               <div className="flex flex-col items-start gap-4">
                 {/* Icon */}
-                <div className="flex-shrink-0 w-12 h-12 rounded-sm bg-white/20 border border-white/30 flex items-center justify-center group-hover:bg-white transition-colors duration-300">
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center group-hover:bg-white transition-colors duration-300">
                   <Icon
                     size={22}
                     strokeWidth={1.75}

@@ -130,7 +130,7 @@ export function AboutPage() {
           {stats.map(({ value, label, icon: Icon }) => (
             <div
               key={label}
-              className="bg-white/15 backdrop-blur-md rounded-sm border border-white/20 px-5 py-4 group hover:bg-white/25 hover:border-white/50 transition-all duration-300"
+              className="bg-white/15 backdrop-blur-md rounded-lg border border-white/20 px-5 py-4 group hover:bg-white/25 hover:border-white/50 transition-all duration-300"
             >
               <Icon
                 size={18}
@@ -153,7 +153,7 @@ export function AboutPage() {
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left: Image */}
-            <div className="relative w-full h-[460px] rounded-sm overflow-hidden shadow-2xl">
+            <div className="relative w-full h-[460px] rounded-lg overflow-hidden shadow-2xl">
               <div className="absolute inset-0 bg-gray-100" />
               <img
                 src="/images/warehouse.jpg"
@@ -166,7 +166,7 @@ export function AboutPage() {
               />
 
               {/* Floating badge */}
-              <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-sm flex items-center gap-4">
+              <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-lg flex items-center gap-4">
                 <div className="h-12 w-1 bg-brand-red rounded-full flex-shrink-0" />
                 <div>
                   <p className="font-display font-bold text-brand-red text-sm">
@@ -222,7 +222,7 @@ export function AboutPage() {
               <Link
                 to="/contact"
                 id="about-story-cta"
-                className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+                className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
               >
                 Enquire Now
                 <ArrowRight size={16} />
@@ -278,7 +278,7 @@ export function AboutPage() {
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 bg-white rounded-sm border border-gray-100 shadow-card group-hover:shadow-card-hover group-hover:-translate-y-0.5 group-hover:border-brand-red/30 transition-all duration-300 p-6">
+                  <div className="flex-1 bg-white rounded-lg border border-gray-100 shadow-card group-hover:shadow-card-hover group-hover:-translate-y-0.5 group-hover:border-brand-red/30 transition-all duration-300 p-6">
                     <h3 className="font-display font-bold text-brand-red text-lg mb-2">
                       {title}
                     </h3>
@@ -306,8 +306,8 @@ export function AboutPage() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Vision */}
-            <div className="bg-gray-50 rounded-sm border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <div className="w-14 h-14 rounded-sm bg-brand-red/10 flex items-center justify-center mb-5">
+            <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 rounded-lg bg-brand-red/10 flex items-center justify-center mb-5">
                 <Eye size={28} className="text-brand-red" strokeWidth={1.75} />
               </div>
               <h3 className="font-display font-bold text-xl text-brand-charcoal mb-3">
@@ -322,8 +322,8 @@ export function AboutPage() {
             </div>
 
             {/* Mission */}
-            <div className="bg-gray-50 rounded-sm border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <div className="w-14 h-14 rounded-sm bg-brand-red/10 flex items-center justify-center mb-5">
+            <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 rounded-lg bg-brand-red/10 flex items-center justify-center mb-5">
                 <Target
                   size={28}
                   className="text-brand-red"
@@ -369,7 +369,7 @@ export function AboutPage() {
                 key={title}
                 className="card-base p-7 group text-center bg-white"
               >
-                <div className="mx-auto mb-5 w-14 h-14 rounded-sm bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
+                <div className="mx-auto mb-5 w-14 h-14 rounded-lg bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
                   <Icon
                     size={24}
                     className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -400,7 +400,7 @@ export function AboutPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <Truck size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 Export Documentation
@@ -409,7 +409,7 @@ export function AboutPage() {
                 CT3/ARE4/H forms for exports arranged
               </p>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <Scale size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 GST Invoices
@@ -418,7 +418,7 @@ export function AboutPage() {
                 Modvat/GST invoices for excise benefits
               </p>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <FlaskConical size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 Laboratory Testing
@@ -427,7 +427,7 @@ export function AboutPage() {
                 Chemical, physical, mechanical, ultrasonic, micro, IGC tests
               </p>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <ShieldCheck size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 Third-Party Inspection
@@ -436,7 +436,7 @@ export function AboutPage() {
                 Ready for any third-party inspection
               </p>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <Package size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 Import Assistance
@@ -445,7 +445,7 @@ export function AboutPage() {
                 Help import material/products adhering to your preference
               </p>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-6 hover:shadow-card-hover transition-all duration-300">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-card-hover transition-all duration-300">
               <Users size={24} className="text-brand-red mb-3" />
               <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
                 Govt. Approved Labs
@@ -478,11 +478,11 @@ export function AboutPage() {
               <div
                 key={id}
                 id={`about-office-${id}`}
-                className={`rounded-sm border-t-4 ${border} bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 p-6 sm:p-8`}
+                className={`rounded-lg border-t-4 ${border} bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 p-6 sm:p-8`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
-                    className={`${badge} text-white text-[10px] sm:text-xs font-display font-bold px-2.5 sm:px-3 py-1 rounded-sm uppercase tracking-wider`}
+                    className={`${badge} text-white text-[10px] sm:text-xs font-display font-bold px-2.5 sm:px-3 py-1 rounded-lg uppercase tracking-wider`}
                   >
                     {type}
                   </div>
@@ -552,7 +552,7 @@ export function AboutPage() {
             <Link
               to="/contact"
               id="about-cta-contact"
-              className="bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+              className="bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
             >
               Request a Quote
               <ArrowRight size={16} />
@@ -560,7 +560,7 @@ export function AboutPage() {
             <Link
               to="/products"
               id="about-cta-products"
-              className="bg-white/10 backdrop-blur-sm border-2 border-white/50 hover:border-white hover:bg-white/20 text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
+              className="bg-white/10 backdrop-blur-sm border-2 border-white/50 hover:border-white hover:bg-white/20 text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
             >
               Browse Products
             </Link>

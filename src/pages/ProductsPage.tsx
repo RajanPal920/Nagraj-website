@@ -48,7 +48,7 @@ export function ProductsPage() {
           ].map(({ value, label }) => (
             <div
               key={label}
-              className="bg-white/10 backdrop-blur-sm rounded-sm border border-white/15 px-4 py-3"
+              className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/15 px-4 py-3"
             >
               <div className="font-display font-extrabold text-2xl text-white">
                 {value}
@@ -111,7 +111,7 @@ function Level1TypeGrid({
             <Link
               to={`/products?type=${encodeURIComponent(type)}`}
               key={type}
-              className="group block rounded-sm border border-gray-100 bg-white overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+              className="group block rounded-lg border border-gray-100 bg-white overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
             >
               <div className="h-56 bg-gray-100 overflow-hidden relative">
                 <img
@@ -223,7 +223,7 @@ function CategoryCard({
       id={category}
       className="flex flex-col lg:flex-row bg-white border-y border-r border-gray-100 border-l-[12px] border-l-brand-red shadow-sm hover:shadow-card transition-shadow duration-300 p-6 lg:p-8 gap-8 scroll-mt-32"
     >
-      <div className="flex-shrink-0 w-full lg:w-[200px] flex items-center justify-center bg-gray-50 rounded-sm p-4 border border-gray-100">
+      <div className="flex-shrink-0 w-full lg:w-[200px] flex items-center justify-center bg-gray-50 rounded-lg p-4 border border-gray-100">
         <img
           src={image}
           alt={titleDisplay}

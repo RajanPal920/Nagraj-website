@@ -79,7 +79,7 @@ export function Header() {
 
                 {/* Mega Menu Dropdown */}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-[800px] mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-50">
-                  <div className="bg-white shadow-2xl rounded-sm border border-gray-100 flex overflow-hidden h-[500px]">
+                  <div className="bg-white shadow-2xl rounded-lg border border-gray-100 flex overflow-hidden h-[500px]">
                     {/* Left Sidebar: Types */}
                     <div className="w-1/3 bg-gray-50 border-r border-gray-100 py-4 overflow-y-auto scrollbar-thin">
                       {types.map((t) => (
@@ -177,7 +177,7 @@ export function Header() {
         <button
           id="mobile-menu-toggle"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-black hover:text-black/70 p-2 rounded-sm hover:bg-black/10 transition-colors"
+          className="lg:hidden text-black hover:text-black/70 p-2 rounded-lg hover:bg-black/10 transition-colors"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
         >
@@ -203,7 +203,7 @@ export function Header() {
                 }
                 setMobileOpen(false);
               }}
-              className={`font-body font-bold text-base py-3 px-6 rounded-sm transition-all duration-200 ${
+              className={`font-body font-bold text-base py-3 px-6 rounded-lg transition-all duration-200 ${
                 location.pathname === link.href
                   ? "bg-brand-red/10 text-brand-red border-l-4 border-brand-red"
                   : "text-black/90 hover:text-brand-red hover:bg-brand-red/5 border-l-4 border-transparent hover:border-brand-red/30"

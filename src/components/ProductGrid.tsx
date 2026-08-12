@@ -52,7 +52,7 @@ export function ProductGrid() {
                   <article
                     key={type}
                     id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}`}
-                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-sm border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}`}
+                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}`}
                   >
                     {/* Image Header */}
                     <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
@@ -82,7 +82,7 @@ export function ProductGrid() {
                           {topGroups.map((g) => (
                             <li
                               key={g}
-                              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2 py-0.5 rounded-sm border border-brand-red/15"
+                              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2 py-0.5 rounded-lg border border-brand-red/15"
                             >
                               {g}
                             </li>
@@ -117,7 +117,7 @@ export function ProductGrid() {
           <Link
             to="/products"
             id="products-view-full-catalogue-cta"
-            className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
+            className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
           >
             View Full Product Catalogue
             <ArrowRight size={16} />

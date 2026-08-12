@@ -120,7 +120,7 @@ export function ContactPage() {
                 <div className="space-y-4 mt-6">
                   {/* Contact Person */}
                   <div className="flex items-center gap-4 group">
-                    <div className="w-12 h-12 rounded-sm bg-brand-red/8 border border-brand-red/20 flex items-center justify-center group-hover:bg-brand-red transition-all duration-300 flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-brand-red/8 border border-brand-red/20 flex items-center justify-center group-hover:bg-brand-red transition-all duration-300 flex-shrink-0">
                       <User
                         size={18}
                         className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -150,7 +150,7 @@ export function ContactPage() {
                           id === "website" ? "noopener noreferrer" : undefined
                         }
                       >
-                        <div className="w-12 h-12 rounded-sm bg-brand-red/8 border border-brand-red/20 flex items-center justify-center group-hover:bg-brand-red transition-all duration-300 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-brand-red/8 border border-brand-red/20 flex items-center justify-center group-hover:bg-brand-red transition-all duration-300 flex-shrink-0">
                           <Icon
                             size={18}
                             className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -182,10 +182,10 @@ export function ContactPage() {
                       <div
                         key={id}
                         id={`contact-office-${id}`}
-                        className={`rounded-sm border-t-4 ${border} bg-gray-50 p-6 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300`}
+                        className={`rounded-lg border-t-4 ${border} bg-gray-50 p-6 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300`}
                       >
                         <div
-                          className={`${badge} text-white text-[10px] font-display font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider inline-block mb-4`}
+                          className={`${badge} text-white text-[10px] font-display font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider inline-block mb-4`}
                         >
                           {type}
                         </div>
@@ -229,7 +229,7 @@ export function ContactPage() {
             {/* ── Right: Enquiry form ── */}
             <div
               id="contact-form-card"
-              className="bg-brand-red rounded-sm p-8 sm:p-10 shadow-card-hover relative overflow-hidden"
+              className="bg-brand-red rounded-lg p-8 sm:p-10 shadow-card-hover relative overflow-hidden"
             >
               {/* Subtle texture */}
               <div className="absolute inset-0 steel-texture opacity-10 pointer-events-none" />
@@ -306,7 +306,7 @@ export function ContactPage() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, name: e.target.value }))
                         }
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-lg px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
                       />
                     </div>
 
@@ -327,7 +327,7 @@ export function ContactPage() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, phone: e.target.value }))
                         }
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-lg px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
                       />
                     </div>
 
@@ -350,7 +350,7 @@ export function ContactPage() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, email: e.target.value }))
                         }
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-lg px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200"
                       />
                     </div>
 
@@ -370,14 +370,14 @@ export function ContactPage() {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, message: e.target.value }))
                         }
-                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-sm px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200 resize-none"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 rounded-lg px-4 py-3 text-sm font-body focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-200 resize-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       id="contact-submit-btn"
-                      className="w-full bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+                      className="w-full bg-white hover:bg-white/90 text-brand-red font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
                     >
                       Send Enquiry
                       <Send size={15} />

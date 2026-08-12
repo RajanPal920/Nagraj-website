@@ -74,10 +74,10 @@ export function CertificatesPage() {
               return (
                 <div
                   key={cert.id}
-                  className="bg-gray-50 border border-gray-200 rounded-sm p-6 sm:p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 group"
+                  className="bg-gray-50 border border-gray-200 rounded-lg p-6 sm:p-8 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 group"
                 >
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-6">
-                    <div className="w-16 h-16 rounded-sm bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300 flex-shrink-0">
+                    <div className="w-16 h-16 rounded-lg bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300 flex-shrink-0">
                       <Icon
                         size={32}
                         className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -95,7 +95,7 @@ export function CertificatesPage() {
                   </div>
 
                   {/* Registration Number */}
-                  <div className="bg-white rounded-sm border border-gray-200 p-4 mb-6">
+                  <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
                     <p className="font-body text-xs text-gray-400 uppercase tracking-wider mb-1">
                       Registration Number
                     </p>
@@ -108,7 +108,7 @@ export function CertificatesPage() {
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <button
                       onClick={() => setSelectedCert(cert.id)}
-                      className="flex-1 flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-3 rounded-sm transition-all duration-200 text-sm sm:text-base"
+                      className="flex-1 flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-3 rounded-lg transition-all duration-200 text-sm sm:text-base"
                     >
                       <Eye size={18} />
                       View Certificate
@@ -117,7 +117,7 @@ export function CertificatesPage() {
                       onClick={() =>
                         downloadCertificate(cert.image, "Udyam-Certificate")
                       }
-                      className="flex-1 flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-3 rounded-sm transition-all duration-200 text-sm sm:text-base"
+                      className="flex-1 flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-3 rounded-lg transition-all duration-200 text-sm sm:text-base"
                     >
                       <Download size={18} />
                       Download
@@ -135,7 +135,7 @@ export function CertificatesPage() {
               onClick={() => setSelectedCert(null)}
             >
               <div
-                className="bg-white rounded-sm max-w-2xl w-full max-h-[90vh] overflow-auto p-4 sm:p-6"
+                className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-auto p-4 sm:p-6"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex justify-between items-center mb-4">
@@ -149,7 +149,7 @@ export function CertificatesPage() {
                     <X size={24} />
                   </button>
                 </div>
-                <div className="bg-gray-100 rounded-sm p-4 flex items-center justify-center min-h-[250px] sm:min-h-[300px]">
+                <div className="bg-gray-100 rounded-lg p-4 flex items-center justify-center min-h-[250px] sm:min-h-[300px]">
                   <img
                     src={certificates.find((c) => c.id === selectedCert)?.image}
                     alt={certificates.find((c) => c.id === selectedCert)?.title}
@@ -170,7 +170,7 @@ export function CertificatesPage() {
                         downloadCertificate(cert.image, "Udyam-Certificate");
                       }
                     }}
-                    className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-sm transition-all duration-200 flex items-center gap-2 text-sm sm:text-base"
+                    className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2 text-sm sm:text-base"
                   >
                     <Download size={16} />
                     Download Certificate
@@ -181,7 +181,7 @@ export function CertificatesPage() {
           )}
 
           {/* Additional Information */}
-          <div className="mt-12 sm:mt-16 bg-gray-50 rounded-sm border border-gray-200 p-6 sm:p-8 max-w-3xl mx-auto">
+          <div className="mt-12 sm:mt-16 bg-gray-50 rounded-lg border border-gray-200 p-6 sm:p-8 max-w-3xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start gap-4">
               <FileCheck2
                 size={24}

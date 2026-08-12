@@ -17,7 +17,7 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
 
       <main className="flex-1 flex items-center justify-center px-4 py-24">
         <div className="text-center max-w-lg">
-          <div className="w-20 h-20 rounded-sm bg-brand-red/10 border border-brand-red/20 flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center mx-auto mb-6">
             <Construction
               size={36}
               className="text-brand-red"
@@ -36,14 +36,14 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
             <Link
               to="/"
               id="placeholder-back-home"
-              className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
+              className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
             >
               Back to Home
             </Link>
             <Link
               to="/contact"
               id="placeholder-contact"
-              className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-sm transition-all duration-200 hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
+              className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
             >
               Contact Us
             </Link>

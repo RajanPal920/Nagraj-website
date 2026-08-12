@@ -819,7 +819,7 @@ export function TechnicalInfoPage() {
               return (
                 <div
                   key={section.id}
-                  className="bg-white rounded-sm border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
                 >
                   {/* Section Header */}
                   <button
@@ -827,7 +827,7 @@ export function TechnicalInfoPage() {
                     className="w-full flex items-center justify-between p-5 sm:p-6 hover:bg-gray-50 transition-colors duration-200 text-left"
                   >
                     <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="w-10 h-10 rounded-sm bg-brand-red/10 flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-lg bg-brand-red/10 flex items-center justify-center flex-shrink-0">
                         <Icon size={20} className="text-brand-red" />
                       </div>
                       <div>
@@ -863,7 +863,7 @@ export function TechnicalInfoPage() {
                           <h4 className="font-display font-bold text-brand-red text-sm uppercase tracking-wider mb-4">
                             {subsection.title}
                           </h4>
-                          <div className="overflow-x-auto rounded-sm border border-gray-200">
+                          <div className="overflow-x-auto rounded-lg border border-gray-200">
                             <table className="w-full text-sm font-body">
                               <thead className="bg-brand-red text-white">
                                 <tr>
@@ -919,7 +919,7 @@ export function TechnicalInfoPage() {
           </div>
 
           {/* Download Section */}
-          <div className="mt-16 bg-brand-red/5 border border-brand-red/20 rounded-sm p-6 sm:p-8 max-w-3xl mx-auto text-center">
+          <div className="mt-16 bg-brand-red/5 border border-brand-red/20 rounded-lg p-6 sm:p-8 max-w-3xl mx-auto text-center">
             <FileText size={32} className="text-brand-red mx-auto mb-4" />
             <h3 className="font-display font-bold text-brand-charcoal text-lg sm:text-xl mb-2">
               Need Complete Technical Data?
@@ -931,14 +931,14 @@ export function TechnicalInfoPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={downloadTechnicalData}
-                className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
+                className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
               >
                 <Download size={16} />
                 Download Data Sheets
               </button>
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
+                className="inline-flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
               >
                 Contact for More Info
               </a>

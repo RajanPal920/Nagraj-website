@@ -13,7 +13,7 @@ export function WhatsAppButton() {
         <Phone size={24} strokeWidth={2} />
 
         {/* Tooltip for Call */}
-        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-brand-charcoal text-white text-xs font-body font-medium rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
+        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-brand-charcoal text-white text-xs font-body font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
           Call Now
           <div className="absolute top-1/2 -right-1 -translate-y-1/2 border-y-4 border-y-transparent border-l-4 border-l-brand-charcoal" />
         </div>
@@ -33,7 +33,7 @@ export function WhatsAppButton() {
         <IoLogoWhatsapp size={28} className="fill-white text-[#25D366]" />
 
         {/* Tooltip for WhatsApp */}
-        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-brand-charcoal text-white text-xs font-body font-medium rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
+        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-brand-charcoal text-white text-xs font-body font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
           Chat with Sales
           <div className="absolute top-1/2 -right-1 -translate-y-1/2 border-y-4 border-y-transparent border-l-4 border-l-brand-charcoal" />
         </div>

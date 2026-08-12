@@ -94,7 +94,7 @@ export function About() {
             </div>
 
             {/* Additional Capabilities */}
-            <div className="mt-6 p-5 bg-brand-red/5 border border-brand-red/10 rounded-sm">
+            <div className="mt-6 p-5 bg-brand-red/5 border border-brand-red/10 rounded-lg">
               <h4 className="font-display font-bold text-brand-red text-sm uppercase tracking-wider mb-3">
                 Our Capabilities
               </h4>
@@ -125,7 +125,7 @@ export function About() {
                   key={label}
                   className={`card-base p-6 group ${textVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}`}
                 >
-                  <div className="mb-4 w-10 h-10 rounded-sm bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
+                  <div className="mb-4 w-10 h-10 rounded-lg bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
                     <Icon
                       size={20}
                       className="text-brand-red group-hover:text-white transition-colors duration-300"
@@ -147,7 +147,7 @@ export function About() {
           {/* Right: Image */}
           <div
             ref={imageRef}
-            className={`order-1 lg:order-2 relative w-full h-[500px] lg:h-[700px] rounded-sm overflow-hidden shadow-2xl ${imageVisible ? "animate-fade-in-up" : "opacity-0"}`}
+            className={`order-1 lg:order-2 relative w-full h-[500px] lg:h-[700px] rounded-lg overflow-hidden shadow-2xl ${imageVisible ? "animate-fade-in-up" : "opacity-0"}`}
           >
             {/* Fallback color */}
             <div className="absolute inset-0 bg-gray-100" />
@@ -164,7 +164,7 @@ export function About() {
             <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/40 to-transparent pointer-events-none" />
 
             {/* Floating badge */}
-            <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-sm flex items-center gap-4">
+            <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-lg flex items-center gap-4">
               <div className="h-12 w-1 bg-brand-red rounded-full flex-shrink-0" />
               <div>
                 <p className="font-display font-bold text-brand-red text-sm">
@@ -177,7 +177,7 @@ export function About() {
             </div>
 
             {/* ISO Badge on Image */}
-            <div className="absolute top-6 right-6 bg-white/95 backdrop-blur shadow-lg p-3 rounded-sm flex items-center gap-2">
+            <div className="absolute top-6 right-6 bg-white/95 backdrop-blur shadow-lg p-3 rounded-lg flex items-center gap-2">
               <Award size={20} className="text-brand-red" />
               <span className="font-display font-bold text-brand-charcoal text-xs uppercase tracking-wider">
                 ISO Certified
