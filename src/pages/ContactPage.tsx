@@ -59,6 +59,20 @@ const offices = [
     border: "border-brand-red",
     badge: "bg-brand-red",
   },
+  {
+    id: "pune",
+    type: "Branch Office",
+    city: "Pune",
+    lines: [
+      "SA 3/3, 'S' Block,",
+      "Near SB Canteen, MIDC,",
+      "Bhosari,",
+      "Pune - 411026.",
+    ],
+    note: "MIDC Bhosari Industrial Belt",
+    border: "border-brand-red",
+    badge: "bg-brand-red",
+  },
 ];
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
@@ -80,17 +94,14 @@ export function ContactPage() {
   return (
     <>
       {/* SEO */}
-      <title>Contact Nagraj Metal Industries | Mumbai</title>
+      <title>Contact Nagraj Metal Industries | Mumbai & Pune</title>
       <meta
         name="description"
-        content="Contact Nagraj Metal Industries for product enquiries, pricing, and quotes. Reach our Mumbai office by phone, email, or through our enquiry form."
+        content="Contact Nagraj Metal Industries for product enquiries, pricing, and quotes. Reach our Mumbai or Pune office by phone, email, or through our enquiry form."
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero
-        id="contact-hero"
-        bgImage="/images/contact.jpg" // Add your custom image path here
-      />
+      <PageHero id="contact-hero" bgImage="/images/contact.jpg" />
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <section id="contact-main" className="section-padding bg-white">
@@ -121,7 +132,7 @@ export function ContactPage() {
                         Contact Person
                       </p>
                       <p className="font-display font-bold text-brand-charcoal text-base">
-                        Mr. Rajesh (CEO)
+                        Mr. Rajesh Padhiyar (CEO)
                       </p>
                     </div>
                   </div>
@@ -163,9 +174,9 @@ export function ContactPage() {
               {/* Office cards */}
               <div>
                 <p className="font-display font-bold text-xs text-brand-red uppercase tracking-[0.2em] mb-5">
-                  Our Office
+                  Our Offices
                 </p>
-                <div className="grid sm:grid-cols-1 gap-5 max-w-md">
+                <div className="grid sm:grid-cols-2 gap-5">
                   {offices.map(
                     ({ id, type, city, lines, note, border, badge }) => (
                       <div

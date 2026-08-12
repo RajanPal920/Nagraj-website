@@ -34,40 +34,40 @@ export function Header() {
   return (
     <header
       id="header"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        isSolid ? "bg-brand-red shadow-lg py-3" : "bg-brand-red/95 py-4"
+      className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-400 ${
+        isSolid ? "bg-white shadow-lg" : "bg-white"
       }`}
     >
-      <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-between">
-        {/* Logo Combination */}
+      <div className="container h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo - 35% width */}
         <Link
           to="/"
-          className="flex items-center gap-3 flex-shrink-0"
+          className="flex items-center flex-shrink-0 w-[35%] lg:w-[32%]"
           aria-label="Nagraj Metal Industries Home"
         >
-          <div className=" p-1.5 rounded-lg shadow-md bg-white">
+          <div className="rounded-lg w-full">
             <img
               src="/images/logo.png"
               alt="Nagraj Metal Industries Logo"
-              className="h-10 sm:h-12 lg:h-14 object-contain"
+              className="w-full h-auto max-h-14 sm:max-h-16 md:max-h-18 lg:max-h-20 xl:max-h-24 object-contain"
             />
           </div>
         </Link>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav - 40% width */}
         <nav
-          className="hidden lg:flex items-center gap-8"
+          className="hidden lg:flex items-center justify-around gap-6 xl:gap-8 w-[40%  ] font-extrabold"
           aria-label="Main navigation"
         >
           {navLinks.map((link) =>
             link.label === "Products" ? (
-              <div key={link.href} className="group relative">
+              <div key={link.href} className="group relative whitespace-nowrap">
                 <Link
                   to={link.href}
-                  className={`nav-link text-black hover:text-black/70 flex items-center gap-1 transition-colors duration-200 font-semibold ${
+                  className={`nav-link text-black hover:text-brand-red flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base ${
                     location.pathname === link.href
-                      ? "text-black after:w-full"
-                      : "text-black/90 hover:text-black"
+                      ? "text-brand-red after:w-full"
+                      : "text-black/90 hover:text-brand-red"
                   }`}
                 >
                   {link.label}
@@ -88,12 +88,11 @@ export function Header() {
                           key={t}
                           onMouseEnter={() => setActiveType(t)}
                           className={`block w-full text-left px-6 py-3 text-sm font-display font-semibold transition-all duration-200
-                            ${
-                              activeType === t ||
-                              (!activeType && types[0] === t)
-                                ? "bg-brand-red text-white border-l-4 border-black"
-                                : "text-black hover:bg-brand-red/10 hover:text-brand-red border-l-4 border-transparent hover:border-brand-red/30"
-                            }`}
+                    ${
+                      activeType === t || (!activeType && types[0] === t)
+                        ? "bg-brand-red text-white border-l-4 border-black"
+                        : "text-black hover:bg-brand-red/10 hover:text-brand-red border-l-4 border-transparent hover:border-brand-red/30"
+                    }`}
                         >
                           {t}
                         </Link>
@@ -149,10 +148,10 @@ export function Header() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
-                className={`nav-link text-black hover:text-black/70 transition-colors duration-200 font-semibold ${
+                className={`nav-link text-black hover:text-brand-red transition-colors duration-200 font-bold text-sm lg:text-base whitespace-nowrap ${
                   location.pathname === link.href
-                    ? "text-black after:w-full"
-                    : "text-black/90 hover:text-black"
+                    ? "text-brand-red after:w-full"
+                    : "text-black/90 hover:text-brand-red"
                 }`}
               >
                 {link.label}
@@ -161,16 +160,18 @@ export function Header() {
           )}
         </nav>
 
-        {/* Phone CTA */}
-        <a
-          href="tel:+917073875529"
-          id="header-phone-cta"
-          className="hidden lg:flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-2.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
-          aria-label="Call Nagraj Metal Industries"
-        >
-          <Phone size={14} strokeWidth={2.5} />
-          7073875529
-        </a>
+        {/* Phone CTA - 25% width */}
+        <div className="hidden lg:flex items-center justify-end w-[25%]">
+          <a
+            href="tel:+917073875529"
+            id="header-phone-cta"
+            className="flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-5 py-2.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+            aria-label="Call Nagraj Metal Industries"
+          >
+            <Phone size={14} strokeWidth={2.5} />
+            7073875529
+          </a>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -190,7 +191,7 @@ export function Header() {
           mobileOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <nav className="bg-white border-t border-black/10 px-4 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
+        <nav className="bg-white border-t border-black/10 px-6 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -202,7 +203,7 @@ export function Header() {
                 }
                 setMobileOpen(false);
               }}
-              className={`font-body font-semibold text-base py-3 px-4 rounded-sm transition-all duration-200 ${
+              className={`font-body font-bold text-base py-3 px-6 rounded-sm transition-all duration-200 ${
                 location.pathname === link.href
                   ? "bg-brand-red/10 text-brand-red border-l-4 border-brand-red"
                   : "text-black/90 hover:text-brand-red hover:bg-brand-red/5 border-l-4 border-transparent hover:border-brand-red/30"

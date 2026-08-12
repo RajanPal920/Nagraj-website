@@ -38,19 +38,6 @@ export function ProductsPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <PageHero
         id="products-hero"
-        label={selectedType ? selectedType.toUpperCase() : "FULL CATALOGUE"}
-        title={
-          <>
-            {TOTAL > 0 ? TOTAL : "417"}+ Products.
-            <br />
-            <span className="text-brand-red">All Specifications.</span>
-          </>
-        }
-        description={
-          selectedType
-            ? `Browse our complete range of ${selectedType.toLowerCase()} across all material grades.`
-            : "Bars, plates, pipes, fittings, flanges and forgings across stainless steel, alloy steel, titanium, nickel alloys and more — all in stock."
-        }
         bgImage="/images/welding-wire.jpg"
       >
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg mt-4">

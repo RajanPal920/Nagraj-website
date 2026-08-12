@@ -6,7 +6,6 @@ import {
   IndianRupee,
   Globe2,
   FileCheck2,
-  Headphones,
   Layers,
   ArrowRight,
   CheckCircle2,
@@ -17,6 +16,7 @@ import {
   Ruler,
   Package,
 } from "lucide-react";
+
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
 
@@ -104,10 +104,11 @@ const pillars = [
     id: "reach",
     icon: Globe2,
     title: "Pan-India Reach",
-    headline: "Mumbai · Everywhere",
-    description: `Our office in Mumbai lets us serve fabricators, OEMs, and EPC contractors across western India and beyond.`,
+    headline: "Mumbai · Pune · Everywhere",
+    description: `Our offices in Mumbai and Pune's MIDC Bhosari industrial belt let us serve fabricators, OEMs, and EPC contractors across western India and beyond.`,
     points: [
-      "Office in Mumbai",
+      "Office in Mumbai: Jalaram Niwas, 1st Kumbharwada",
+      "Branch in Pune: SA 3/3, 'S' Block, Near SB Canteen, MIDC, Bhosari, Pune - 411026",
       "Serving clients across Maharashtra & India",
       "B2B focus — built for industrial buyers",
     ],
@@ -154,11 +155,7 @@ export function WhyUsPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero
-        id="why-us-hero"
-        
-        bgImage="/images/why.jpg"
-      />
+      <PageHero id="why-us-hero" bgImage="/images/why.jpg" />
 
       {/* ── Quality Pillars ────────────────────────────────────────────────────── */}
       <section id="why-us-pillars" className="section-padding bg-white">
