@@ -36,17 +36,19 @@ export function CertificatesPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero
+      <section
         id="certificates-hero"
-        label="Our Certificate"
-        title={
-          <>
-            Udyam <span className="text-brand-red">Registered</span>
-          </>
-        }
-        description="Nagraj Metal Industries is registered under the Udyam Registration portal for Micro, Small & Medium Enterprises."
-        bgImage="/images/certificate.jpg"
-      />
+        className="relative min-h-[60vh] md:min-h-screen flex items-center overflow-hidden bg-brand-red-dark"
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url("/images/certificate.jpg")' }}
+        />
+
+       
+        
+      </section>
 
       {/* ── Main Content ─────────────────────────────────────────────────── */}
       <section className="section-padding bg-white">
@@ -59,7 +61,7 @@ export function CertificatesPage() {
               Our <span className="text-brand-red">Registration</span>
             </h2>
             <div className="section-divider mx-auto bg-brand-red w-12 sm:w-16" />
-            <p className="font-body text-gray-500 text-sm sm:text-base max-w-xl mx-auto px-4">
+            <p className="font-body text-gray-600 text-sm sm:text-base max-w-xl mx-auto px-4">
               Nagraj Metal Industries is officially registered under the Udyam
               portal, recognized as a Micro, Small & Medium Enterprise.
             </p>

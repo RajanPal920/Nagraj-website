@@ -110,20 +110,8 @@ export function AboutPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero
-        id="about-hero"
-        label="Who We Are"
-        title={
-          <>
-            Dynamic Group with
-            <br />
-            <span className="text-brand-red">Young Visionaries</span>
-          </>
-        }
-        description="Nagraj Metal Industries is a dynamic group established over a decade ago to cater to growing demands of industrial raw materials. We are ISO 9001:2015 Certified and registered with semi-govt., govt., private & multinational companies."
-        bgImage="/images/warehouse.jpg"
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl">
+      <PageHero id="about-hero" bgImage="/images/about.jpg">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl ">
           {stats.map(({ value, label, icon: Icon }) => (
             <div
               key={label}

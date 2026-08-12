@@ -89,13 +89,7 @@ export function ContactPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <PageHero
         id="contact-hero"
-        label="Reach Us"
-        title={
-          <>
-            Get In <span className="text-brand-red">Touch</span>
-          </>
-        }
-        description="Share your requirement and we'll respond with specifications and pricing within one business day. For urgent needs, call us directly."
+        bgImage="/images/contact.jpg" // Add your custom image path here
       />
 
       {/* ── Main content ─────────────────────────────────────────────────── */}

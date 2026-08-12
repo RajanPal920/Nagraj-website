@@ -156,16 +156,8 @@ export function WhyUsPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <PageHero
         id="why-us-hero"
-        label="Why Nagraj Metal Industries"
-        title={
-          <>
-            Built on
-            <br />
-            <span className="text-brand-red">Quality & Trust</span>
-          </>
-        }
-        description="Quality is our prime concern. From exact material matching to on-time dispatch, we remove the friction from industrial steel procurement."
-        bgImage="/images/forging.jpg"
+        
+        bgImage="/images/why.jpg"
       />
 
       {/* ── Quality Pillars ────────────────────────────────────────────────────── */}

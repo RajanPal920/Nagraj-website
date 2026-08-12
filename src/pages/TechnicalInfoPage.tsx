@@ -784,18 +784,16 @@ export function TechnicalInfoPage() {
         content="Technical information including chemical composition, pipe specifications, and AMS standards from Nagraj Metal Industries."
       />
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero
+      <section
         id="technical-hero"
-        label="Technical Info"
-        title={
-          <>
-            Technical <span className="text-brand-red">Specifications</span>
-          </>
-        }
-        description="Access detailed technical information including chemical composition, pipe specifications, and AMS standards for various materials."
-        bgImage="/images/tech.jpg"
-      />
+        className="relative min-h-[60vh] md:min-h-[110vh] flex items-center overflow-hidden bg-brand-red-dark"
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url("/images/tech.jpg")' }}
+        />
+      </section>
 
       {/* ── Main Content ─────────────────────────────────────────────────── */}
       <section className="section-padding bg-white">
