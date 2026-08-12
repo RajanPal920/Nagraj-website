@@ -69,6 +69,21 @@ const offices = [
     border: "border-brand-red",
     badge: "bg-brand-red",
   },
+  {
+    id: "pune",
+    type: "Branch Office",
+    city: "Pune",
+    address: [
+      "SA 3/3, 'S' Block,",
+      "Near SB Canteen, MIDC,",
+      "Bhosari,",
+      "Pune - 411026.",
+    ],
+    note: "MIDC Bhosari Industrial Belt",
+    accent: "from-brand-red to-brand-red-dark",
+    border: "border-brand-red",
+    badge: "bg-brand-red",
+  },
 ];
 
 const values = [
@@ -149,7 +164,6 @@ export function AboutPage() {
                 alt="Nagraj Metal Industries warehouse facility"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
-              {/* Gradient overlay removed */}
 
               {/* Floating badge */}
               <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur shadow-lg p-5 rounded-sm flex items-center gap-4">
@@ -454,44 +468,44 @@ export function AboutPage() {
             </h2>
             <div className="section-divider mx-auto bg-brand-red" />
             <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              Based in Mumbai, serving industrial clients across India with
-              quality steel products and reliable service.
+              Based in Mumbai and Pune, serving industrial clients across India
+              with quality steel products and reliable service.
             </p>
           </div>
 
-          <div className="max-w-2xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {offices.map(({ id, type, city, address, note, border, badge }) => (
               <div
                 key={id}
                 id={`about-office-${id}`}
-                className={`rounded-sm border-t-4 ${border} bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 p-8`}
+                className={`rounded-sm border-t-4 ${border} bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 p-6 sm:p-8`}
               >
-                <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-3 mb-4">
                   <div
-                    className={`${badge} text-white text-xs font-display font-bold px-3 py-1 rounded-sm uppercase tracking-wider`}
+                    className={`${badge} text-white text-[10px] sm:text-xs font-display font-bold px-2.5 sm:px-3 py-1 rounded-sm uppercase tracking-wider`}
                   >
                     {type}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3">
                   <Building2
-                    size={18}
+                    size={16}
                     className="text-brand-red"
                     strokeWidth={1.75}
                   />
-                  <h3 className="font-display font-extrabold text-2xl text-brand-red">
+                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-brand-red">
                     {city}
                   </h3>
                 </div>
 
-                <div className="flex gap-3 mb-6">
+                <div className="flex gap-3 mb-4">
                   <MapPin
-                    size={16}
+                    size={14}
                     className="text-brand-red flex-shrink-0 mt-0.5"
                     strokeWidth={2}
                   />
-                  <address className="not-italic font-body text-gray-600 text-sm leading-relaxed">
+                  <address className="not-italic font-body text-gray-600 text-xs sm:text-sm leading-relaxed">
                     {address.map((line, i) => (
                       <span key={i}>
                         {line}
@@ -501,8 +515,8 @@ export function AboutPage() {
                   </address>
                 </div>
 
-                <div className="pt-5 border-t border-gray-100">
-                  <p className="font-body text-xs text-gray-600 italic">
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="font-body text-[10px] sm:text-xs text-gray-600 italic">
                     {note}
                   </p>
                 </div>
