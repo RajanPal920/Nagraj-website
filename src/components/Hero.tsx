@@ -39,7 +39,7 @@ export function Hero() {
           </div>
 
           {/* Headline */}
-          <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.05] mb-2 sm:mb-3 animate-fade-in-up stagger-2 drop-shadow-lg">
+          <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.05] uppercase mb-2 sm:mb-3 animate-fade-in-up stagger-2 drop-shadow-lg">
             Nagraj Metal
             <br />
             <span className="text-brand-red">Industries</span>
