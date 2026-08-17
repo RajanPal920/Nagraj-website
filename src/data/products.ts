@@ -1,4 +1,4 @@
-import allProductsData from "../../dist/data/products.json";
+import allProductsData from "../data/products.json";
 
 export interface ProductInfo {
   id: string;

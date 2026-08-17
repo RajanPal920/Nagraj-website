@@ -1,6 +1,6 @@
 // src/data/products.ts
 
-import allProducts from "../../dist/data/products.json";
+import allProducts from "../data/products.json";
 
 export interface ScrapedProduct {
   url: string;
