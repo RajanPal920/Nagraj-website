@@ -1,6 +1,14 @@
-import { PageHero } from "../components/PageHero";
-import { Award, Download, Eye, FileCheck2, X } from "lucide-react";
+import {
+  Award,
+  Download,
+  Eye,
+  FileCheck2,
+  X,
+  ChevronDown,
+  Building2,
+} from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Certificate data - Only Udyam Certificate
 const certificates = [
@@ -38,20 +46,116 @@ export function CertificatesPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         id="certificates-hero"
-        className="relative min-h-[60vh] md:min-h-screen flex items-center overflow-hidden bg-brand-red-dark"
+        className="relative min-h-[60vh] sm:min-h-screen sm:h-screen flex items-end sm:items-center justify-start sm:justify-center overflow-hidden bg-white sm:bg-[#102F3D] md:!bg-transparent pt-20 sm:pt-0"
+        aria-label="Certificates - Nagraj Metal Industries"
       >
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/images/certificate.jpg")' }}
-        />
+        {/* Desktop Background */}
+        <div className="absolute inset-0 z-0 hidden sm:block">
+          <img
+            src="/images/certificate.jpg"
+            alt="Certificates - Nagraj Metal Industries"
+            className="w-full h-full object-cover object-center select-none"
+            loading="eager"
+          />
+        </div>
 
-       
-        
+        {/* Overlay - Light Red on Desktop */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
+
+        {/* Bottom gradient shadow - Light Red on Desktop */}
+        <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
+
+        {/* Steel texture overlay */}
+        <div className="absolute inset-0 z-0 steel-texture opacity-0 sm:opacity-40 mix-blend-overlay" />
+
+        {/* Red bottom border line - Desktop only */}
+        <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+
+        {/* ================= MOBILE CONTENT ================= */}
+        <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
+          {/* Hero Image */}
+          <div className="w-full flex justify-center items-center px-4 mt-5">
+            <img
+              src="/images/certificate.jpg"
+              alt="Certificates - Nagraj Metal Industries"
+              className="w-full max-h-[35vh] object-contain rounded-lg"
+            />
+          </div>
+
+          {/* Mobile Content */}
+          <div className="flex-1 px-5 pt-4 pb-6">
+            <div className="inline-flex items-center gap-1.5 mb-3 bg-brand-red/10 border border-brand-red/30 px-3 py-1.5 rounded-full">
+              <Building2 size={10} className="text-brand-red" />
+              <span className="text-brand-charcoal font-display font-bold text-[8px] uppercase tracking-wider">
+                Certificates
+              </span>
+            </div>
+
+            <h1 className="text-2xl font-bold text-brand-red uppercase">
+              Certificates
+            </h1>
+            <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
+              Nagraj Metal Industries is officially registered under the Udyam
+              portal, recognized as a Micro, Small & Medium Enterprise.
+            </p>
+
+            {/* Mobile Stats */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              <div className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center">
+                <div className="font-display font-extrabold text-base text-brand-red">
+                  Udyam
+                </div>
+                <div className="font-body text-gray-500 text-[8px] font-medium">
+                  Registered MSME
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center">
+                <div className="font-display font-extrabold text-base text-brand-red">
+                  ✓
+                </div>
+                <div className="font-body text-gray-500 text-[8px] font-medium">
+                  Govt. Approved
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile CTA */}
+            <div className="relative z-20 pointer-events-auto">
+              <Link
+                to="/contact"
+                id="certificates-cta-mobile"
+                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Enquire Now
+                <ChevronDown size={16} className="rotate-[-90deg]" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= DESKTOP CONTENT ================= */}
+
+
+        {/* Scroll indicator - Desktop only */}
+        <a
+          href="#certificates-main"
+          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
+          aria-label="Scroll to Certificates section"
+        >
+          <ChevronDown
+            size={20}
+            className="sm:w-[28px] sm:h-[28px]"
+            strokeWidth={1.5}
+          />
+        </a>
       </section>
 
       {/* ── Main Content ─────────────────────────────────────────────────── */}
-      <section className="section-padding bg-white">
+      <section id="certificates-main" className="section-padding bg-white">
         <div className="container-xl px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="text-center mb-10 sm:mb-14">
             <p className="section-label text-brand-red text-xs sm:text-sm">

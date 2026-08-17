@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
-import { useProducts } from './useProducts';
-import type { ScrapedProduct } from '../data/scrapedProductsData';
+import { useMemo } from "react";
+import { useProducts } from "./useProducts";
+import type { ScrapedProduct } from "../data/scrapedProductsData";
 
 interface UseProductReturn {
   product: ScrapedProduct | null;
   loading: boolean;
   error: string | null;
+  productType: string | null;
+  category: string | null;
 }
 
 /**
@@ -20,5 +22,22 @@ export function useProduct(slug: string | undefined): UseProductReturn {
     return products.find((p) => p.slug === slug) ?? null;
   }, [products, slug]);
 
-  return { product, loading, error };
+  // Get product type and category from the product
+  const productType = useMemo(() => {
+    if (!product) return null;
+    return product.product_type || null;
+  }, [product]);
+
+  const category = useMemo(() => {
+    if (!product) return null;
+    return product.category || null;
+  }, [product]);
+
+  return {
+    product,
+    loading,
+    error,
+    productType,
+    category,
+  };
 }

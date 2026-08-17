@@ -23,7 +23,7 @@
 
 @layer components {
   .section-padding {
-    @apply py-20 px-4 sm:px-8 lg:px-16 xl:px-24;
+    @apply py-16 sm:py-20 px-4 sm:px-8 lg:px-16 xl:px-24;
   }
 
   .container-xl {
@@ -31,33 +31,33 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 bg-brand-red text-white font-display font-bold px-8 py-4 rounded-lg
+    @apply inline-flex items-center gap-2 bg-brand-red text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
            hover:bg-brand-red-dark hover:text-white transition-all duration-300 shadow-lg
            focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
   }
 
   .btn-outline {
-    @apply inline-flex items-center gap-2 border-2 border-white text-white font-display font-bold px-8 py-4 rounded-lg
+    @apply inline-flex items-center gap-2 border-2 border-white text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
            hover:bg-white hover:text-brand-red transition-all duration-300
            focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2;
   }
 
   .btn-outline-red {
-    @apply inline-flex items-center gap-2 border-2 border-brand-red text-brand-red font-display font-bold px-8 py-4 rounded-lg
+    @apply inline-flex items-center gap-2 border-2 border-brand-red text-brand-red font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
            hover:bg-brand-red hover:text-white transition-all duration-300
            focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
   }
 
   .section-label {
-    @apply text-brand-red font-display font-bold text-sm uppercase tracking-[0.2em] mb-3;
+    @apply text-brand-red font-display font-bold text-xs sm:text-sm uppercase tracking-[0.2em] mb-2 sm:mb-3;
   }
 
   .section-title {
-    @apply font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-charcoal leading-tight;
+    @apply font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-brand-charcoal leading-tight;
   }
 
   .section-divider {
-    @apply w-16 h-1 bg-brand-red mt-4 mb-6;
+    @apply w-12 sm:w-16 h-1 bg-brand-red mt-3 sm:mt-4 mb-4 sm:mb-6;
   }
 
   .card-base {
@@ -144,9 +144,26 @@
 }
 
 @layer utilities {
+  /* Dynamic viewport height for mobile */
+  .h-dvh {
+    height: 100dvh;
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+
+  @supports not (height: 100dvh) {
+    .h-dvh {
+      height: 100vh;
+    }
+    .min-h-dvh {
+      min-height: 100vh;
+    }
+  }
+
   .animate-fade-in-up {
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0; /* Starts hidden */
+    opacity: 0;
   }
 
   .animate-reveal-left {
@@ -181,7 +198,50 @@
     animation-delay: 600ms;
   }
 
-  .is-visible {
-    /* Trigger class applied by Intersection Observer */
+  /* Mobile text utilities */
+  .text-mobile-sm {
+    @apply text-xs sm:text-sm;
+  }
+  .text-mobile-base {
+    @apply text-sm sm:text-base;
+  }
+  .text-mobile-lg {
+    @apply text-base sm:text-lg;
+  }
+
+  /* Mobile spacing utilities */
+  .gap-mobile-sm {
+    @apply gap-1.5 sm:gap-2;
+  }
+  .gap-mobile-base {
+    @apply gap-2 sm:gap-3;
+  }
+  .gap-mobile-lg {
+    @apply gap-3 sm:gap-4;
+  }
+
+  .p-mobile-sm {
+    @apply p-2 sm:p-3;
+  }
+  .p-mobile-base {
+    @apply p-3 sm:p-4;
+  }
+  .p-mobile-lg {
+    @apply p-4 sm:p-6;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.2s ease-out;
   }
 }

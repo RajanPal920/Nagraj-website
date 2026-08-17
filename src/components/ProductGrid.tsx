@@ -9,13 +9,22 @@ export function ProductGrid() {
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>();
   const [gridRef, gridVisible] = useIntersectionObserver<HTMLDivElement>();
 
+  // FIX: Use typeTree keys if types array is empty
+  const productTypes =
+    types && types.length > 0 ? types : Object.keys(typeTree || {});
+
+  console.log("ProductGrid - Fixed:", {
+    productTypes,
+    typeTreeKeys: Object.keys(typeTree || {}),
+  });
+
   return (
     <section id="products" className="section-padding bg-gray-50">
       <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
         {/* Header */}
         <div
           ref={headerRef}
-          className={`text-center mb-14 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`text-center mb-10 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
           <p className="section-label text-brand-red">Our Range</p>
           <h2 className="section-title text-brand-charcoal mx-auto">
@@ -35,14 +44,22 @@ export function ProductGrid() {
             <div className="text-center py-12 text-gray-400 font-body">
               Loading catalogue...
             </div>
+          ) : productTypes.length === 0 ? (
+            <div className="text-center py-12 text-gray-400 font-body">
+              No product types available
+            </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {types.map((type, index) => {
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {productTypes.map((type, index) => {
                 const groups = typeTree[type] || [];
+                // Calculate count based on your data structure
                 const count = groups.reduce(
                   (acc, g) =>
                     acc +
-                    g.categories.reduce((c, cat) => c + cat.products.length, 0),
+                    (g.categories?.reduce(
+                      (c, cat) => c + (cat.products?.length || 0),
+                      0,
+                    ) || 0),
                   0,
                 );
                 const image = getProductImage(type, undefined, type);
@@ -52,37 +69,41 @@ export function ProductGrid() {
                   <article
                     key={type}
                     id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}`}
-                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}`}
+                    className={`card-base flex flex-col group overflow-hidden bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${
+                      gridVisible
+                        ? `animate-fade-in-up stagger-${(index % 4) + 1}`
+                        : "opacity-0"
+                    }`}
                   >
-                    {/* Image Header */}
-                    <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+                    {/* Image Header - Reduced height */}
+                    <div className="relative h-32 w-full bg-gray-100 overflow-hidden">
                       <img
                         src={image}
                         alt={type}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         loading="lazy"
                       />
-                      {/* Removed the red gradient overlay */}
                     </div>
 
-                    <div className="p-6 flex flex-col flex-1">
-                      {/* Name */}
-                      <h3 className="font-display font-bold text-xl text-brand-charcoal mb-1 group-hover:text-brand-red transition-colors duration-200">
+                    {/* Content - Compact spacing */}
+                    <div className="p-4 flex flex-col flex-1">
+                      {/* Name - Smaller text */}
+                      <h3 className="font-display font-bold text-base text-brand-charcoal mb-0.5 group-hover:text-brand-red transition-colors duration-200">
                         {type}
                       </h3>
 
-                      {/* Count */}
-                      <p className="font-body text-xs font-semibold text-brand-red uppercase tracking-wider mb-4">
-                        {count} Specifications Available
+                      {/* Count - Smaller text */}
+                      <p className="font-body text-[10px] font-semibold text-brand-red uppercase tracking-wider mb-2">
+                        {count} Specifications
                       </p>
 
-                      {/* Top Groups / Materials */}
+                      {/* Top Groups / Materials - Compact */}
                       {topGroups.length > 0 && (
-                        <ul className="flex flex-wrap gap-1.5 mb-6">
+                        <ul className="flex flex-wrap gap-1 mb-3">
                           {topGroups.map((g) => (
                             <li
                               key={g}
-                              className="text-xs font-body font-medium text-brand-red bg-brand-red/8 px-2 py-0.5 rounded-lg border border-brand-red/15"
+                              className="text-[10px] font-body font-medium text-brand-red bg-brand-red/8 px-1.5 py-0.5 rounded border border-brand-red/15"
                             >
                               {g}
                             </li>
@@ -90,16 +111,16 @@ export function ProductGrid() {
                         </ul>
                       )}
 
-                      {/* CTA */}
-                      <div className="mt-auto pt-2">
+                      {/* CTA - Compact */}
+                      <div className="mt-auto pt-1">
                         <Link
                           to={`/products?type=${encodeURIComponent(type)}`}
                           id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}-link`}
-                          className="inline-flex items-center gap-1.5 text-sm font-display font-bold text-brand-red hover:text-brand-red-dark transition-colors duration-200 group/link"
+                          className="inline-flex items-center gap-1 text-xs font-display font-bold text-brand-red hover:text-brand-red-dark transition-colors duration-200 group/link"
                         >
-                          Explore {type}
+                          Explore
                           <ArrowRight
-                            size={14}
+                            size={12}
                             className="transition-transform group-hover/link:translate-x-1"
                           />
                         </Link>
@@ -113,11 +134,11 @@ export function ProductGrid() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-10 text-center">
           <Link
             to="/products"
             id="products-view-full-catalogue-cta"
-            className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
+            className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
           >
             View Full Product Catalogue
             <ArrowRight size={16} />

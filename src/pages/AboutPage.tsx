@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { PageHero } from "../components/PageHero";
 import {
   Building2,
   MapPin,
@@ -15,6 +14,7 @@ import {
   Award,
   Truck,
   FlaskConical,
+  ChevronDown,
 } from "lucide-react";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
@@ -125,28 +125,110 @@ export function AboutPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <PageHero id="about-hero" bgImage="/images/about.jpg">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl ">
-          {stats.map(({ value, label, icon: Icon }) => (
-            <div
-              key={label}
-              className="bg-white/15 backdrop-blur-md rounded-lg border border-white/20 px-5 py-4 group hover:bg-white/25 hover:border-white/50 transition-all duration-300"
-            >
-              <Icon
-                size={18}
-                className="text-white mb-2 group-hover:scale-110 transition-transform duration-300"
-                strokeWidth={1.75}
-              />
-              <div className="font-display font-extrabold text-2xl text-white">
-                {value}
-              </div>
-              <div className="font-body text-white/80 text-xs mt-0.5 font-medium">
-                {label}
-              </div>
-            </div>
-          ))}
+      <section
+        id="about-hero"
+        className="relative min-h-[60vh] sm:min-h-screen sm:h-screen flex items-end sm:items-center justify-start sm:justify-center overflow-hidden bg-white sm:bg-[#102F3D] md:!bg-transparent pt-20 sm:pt-0"
+        aria-label="About Nagraj Metal Industries"
+      >
+        {/* Desktop Background */}
+        <div className="absolute inset-0 z-0 hidden sm:block">
+          <img
+            src="/images/about.jpg"
+            alt="About Nagraj Metal Industries"
+            className="w-full h-full object-cover object-center select-none"
+            loading="eager"
+          />
         </div>
-      </PageHero>
+
+        {/* Overlay - Light Red on Desktop */}
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
+
+        {/* Bottom gradient shadow - Light Red on Desktop */}
+        <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
+
+        {/* Steel texture overlay */}
+        <div className="absolute inset-0 z-0 steel-texture opacity-0 sm:opacity-40 mix-blend-overlay" />
+
+        {/* Red bottom border line - Desktop only */}
+        <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+
+        {/* ================= MOBILE CONTENT ================= */}
+        <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
+          {/* Hero Image */}
+          <div className="w-full flex justify-center items-center px-4 mt-5">
+            <img
+              src="/images/about.jpg"
+              alt="About Nagraj Metal Industries"
+              className="w-full max-h-[35vh] object-contain rounded-lg"
+            />
+          </div>
+
+          {/* Mobile Content */}
+          <div className="flex-1 px-5 pt-4 pb-6">
+            <div className="inline-flex items-center gap-1.5 mb-3 bg-brand-red/10 border border-brand-red/30 px-3 py-1.5 rounded-full">
+              <Building2 size={10} className="text-brand-red" />
+              <span className="text-brand-charcoal font-display font-bold text-[8px] uppercase tracking-wider">
+                About Us
+              </span>
+            </div>
+
+            <h1 className="text-2xl font-bold text-brand-red uppercase">
+              About Us
+            </h1>
+            <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
+              Nagraj Metal Industries is a dynamic group, established over a
+              decade ago to cater to growing demands of industrial raw
+              materials.
+            </p>
+
+            {/* Mobile Stats */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {stats.map(({ value, label, icon: Icon }) => (
+                <div
+                  key={label}
+                  className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center"
+                >
+                  <Icon size={14} className="text-brand-red mx-auto mb-1" />
+                  <div className="font-display font-extrabold text-base text-brand-charcoal">
+                    {value}
+                  </div>
+                  <div className="font-body text-gray-500 text-[8px] font-medium">
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile CTA */}
+            <div className="relative z-20 pointer-events-auto">
+              <Link
+                to="/contact"
+                id="about-cta-mobile"
+                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Enquire Now
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+        {/* Scroll indicator - Desktop only */}
+        <a
+          href="#about-story"
+          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
+          aria-label="Scroll to About section"
+        >
+          <ChevronDown
+            size={20}
+            className="sm:w-[28px] sm:h-[28px]"
+            strokeWidth={1.5}
+          />
+        </a>
+      </section>
 
       {/* ── Our Story ────────────────────────────────────────────────────── */}
       <section id="about-story" className="section-padding bg-white">
@@ -157,10 +239,6 @@ export function AboutPage() {
               <div className="absolute inset-0 bg-gray-100" />
               <img
                 src="/images/warehouse.jpg"
-                onError={(e) => {
-                  e.currentTarget.src =
-                    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1000";
-                }}
                 alt="Nagraj Metal Industries warehouse facility"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
