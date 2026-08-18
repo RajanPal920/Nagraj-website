@@ -38,6 +38,13 @@ import {
   Thermometer,
   Weight,
   Ruler as RulerIcon,
+  Thermometer as ThermometerIcon,
+  Timer,
+  Fan,
+  AlertCircle,
+  Building,
+  RefreshCw,
+  Search,
 } from "lucide-react";
 import { useProduct } from "../hooks/useProduct";
 import {
@@ -52,14 +59,24 @@ interface StockSizeCategory {
   items: string[];
 }
 
+interface HeatTreatment {
+  condition?: string;
+  temperature?: string;
+  holding_time?: string;
+  cooling?: string;
+  notes?: string;
+}
+
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
 
 function looksLikeCityDump(str: string): boolean {
+  if (typeof str !== "string" || !str) return false;
   const commaRatio = (str.match(/,/g) ?? []).length / str.length;
   return commaRatio > 0.05 && str.length > 200;
 }
 
 function cleanText(raw: string): string {
+  if (typeof raw !== "string") return "";
   return raw.replace(/^Description\s*/i, "").trim();
 }
 
@@ -88,7 +105,10 @@ function extractKeySpecs(
   const result: { label: string; value: string; icon: React.ElementType }[] =
     [];
 
+  if (!specs || !Array.isArray(specs)) return result;
+
   for (const spec of specs) {
+    if (typeof spec !== "string") continue;
     for (const [key, config] of Object.entries(specMap)) {
       if (spec.toLowerCase().includes(key.toLowerCase())) {
         const parts = spec.split(":");
@@ -117,6 +137,7 @@ function extractKeySpecs(
 }
 
 function getFeatureIcon(feature: string): React.ElementType {
+  if (typeof feature !== "string") return CheckCircle2;
   const lower = feature.toLowerCase();
   if (
     lower.includes("strength") ||
@@ -159,6 +180,7 @@ function getFeatureIcon(feature: string): React.ElementType {
 }
 
 function getAvailabilityText(specs: string[]): string {
+  if (!specs || !Array.isArray(specs)) return "Available on Request";
   const specStr = specs.join(" ");
   if (specStr.toLowerCase().includes("stock")) return "In Stock";
   if (
@@ -171,6 +193,8 @@ function getAvailabilityText(specs: string[]): string {
 }
 
 function formatChemicalValue(entry: any): string {
+  if (!entry || typeof entry !== "object") return "—";
+
   if (entry.value && entry.value !== "") {
     return entry.value;
   }
@@ -203,6 +227,8 @@ function formatChemicalValue(entry: any): string {
 }
 
 function formatMechanicalValue(entry: any): string {
+  if (!entry || typeof entry !== "object") return "—";
+
   if (
     entry.value &&
     entry.value !== "—" &&
@@ -284,8 +310,23 @@ function hasMechanicalData(entry: any): boolean {
     entry.max_value !== "" &&
     entry.max_value !== 0 &&
     entry.max_value !== "0";
+  const hasPropertyValue =
+    entry.property_value &&
+    entry.property_value !== "—" &&
+    entry.property_value !== "";
 
-  return hasName && (hasValue || hasMin || hasMax);
+  return hasName && (hasValue || hasMin || hasMax || hasPropertyValue);
+}
+
+function hasHeatTreatmentData(entry: any): boolean {
+  if (!entry || typeof entry !== "object") return false;
+  return !!(
+    entry.condition ||
+    entry.temperature ||
+    entry.holding_time ||
+    entry.cooling ||
+    entry.notes
+  );
 }
 
 /* ─── Current Stock Components ────────────────────────────────────────────── */
@@ -514,7 +555,6 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
     return data.filter(hasChemicalData);
   }, [data]);
 
-  // Return null if no valid data - this hides the section entirely
   if (!validData.length) {
     return null;
   }
@@ -538,20 +578,9 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
           </thead>
           <tbody>
             {displayData.map((entry, i) => {
-              const isBalance = [
-                "fe",
-                "al",
-                "co",
-                "ti",
-                "cu",
-                "ni",
-                "co",
-                "fe",
-                "al",
-                "ti",
-                "cu",
-                "ni",
-              ].includes(entry.element?.toLowerCase() || "");
+              const isBalance = ["fe", "al", "co", "ti", "cu", "ni"].includes(
+                entry.element?.toLowerCase() || "",
+              );
               const value = formatChemicalValue(entry);
 
               return (
@@ -603,12 +632,11 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
 function MechanicalPropertiesTable({ data }: { data: any[] }) {
   const [showAll, setShowAll] = useState(false);
 
-  const validData = useMemo(
-    () => data?.filter(hasMechanicalData) || [],
-    [data],
-  );
+  const validData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter(hasMechanicalData);
+  }, [data]);
 
-  // Return null if no valid data - this hides the section entirely
   if (!validData.length) {
     return null;
   }
@@ -640,6 +668,12 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
                 entry.condition !== "—" &&
                 entry.condition !== "";
 
+              let displayValue = formatMechanicalValue(entry);
+
+              if (displayValue === "—" && entry.property_value) {
+                displayValue = entry.property_value;
+              }
+
               return (
                 <tr
                   key={i}
@@ -648,10 +682,10 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
                   } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
                 >
                   <td className="px-6 py-4 font-semibold text-brand-charcoal text-base">
-                    {entry.property_name}
+                    {entry.property_name || entry.name || "—"}
                   </td>
                   <td className="px-6 py-4 text-gray-700 text-base font-mono font-semibold">
-                    {formatMechanicalValue(entry)}
+                    {displayValue}
                   </td>
                   <td className="px-6 py-4 text-gray-600 text-sm">
                     {hasCondition ? (
@@ -683,6 +717,96 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
             <>
               <ChevronDown size={18} />
               Show All {validData.length} Properties
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ─── Heat Treatment Table ────────────────────────────────────────────────── */
+
+function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const validData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter(hasHeatTreatmentData);
+  }, [data]);
+
+  if (!validData.length) {
+    return null;
+  }
+
+  const displayData = showAll ? validData : validData.slice(0, 5);
+  const hasMore = validData.length > 5;
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm font-body">
+          <thead>
+            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
+              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+                Condition
+              </th>
+              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+                Temperature
+              </th>
+              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+                Holding Time
+              </th>
+              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+                Cooling
+              </th>
+              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+                Notes
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.map((entry, i) => (
+              <tr
+                key={i}
+                className={`transition-all ${
+                  i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
+                } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
+              >
+                <td className="px-6 py-4 font-semibold text-brand-charcoal text-base">
+                  {entry.condition || "—"}
+                </td>
+                <td className="px-6 py-4 text-gray-700 text-base font-mono">
+                  {entry.temperature || "—"}
+                </td>
+                <td className="px-6 py-4 text-gray-700 text-base font-mono">
+                  {entry.holding_time || "—"}
+                </td>
+                <td className="px-6 py-4 text-gray-700 text-base">
+                  {entry.cooling || "—"}
+                </td>
+                <td className="px-6 py-4 text-gray-600 text-sm">
+                  {entry.notes || "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp size={18} />
+              Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDown size={18} />
+              Show All {validData.length} Heat Treatment Cycles
             </>
           )}
         </button>
@@ -843,9 +967,18 @@ function ChipList({
 }
 
 function BulletList({ items }: { items: string[] }) {
-  const filtered =
-    items?.filter((s) => s?.trim().length > 2 && !looksLikeCityDump(s)) || [];
+  if (!items || !Array.isArray(items)) return null;
+
+  const filtered = items.filter(
+    (s) =>
+      s &&
+      typeof s === "string" &&
+      s.trim().length > 2 &&
+      !looksLikeCityDump(s),
+  );
+
   if (!filtered.length) return null;
+
   return (
     <ul className="space-y-2">
       {filtered.map((item, i) => (
@@ -910,6 +1043,168 @@ export function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const { product, loading, error } = useProduct(slug);
 
+  // ✅ ALL HOOKS MUST BE AT THE TOP - BEFORE ANY EARLY RETURNS
+  const [showAll, setShowAll] = useState(false);
+
+  // ✅ Single useMemo for all product checks
+  const productChecks = useMemo(() => {
+    if (!product) {
+      return {
+        categoryLabel: "",
+        typeLabel: "",
+        isSpecialized: false,
+        descriptionText: "",
+        productData: null,
+        heroImage: "",
+        heroAlt: "",
+        hasChem: false,
+        hasMech: false,
+        hasStockSizes: false,
+        hasCurrentStock: false,
+        hasFeatures: false,
+        hasApplications: false,
+        hasTests: false,
+        hasMaterialGrades: false,
+        hasEquivalentGrades: false,
+        hasSpecifications: false,
+        hasHeatTreatment: false,
+        hasAvailability: false,
+        hasCommonTradeNames: false,
+        hasPeopleAlsoSearch: false,
+        packingText: null,
+        keySpecs: [],
+        availability: "Available on Request",
+        hasMetaDescription: false,
+      };
+    }
+
+    const productData = product as any;
+
+    return {
+      categoryLabel: getCategoryDisplayLabel(product.category),
+      typeLabel: getTypeDisplayLabel(product.product_type),
+      isSpecialized: product.category !== "Products",
+      descriptionText: product.description_text
+        ? cleanText(product.description_text)
+        : "",
+      productData: productData,
+      heroImage:
+        product.images?.[0]?.url ||
+        getProductImage(product.product_type, product.category, product.title),
+      heroAlt:
+        product.images?.[0]?.alt ||
+        `${getTypeDisplayLabel(product.product_type)} — ${product.title}`,
+      hasChem: product.chemical_composition?.some(hasChemicalData) || false,
+      hasMech: product.mechanical_properties?.some(hasMechanicalData) || false,
+      hasStockSizes:
+        Array.isArray(product.stock_sizes) && product.stock_sizes.length > 0,
+      hasCurrentStock: (() => {
+        if (!product.current_stock) return false;
+        if (Array.isArray(product.current_stock))
+          return product.current_stock.length > 0;
+        if (typeof product.current_stock === "string")
+          return product.current_stock.trim().length > 0;
+        if (typeof product.current_stock === "object")
+          return Object.keys(product.current_stock).length > 0;
+        return false;
+      })(),
+      hasFeatures:
+        product.features?.some(
+          (f) =>
+            f &&
+            typeof f === "string" &&
+            f.trim().length > 3 &&
+            !looksLikeCityDump(f),
+        ) || false,
+      hasApplications:
+        product.applications?.some(
+          (a) =>
+            a &&
+            typeof a === "string" &&
+            a.trim().length > 3 &&
+            !looksLikeCityDump(a),
+        ) || false,
+      hasTests:
+        product.tests?.some(
+          (t) =>
+            t &&
+            typeof t === "string" &&
+            t.trim().length > 3 &&
+            !looksLikeCityDump(t),
+        ) || false,
+      hasMaterialGrades:
+        product.material_grades?.some(
+          (g) => g && typeof g === "string" && g.trim().length > 0,
+        ) || false,
+      hasEquivalentGrades:
+        product.equivalent_grades?.some(
+          (g) => g && typeof g === "string" && g.trim().length > 0,
+        ) || false,
+      hasSpecifications:
+        product.specifications?.some(
+          (s) =>
+            s &&
+            typeof s === "string" &&
+            s.trim().length > 0 &&
+            !looksLikeCityDump(s),
+        ) || false,
+      hasHeatTreatment:
+        productData?.heat_treatment?.some(hasHeatTreatmentData) || false,
+      hasAvailability:
+        productData?.availability?.some(
+          (a: string) => a && typeof a === "string" && a.trim().length > 0,
+        ) || false,
+      hasCommonTradeNames:
+        productData?.common_trade_names?.some(
+          (n: string) => n && typeof n === "string" && n.trim().length > 0,
+        ) || false,
+      hasPeopleAlsoSearch:
+        productData?.people_also_search?.some(
+          (p: string) => p && typeof p === "string" && p.trim().length > 0,
+        ) || false,
+      packingText:
+        product.packing &&
+        typeof product.packing === "string" &&
+        !looksLikeCityDump(product.packing)
+          ? product.packing
+          : null,
+      keySpecs: extractKeySpecs(product.specifications || []),
+      availability: getAvailabilityText(product.specifications || []),
+      hasMetaDescription:
+        product.meta_description && product.meta_description.length > 0,
+    };
+  }, [product]);
+
+  // Destructure all values from the single useMemo
+  const {
+    categoryLabel,
+    typeLabel,
+    isSpecialized,
+    descriptionText,
+    productData,
+    heroImage,
+    heroAlt,
+    hasChem,
+    hasMech,
+    hasStockSizes,
+    hasCurrentStock,
+    hasFeatures,
+    hasApplications,
+    hasTests,
+    hasMaterialGrades,
+    hasEquivalentGrades,
+    hasSpecifications,
+    hasHeatTreatment,
+    hasAvailability,
+    hasCommonTradeNames,
+    hasPeopleAlsoSearch,
+    packingText,
+    keySpecs,
+    availability,
+    hasMetaDescription,
+  } = productChecks;
+
+  // ✅ NOW it's safe to have early returns - after all hooks are called
   if (loading) return <Skeleton />;
   if (error) {
     return (
@@ -950,76 +1245,7 @@ export function ProductPage() {
     );
   }
 
-  /* ── Data prep ── */
-  const categoryLabel = getCategoryDisplayLabel(product.category);
-  const typeLabel = getTypeDisplayLabel(product.product_type);
-  const isSpecialized = product.category !== "Products";
-  const descriptionText = cleanText(product.description_text);
-
-  // Improved checks that validate actual data content
-  const hasChem = product.chemical_composition?.some(hasChemicalData) || false;
-  const hasMech =
-    product.mechanical_properties?.some(hasMechanicalData) || false;
-  const hasStockSizes =
-    Array.isArray(product.stock_sizes) && product.stock_sizes.length > 0;
-
-  const hasCurrentStock = (() => {
-    if (!product.current_stock) return false;
-    if (Array.isArray(product.current_stock))
-      return product.current_stock.length > 0;
-    if (typeof product.current_stock === "string")
-      return product.current_stock.trim().length > 0;
-    if (typeof product.current_stock === "object")
-      return Object.keys(product.current_stock).length > 0;
-    return false;
-  })();
-
-  // Filter out empty/meaningless data
-  const hasFeatures =
-    product.features?.length > 0 &&
-    product.features.some((f) => f.trim().length > 3 && !looksLikeCityDump(f));
-
-  const hasApplications =
-    product.applications?.length > 0 &&
-    product.applications.some(
-      (a) => a.trim().length > 3 && !looksLikeCityDump(a),
-    );
-
-  const hasTests =
-    product.tests?.length > 0 &&
-    product.tests.some((t) => t.trim().length > 3 && !looksLikeCityDump(t));
-
-  const hasMaterialGrades =
-    product.material_grades?.length > 0 &&
-    product.material_grades.some((g) => g.trim().length > 0);
-
-  const hasEquivalentGrades =
-    product.equivalent_grades?.length > 0 &&
-    product.equivalent_grades.some((g) => g.trim().length > 0);
-
-  const hasSpecifications =
-    product.specifications?.length > 0 &&
-    product.specifications.some(
-      (s) => s.trim().length > 0 && !looksLikeCityDump(s),
-    );
-
-  const heroImage = getProductImage(
-    product.product_type,
-    product.category,
-    product.title,
-  );
-
-  const packingText =
-    product.packing && !looksLikeCityDump(product.packing)
-      ? product.packing
-      : null;
-
-  const keySpecs = extractKeySpecs(product.specifications || []);
-  const availability = getAvailabilityText(product.specifications || []);
-
-  const hasMetaDescription =
-    product.meta_description && product.meta_description.length > 0;
-
+  // ── Rest of your component JSX ──
   return (
     <>
       <title>
@@ -1033,48 +1259,13 @@ export function ProductPage() {
         }
       />
 
-      {/* <nav
-        aria-label="Breadcrumb"
-        className="bg-gray-50/80 border-b border-gray-100/80 px-4 sm:px-8 lg:px-16 xl:px-24 py-3 pt-20 backdrop-blur-sm"
-      >
-        <ol className="max-w-7xl mx-auto flex items-center gap-2 text-xs font-body text-gray-400 flex-wrap">
-          <li>
-            <Link to="/" className="hover:text-brand-red transition-colors">
-              Home
-            </Link>
-          </li>
-          <li className="text-gray-400">/</li>
-          <li>
-            <Link
-              to="/products"
-              className="hover:text-brand-red transition-colors"
-            >
-              Products
-            </Link>
-          </li>
-          <li className="text-gray-400">/</li>
-          <li>
-            <Link
-              to={`/products?category=${encodeURIComponent(product.category)}`}
-              className="hover:text-brand-red transition-colors"
-            >
-              {categoryLabel}
-            </Link>
-          </li>
-          <li className="text-gray-400">/</li>
-          <li className="text-gray-700 font-semibold truncate max-w-[160px] sm:max-w-xs">
-            {product.title}
-          </li>
-        </ol>
-      </nav> */}
-
       <div className="bg-white">
         {/* ── Hero Section ────────────────────────────────────────────── */}
         <section id="product-hero" className="relative">
           <div className="relative w-full h-[320px] sm:h-[420px] lg:h-[500px] bg-gray-100 overflow-hidden">
             <img
               src={heroImage}
-              alt={`${typeLabel} — ${product.title}`}
+              alt={heroAlt}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
@@ -1181,7 +1372,6 @@ export function ProductPage() {
                   </h2>
                 </div>
 
-                {/* Meta Description */}
                 {hasMetaDescription && (
                   <div className="bg-gradient-to-r from-brand-red/5 to-transparent border-l-4 border-brand-red rounded-r-xl p-5 mb-4">
                     <p className="font-body text-gray-600 text-base leading-relaxed">
@@ -1190,7 +1380,6 @@ export function ProductPage() {
                   </div>
                 )}
 
-                {/* Description */}
                 {descriptionText && descriptionText.length > 20 && (
                   <div className="space-y-4 text-gray-700 leading-relaxed">
                     {descriptionText
@@ -1219,7 +1408,11 @@ export function ProductPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {product.features
                       .filter(
-                        (f) => f.trim().length > 2 && !looksLikeCityDump(f),
+                        (f) =>
+                          f &&
+                          typeof f === "string" &&
+                          f.trim().length > 2 &&
+                          !looksLikeCityDump(f),
                       )
                       .map((feature, i) => (
                         <FeatureCard key={i} feature={feature} index={i} />
@@ -1313,6 +1506,53 @@ export function ProductPage() {
                 </section>
               )}
 
+              {/* Heat Treatment Section - Only show if hasHeatTreatment is true */}
+              {hasHeatTreatment && (
+                <section id="product-heat-treatment" className="pt-0">
+                  <SectionHeading
+                    icon={ThermometerIcon}
+                    label="Heat Treatment"
+                    description="Heat treatment cycles and conditions"
+                  />
+                  <HeatTreatmentTable data={productData.heat_treatment} />
+                </section>
+              )}
+
+              {/* Availability Section - Only show if hasAvailability is true */}
+              {hasAvailability && (
+                <section id="product-availability" className="pt-0">
+                  <SectionHeading
+                    icon={Building}
+                    label="Available Forms"
+                    description="Product forms and shapes available"
+                  />
+                  <ChipList items={productData.availability} color="gold" />
+                </section>
+              )}
+
+              {/* Common Trade Names Section - Only show if hasCommonTradeNames is true */}
+              {hasCommonTradeNames && (
+                <section id="product-trade-names" className="pt-0">
+                  <SectionHeading
+                    icon={RefreshCw}
+                    label="Common Trade Names"
+                    description="Also known as"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {productData.common_trade_names.map(
+                      (name: string, i: number) => (
+                        <span
+                          key={i}
+                          className="text-sm font-body px-4 py-2 rounded-full bg-brand-red/5 border border-brand-red/20 text-brand-charcoal hover:bg-brand-red/10 transition-colors"
+                        >
+                          {name}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </section>
+              )}
+
               {/* Current Stock Section - Only show if hasCurrentStock is true */}
               {hasCurrentStock && (
                 <section id="product-current-stock" className="pt-0">
@@ -1366,6 +1606,29 @@ export function ProductPage() {
                     <p className="font-body text-gray-600 text-base leading-relaxed">
                       {packingText}
                     </p>
+                  </div>
+                </section>
+              )}
+
+              {/* People Also Search Section - Only show if hasPeopleAlsoSearch is true */}
+              {hasPeopleAlsoSearch && (
+                <section id="product-people-also-search" className="pt-0">
+                  <SectionHeading
+                    icon={Search}
+                    label="People Also Search"
+                    description="Related search terms"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {productData.people_also_search.map(
+                      (term: string, i: number) => (
+                        <span
+                          key={i}
+                          className="text-sm font-body px-4 py-2 rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-brand-red/5 hover:border-brand-red/30 hover:text-brand-red transition-colors"
+                        >
+                          {term}
+                        </span>
+                      ),
+                    )}
                   </div>
                 </section>
               )}

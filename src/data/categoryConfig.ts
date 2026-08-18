@@ -81,6 +81,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
 };
 
 // ── Product type display names ────────────────────────────────────────────────
+// src/data/categoryConfig.ts
 export const TYPE_LABELS: Record<string, string> = {
   Bar: "Bars & Rods",
   Plate: "Plates & Sheets",
@@ -91,7 +92,6 @@ export const TYPE_LABELS: Record<string, string> = {
   Flange: "Flanges",
   Forging: "Forgings",
 };
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 export function getCategoryDisplayLabel(raw: string): string {

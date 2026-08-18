@@ -46,6 +46,18 @@ export interface ScrapedProduct {
   attachments: string[];
   scraped_at: string;
   status: string;
+
+  // 🆕 NEW FIELDS
+  heat_treatment?: Array<{
+    condition?: string;
+    temperature?: string;
+    holding_time?: string;
+    cooling?: string;
+    notes?: string;
+  }>;
+  availability?: string[];
+  common_trade_names?: string[];
+  people_also_search?: string[];
 }
 
 // ── Module-level product data ──────────────────────────────────────────────
@@ -185,13 +197,31 @@ export function searchProducts(query: string): ScrapedProduct[] {
       p.category?.toLowerCase().includes(lowerQuery) || false;
     const typeMatch =
       p.product_type?.toLowerCase().includes(lowerQuery) || false;
+
+    // 🆕 Search in new fields
+    const heatTreatmentMatch =
+      p.heat_treatment?.some(
+        (h) =>
+          h.condition?.toLowerCase().includes(lowerQuery) ||
+          h.temperature?.toLowerCase().includes(lowerQuery),
+      ) || false;
+    const availabilityMatch =
+      p.availability?.some((a) => a.toLowerCase().includes(lowerQuery)) ||
+      false;
+    const tradeNameMatch =
+      p.common_trade_names?.some((n) => n.toLowerCase().includes(lowerQuery)) ||
+      false;
+
     return (
       titleMatch ||
       descMatch ||
       gradeMatch ||
       specMatch ||
       categoryMatch ||
-      typeMatch
+      typeMatch ||
+      heatTreatmentMatch ||
+      availabilityMatch ||
+      tradeNameMatch
     );
   });
 }

@@ -31,19 +31,49 @@ import {
 import {
   getCategoryDisplayLabel,
   getTypeDisplayLabel,
+  TYPE_LABELS,
 } from "../data/categoryConfig";
 import { getProductImage } from "../data/productImages";
+
+// ─── Helper: Get raw product type from display label ──────────────────────
+
+function getRawProductType(displayLabel: string): string | undefined {
+  // TYPE_LABELS maps: { "Bar": "Bars & Rods", "Plate": "Plates & Sheets", ... }
+  // Find the key (raw type) where the value (display label) matches
+  for (const [rawType, displayName] of Object.entries(TYPE_LABELS)) {
+    if (displayName === displayLabel) {
+      return rawType;
+    }
+  }
+  return undefined;
+}
+
+/* ─── Helper: Get Product Image ───────────────────────────────────────────── */
+
+function getProductImageUrl(product: ScrapedProduct): {
+  url: string;
+  alt: string;
+} {
+  // Use first image from images array if available
+  if (product.images && product.images.length > 0) {
+    return {
+      url: product.images[0].url,
+      alt: product.images[0].alt || product.title,
+    };
+  }
+  // Fallback to default image based on product type/category
+  return {
+    url: getProductImage(product.product_type, product.category, product.title),
+    alt: product.title,
+  };
+}
 
 /* ─── Product Card Component ──────────────────────────────────────────────── */
 
 function ProductCard({ product }: { product: ScrapedProduct }) {
   const categoryLabel = getCategoryDisplayLabel(product.category);
   const typeLabel = getTypeDisplayLabel(product.product_type);
-  const imageUrl = getProductImage(
-    product.product_type,
-    product.category,
-    product.title,
-  );
+  const { url: imageUrl, alt: imageAlt } = getProductImageUrl(product);
 
   const hasGrades = product.material_grades?.length > 0;
   const hasSpecs = product.specifications?.length > 0;
@@ -74,7 +104,7 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
       <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         <img
           src={imageUrl}
-          alt={product.title}
+          alt={imageAlt}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           loading="lazy"
         />
@@ -244,7 +274,9 @@ function FeaturedCategories({ categories }: { categories: string[] }) {
             key={cat}
             to={`/products?category=${encodeURIComponent(cat)}`}
             className={`px-4 py-2 rounded-full text-xs font-body font-medium transition-all duration-200 border ${
-              window.location.search.includes(`category=${encodeURIComponent(cat)}`)
+              window.location.search.includes(
+                `category=${encodeURIComponent(cat)}`,
+              )
                 ? "bg-brand-red text-white border-brand-red shadow-sm"
                 : "bg-gray-100 hover:bg-brand-red hover:text-white text-gray-600 border-transparent hover:border-brand-red/30"
             }`}
@@ -273,6 +305,8 @@ export function ProductsPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"title" | "date">("date");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const productsPerPage = 12;
 
   useEffect(() => {
@@ -325,8 +359,12 @@ export function ProductsPage() {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
+    // 🆕 FIX: Convert display label to raw product_type for filtering
     if (selectedType) {
-      filtered = filtered.filter((p) => p.product_type === selectedType);
+      const rawType = getRawProductType(selectedType);
+      if (rawType) {
+        filtered = filtered.filter((p) => p.product_type === rawType);
+      }
     }
 
     if (sortBy === "title") {
@@ -356,6 +394,8 @@ export function ProductsPage() {
     setSelectedType("");
     setSearchParams({});
     setCurrentPage(1);
+    setShowCategoryDropdown(false);
+    setShowTypeDropdown(false);
   };
 
   const updateFilter = (key: string, value: string) => {
@@ -367,6 +407,8 @@ export function ProductsPage() {
     }
     setSearchParams(params);
     setCurrentPage(1);
+    setShowCategoryDropdown(false);
+    setShowTypeDropdown(false);
   };
 
   if (loading) {
@@ -517,51 +559,117 @@ export function ProductsPage() {
               Filters:
             </span>
 
-            <button
-              onClick={() => {
-                if (categories.length === 0) return;
-                const nextCategory = selectedCategory
-                  ? ""
-                  : categories[0] || "";
-                setSelectedCategory(nextCategory);
-                updateFilter("category", nextCategory);
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-medium transition-all ${
-                selectedCategory
-                  ? "bg-brand-red text-white shadow-sm"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              <Tag size={10} />
-              {selectedCategory
-                ? getCategoryDisplayLabel(selectedCategory)
-                : "Category"}
-              <ChevronDown
-                size={10}
-                className={selectedCategory ? "text-white/80" : "text-gray-400"}
-              />
-            </button>
+            {/* Category Filter Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-medium transition-all ${
+                  selectedCategory
+                    ? "bg-brand-red text-white shadow-sm"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <Tag size={10} />
+                {selectedCategory
+                  ? getCategoryDisplayLabel(selectedCategory)
+                  : "Category"}
+                <ChevronDown
+                  size={10}
+                  className={
+                    selectedCategory ? "text-white/80" : "text-gray-400"
+                  }
+                />
+              </button>
+              {showCategoryDropdown && categories.length > 0 && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 max-h-60 overflow-y-auto">
+                  <button
+                    onClick={() => {
+                      setSelectedCategory("");
+                      updateFilter("category", "");
+                      setShowCategoryDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm font-body hover:bg-gray-50 transition-colors ${
+                      !selectedCategory
+                        ? "text-brand-red font-semibold"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        updateFilter("category", cat);
+                        setShowCategoryDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm font-body hover:bg-gray-50 transition-colors ${
+                        selectedCategory === cat
+                          ? "bg-brand-red/10 text-brand-red font-semibold"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {getCategoryDisplayLabel(cat)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            <button
-              onClick={() => {
-                if (productTypes.length === 0) return;
-                const nextType = selectedType ? "" : productTypes[0] || "";
-                setSelectedType(nextType);
-                updateFilter("type", nextType);
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-medium transition-all ${
-                selectedType
-                  ? "bg-brand-red text-white shadow-sm"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              <Layers size={10} />
-              {selectedType ? getTypeDisplayLabel(selectedType) : "Type"}
-              <ChevronDown
-                size={10}
-                className={selectedType ? "text-white/80" : "text-gray-400"}
-              />
-            </button>
+            {/* Type Filter Dropdown - Now showing unique display labels */}
+            <div className="relative">
+              <button
+                onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-body font-medium transition-all ${
+                  selectedType
+                    ? "bg-brand-red text-white shadow-sm"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <Layers size={10} />
+                {selectedType ? selectedType : "Type"}
+                <ChevronDown
+                  size={10}
+                  className={selectedType ? "text-white/80" : "text-gray-400"}
+                />
+              </button>
+              {showTypeDropdown && productTypes.length > 0 && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 max-h-60 overflow-y-auto">
+                  <button
+                    onClick={() => {
+                      setSelectedType("");
+                      updateFilter("type", "");
+                      setShowTypeDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm font-body hover:bg-gray-50 transition-colors ${
+                      !selectedType
+                        ? "text-brand-red font-semibold"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    All Types
+                  </button>
+                  {productTypes.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        setSelectedType(type);
+                        updateFilter("type", type);
+                        setShowTypeDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm font-body hover:bg-gray-50 transition-colors ${
+                        selectedType === type
+                          ? "bg-brand-red/10 text-brand-red font-semibold"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {(selectedCategory || selectedType || searchTerm) && (
               <button
@@ -611,7 +719,7 @@ export function ProductsPage() {
                   <option value="">All Types</option>
                   {productTypes.map((type) => (
                     <option key={type} value={type}>
-                      {getTypeDisplayLabel(type)}
+                      {type}
                     </option>
                   ))}
                 </select>
