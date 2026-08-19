@@ -48,6 +48,11 @@ function getRawProductType(displayLabel: string): string | undefined {
   return undefined;
 }
 
+// ─── Helper: Get display label from raw product type ──────────────────────
+function getDisplayLabelFromRaw(rawType: string): string {
+  return TYPE_LABELS[rawType as keyof typeof TYPE_LABELS] || rawType;
+}
+
 /* ─── Helper: Get Product Image ───────────────────────────────────────────── */
 
 function getProductImageUrl(product: ScrapedProduct): {
@@ -309,6 +314,18 @@ export function ProductsPage() {
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const productsPerPage = 12;
 
+  // Get unique product types with display labels
+  const uniqueProductTypes = useMemo(() => {
+    const uniqueTypes = new Set<string>();
+    products.forEach((product) => {
+      if (product.product_type) {
+        const displayLabel = getTypeDisplayLabel(product.product_type);
+        uniqueTypes.add(displayLabel);
+      }
+    });
+    return Array.from(uniqueTypes).sort();
+  }, [products]);
+
   useEffect(() => {
     const loadProductsData = () => {
       try {
@@ -327,8 +344,16 @@ export function ProductsPage() {
         }
 
         const typeParam = searchParams.get("type");
-        if (typeParam && allTypes.includes(typeParam)) {
-          setSelectedType(typeParam);
+        if (typeParam) {
+          // Check if the typeParam is a raw type or display label
+          const displayLabel = getTypeDisplayLabel(typeParam);
+          // If it's a raw type that has a display label, use the display label
+          if (displayLabel !== typeParam) {
+            setSelectedType(displayLabel);
+          } else {
+            // It might already be a display label
+            setSelectedType(typeParam);
+          }
         }
       } catch (error) {
         console.error("Error loading products:", error);
@@ -359,11 +384,17 @@ export function ProductsPage() {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
-    // 🆕 FIX: Convert display label to raw product_type for filtering
+    // FIX: Filter by display label - convert display label to raw type for comparison
     if (selectedType) {
       const rawType = getRawProductType(selectedType);
       if (rawType) {
         filtered = filtered.filter((p) => p.product_type === rawType);
+      } else {
+        // If no raw type found, try to match directly (fallback)
+        filtered = filtered.filter((p) => {
+          const displayLabel = getTypeDisplayLabel(p.product_type);
+          return displayLabel === selectedType;
+        });
       }
     }
 
@@ -617,7 +648,7 @@ export function ProductsPage() {
               )}
             </div>
 
-            {/* Type Filter Dropdown - Now showing unique display labels */}
+            {/* Type Filter Dropdown - FIXED: Now using uniqueProductTypes from actual products */}
             <div className="relative">
               <button
                 onClick={() => setShowTypeDropdown(!showTypeDropdown)}
@@ -634,7 +665,7 @@ export function ProductsPage() {
                   className={selectedType ? "text-white/80" : "text-gray-400"}
                 />
               </button>
-              {showTypeDropdown && productTypes.length > 0 && (
+              {showTypeDropdown && uniqueProductTypes.length > 0 && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 max-h-60 overflow-y-auto">
                   <button
                     onClick={() => {
@@ -650,21 +681,23 @@ export function ProductsPage() {
                   >
                     All Types
                   </button>
-                  {productTypes.map((type) => (
+                  {uniqueProductTypes.map((typeDisplay) => (
                     <button
-                      key={type}
+                      key={typeDisplay}
                       onClick={() => {
-                        setSelectedType(type);
-                        updateFilter("type", type);
+                        setSelectedType(typeDisplay);
+                        // Get raw type for URL parameter
+                        const rawType = getRawProductType(typeDisplay);
+                        updateFilter("type", rawType || typeDisplay);
                         setShowTypeDropdown(false);
                       }}
                       className={`w-full text-left px-4 py-2 text-sm font-body hover:bg-gray-50 transition-colors ${
-                        selectedType === type
+                        selectedType === typeDisplay
                           ? "bg-brand-red/10 text-brand-red font-semibold"
                           : "text-gray-700"
                       }`}
                     >
-                      {type}
+                      {typeDisplay}
                     </button>
                   ))}
                 </div>
@@ -712,14 +745,15 @@ export function ProductsPage() {
                   value={selectedType}
                   onChange={(e) => {
                     setSelectedType(e.target.value);
-                    updateFilter("type", e.target.value);
+                    const rawType = getRawProductType(e.target.value);
+                    updateFilter("type", rawType || e.target.value);
                   }}
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-brand-red outline-none text-sm bg-gray-50/50 focus:bg-white transition-all"
                 >
                   <option value="">All Types</option>
-                  {productTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
+                  {uniqueProductTypes.map((typeDisplay) => (
+                    <option key={typeDisplay} value={typeDisplay}>
+                      {typeDisplay}
                     </option>
                   ))}
                 </select>

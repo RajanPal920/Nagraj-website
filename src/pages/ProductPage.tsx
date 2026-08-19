@@ -1271,10 +1271,10 @@ export function ProductPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
 
-            {/* Badges */}
-            <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+            {/* Badges - Fixed for mobile */}
+            <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 flex flex-wrap gap-1.5 sm:gap-2">
               <span
-                className={`text-sm font-display font-bold px-4 py-1.5 rounded-full ${
+                className={`text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full ${
                   isSpecialized
                     ? "bg-brand-red text-white"
                     : "bg-white/90 text-brand-charcoal"
@@ -1282,36 +1282,36 @@ export function ProductPage() {
               >
                 {categoryLabel}
               </span>
-              <span className="text-sm font-display font-bold px-4 py-1.5 rounded-full bg-white/90 text-brand-charcoal shadow-lg">
+              <span className="text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white/90 text-brand-charcoal shadow-lg">
                 {typeLabel}
               </span>
               {hasCurrentStock && (
                 <StockAvailabilityBadge stockData={product.current_stock} />
               )}
               {!hasCurrentStock && (
-                <span className="text-sm font-display font-bold px-4 py-1.5 rounded-full bg-green-500/90 text-white shadow-lg">
+                <span className="text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-green-500/90 text-white shadow-lg">
                   {availability}
                 </span>
               )}
             </div>
 
-            {/* Title */}
-            <div className="absolute bottom-8 left-4 right-4 sm:left-8 sm:right-8 lg:left-16 xl:left-24">
-              <h1 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight max-w-4xl drop-shadow-lg">
+            {/* Title - Fixed for mobile */}
+            <div className="absolute bottom-4 left-3 right-3 sm:bottom-8 sm:left-8 sm:right-8 lg:left-16 xl:left-24">
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight max-w-4xl drop-shadow-lg [word-wrap:break-word] hyphens-auto">
                 {product.title}
               </h1>
               {hasMaterialGrades && (
-                <div className="flex flex-wrap gap-2.5 mt-4">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2.5 mt-2 sm:mt-4">
                   {product.material_grades.slice(0, 4).map((grade, i) => (
                     <span
                       key={i}
-                      className="text-sm font-body px-4 py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm"
+                      className="text-[10px] sm:text-sm font-body px-2 py-0.5 sm:px-4 sm:py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm"
                     >
                       {grade}
                     </span>
                   ))}
                   {product.material_grades.length > 4 && (
-                    <span className="text-sm font-body px-4 py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+                    <span className="text-[10px] sm:text-sm font-body px-2 py-0.5 sm:px-4 sm:py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm">
                       +{product.material_grades.length - 4}
                     </span>
                   )}
@@ -1322,29 +1322,29 @@ export function ProductPage() {
         </section>
 
         {/* ── Content ──────────────────────────────────────────────────── */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-12 lg:py-16">
-          {/* Key Specs */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-8 sm:py-12 lg:py-16">
+          {/* Key Specs - Stack on mobile */}
           {keySpecs.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
               {keySpecs.map((spec, idx) => {
                 const Icon = spec.icon;
                 return (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-4 bg-gray-50/80 rounded-xl border border-gray-100/80 hover:border-brand-red/30 hover:bg-brand-red/5 transition-all duration-200 group"
+                    className="flex items-center gap-3 p-3 sm:p-4 bg-gray-50/80 rounded-xl border border-gray-100/80 hover:border-brand-red/30 hover:bg-brand-red/5 transition-all duration-200 group"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red/20 transition-colors">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-red/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red/20 transition-colors">
                       <Icon
-                        size={22}
-                        className="text-brand-red"
+                        size={18}
+                        className="text-brand-red sm:size-[22px]"
                         strokeWidth={1.5}
                       />
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-body text-gray-400 uppercase tracking-wider">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] sm:text-xs font-body text-gray-400 uppercase tracking-wider">
                         {spec.label}
                       </p>
-                      <p className="text-base font-semibold text-brand-charcoal truncate group-hover:text-brand-red transition-colors">
+                      <p className="text-sm sm:text-base font-semibold text-brand-charcoal truncate group-hover:text-brand-red transition-colors">
                         {spec.value}
                       </p>
                     </div>
@@ -1354,41 +1354,41 @@ export function ProductPage() {
             </div>
           )}
 
-          <div className="grid lg:grid-cols-3 gap-10 lg:gap-14">
+          <div className="grid lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-14">
             {/* ── Left: Main Content ── */}
-            <div className="lg:col-span-2 space-y-12">
+            <div className="lg:col-span-2 space-y-10 sm:space-y-12">
               {/* Overview Section */}
               <section id="product-overview">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-lg bg-brand-red/10">
+                  <div className="p-2 sm:p-2.5 rounded-lg bg-brand-red/10">
                     <FileText
-                      size={20}
-                      className="text-brand-red"
+                      size={18}
+                      className="text-brand-red sm:size-[20px]"
                       strokeWidth={1.75}
                     />
                   </div>
-                  <h2 className="font-display font-bold text-brand-charcoal text-xl sm:text-2xl">
+                  <h2 className="font-display font-bold text-brand-charcoal text-lg sm:text-xl md:text-2xl">
                     Overview
                   </h2>
                 </div>
 
                 {hasMetaDescription && (
-                  <div className="bg-gradient-to-r from-brand-red/5 to-transparent border-l-4 border-brand-red rounded-r-xl p-5 mb-4">
-                    <p className="font-body text-gray-600 text-base leading-relaxed">
+                  <div className="bg-gradient-to-r from-brand-red/5 to-transparent border-l-4 border-brand-red rounded-r-xl p-4 sm:p-5 mb-4">
+                    <p className="font-body text-gray-600 text-sm sm:text-base leading-relaxed">
                       {product.meta_description}
                     </p>
                   </div>
                 )}
 
                 {descriptionText && descriptionText.length > 20 && (
-                  <div className="space-y-4 text-gray-700 leading-relaxed">
+                  <div className="space-y-3 sm:space-y-4 text-gray-700 leading-relaxed">
                     {descriptionText
                       .split(/\n\n+/)
                       .filter(
                         (p) => p.trim().length > 5 && !looksLikeCityDump(p),
                       )
                       .map((para, i) => (
-                        <p key={i} className="text-base">
+                        <p key={i} className="text-sm sm:text-base">
                           {para.trim()}
                         </p>
                       ))}
@@ -1597,13 +1597,13 @@ export function ProductPage() {
                     label="Packing & Delivery"
                     description="Packaging and shipping information"
                   />
-                  <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-5 flex items-start gap-4">
+                  <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-4 sm:p-5 flex items-start gap-3 sm:gap-4">
                     <Truck
-                      size={22}
-                      className="text-brand-red flex-shrink-0 mt-0.5"
+                      size={18}
+                      className="text-brand-red flex-shrink-0 mt-0.5 sm:size-[22px]"
                       strokeWidth={1.5}
                     />
-                    <p className="font-body text-gray-600 text-base leading-relaxed">
+                    <p className="font-body text-gray-600 text-sm sm:text-base leading-relaxed">
                       {packingText}
                     </p>
                   </div>
@@ -1650,36 +1650,36 @@ export function ProductPage() {
             <aside className="lg:col-span-1">
               <div className="sticky top-24 space-y-5">
                 {/* Enquiry Card */}
-                <div className="bg-gradient-to-br from-brand-red to-brand-red/90 rounded-2xl p-8 shadow-xl">
-                  <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+                <div className="bg-gradient-to-br from-brand-red to-brand-red/90 rounded-2xl p-6 sm:p-8 shadow-xl">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
                     <FileText
-                      size={24}
-                      className="text-white"
+                      size={20}
+                      className="text-white sm:size-[24px]"
                       strokeWidth={1.5}
                     />
                   </div>
-                  <p className="text-white/80 font-display font-bold text-xs uppercase tracking-[0.2em] mb-1">
+                  <p className="text-white/80 font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-1">
                     Need this product?
                   </p>
-                  <h3 className="font-display font-extrabold text-2xl text-white mb-2 leading-tight">
+                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white mb-2 leading-tight">
                     Get a Quote
                   </h3>
-                  <p className="font-body text-white/70 text-sm mb-6 leading-relaxed">
+                  <p className="font-body text-white/70 text-sm mb-5 sm:mb-6 leading-relaxed">
                     Share your grade, size and quantity — we'll respond within
                     one business day.
                   </p>
                   <Link
                     to="/contact"
                     id={`product-${product.slug}-enquire`}
-                    className="bg-white hover:bg-gray-50 text-brand-red font-display font-bold px-8 py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base w-full"
+                    className="bg-white hover:bg-gray-50 text-brand-red font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm sm:text-base w-full"
                   >
                     Enquire Now
-                    <ArrowRight size={18} />
+                    <ArrowRight size={16} className="sm:size-[18px]" />
                   </Link>
                 </div>
 
                 {/* Call Card */}
-                <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
                   <p className="font-body text-gray-400 text-sm mb-3">
                     Prefer to call?
                   </p>
@@ -1688,18 +1688,18 @@ export function ProductPage() {
                     id={`product-${product.slug}-call`}
                     className="flex items-center gap-3 group"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
                       <Phone
-                        size={20}
-                        className="text-brand-red group-hover:text-white transition-colors"
+                        size={16}
+                        className="text-brand-red group-hover:text-white transition-colors sm:size-[20px]"
                         strokeWidth={1.75}
                       />
                     </div>
                     <div>
-                      <p className="font-display font-bold text-brand-charcoal text-base group-hover:text-brand-red transition-colors">
+                      <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base group-hover:text-brand-red transition-colors">
                         +91 7073875529
                       </p>
-                      <p className="font-body text-gray-400 text-sm">
+                      <p className="font-body text-gray-400 text-xs sm:text-sm">
                         Mumbai office
                       </p>
                     </div>
@@ -1707,7 +1707,7 @@ export function ProductPage() {
                 </div>
 
                 {/* Product Details */}
-                <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm space-y-4">
+                <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 shadow-sm space-y-4">
                   <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
                     <Package
                       size={16}
@@ -1720,7 +1720,7 @@ export function ProductPage() {
                   </div>
                   <div>
                     <p className="font-body text-gray-400 text-sm mb-1">Type</p>
-                    <p className="font-display font-bold text-brand-charcoal text-base">
+                    <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base">
                       {product.product_type || "—"}
                     </p>
                   </div>
@@ -1728,13 +1728,13 @@ export function ProductPage() {
                     <p className="font-body text-gray-400 text-sm mb-1">
                       Category
                     </p>
-                    <p className="font-display font-bold text-brand-charcoal text-base">
+                    <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base">
                       {categoryLabel || "—"}
                     </p>
                   </div>
                   <div>
                     <p className="font-body text-gray-400 text-sm mb-1">Form</p>
-                    <p className="font-display font-bold text-brand-red text-base">
+                    <p className="font-display font-bold text-brand-red text-sm sm:text-base">
                       {typeLabel || "—"}
                     </p>
                   </div>
@@ -1745,12 +1745,12 @@ export function ProductPage() {
                     {hasCurrentStock ? (
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <p className="font-display font-bold text-green-600 text-base">
+                        <p className="font-display font-bold text-green-600 text-sm sm:text-base">
                           In Stock
                         </p>
                       </div>
                     ) : (
-                      <p className="font-display font-bold text-green-600 text-base">
+                      <p className="font-display font-bold text-green-600 text-sm sm:text-base">
                         {availability || "—"}
                       </p>
                     )}
@@ -1764,13 +1764,13 @@ export function ProductPage() {
                         {product.material_grades.slice(0, 4).map((g, i) => (
                           <span
                             key={i}
-                            className="text-sm font-body bg-brand-red/8 text-brand-charcoal border border-brand-red/15 px-3 py-1 rounded-full"
+                            className="text-xs sm:text-sm font-body bg-brand-red/8 text-brand-charcoal border border-brand-red/15 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full"
                           >
                             {g}
                           </span>
                         ))}
                         {product.material_grades.length > 4 && (
-                          <span className="text-sm font-body text-gray-400">
+                          <span className="text-xs sm:text-sm font-body text-gray-400">
                             +{product.material_grades.length - 4}
                           </span>
                         )}
@@ -1797,17 +1797,17 @@ export function ProductPage() {
                 </div>
 
                 {/* Delivery Info */}
-                <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-4 flex items-start gap-3">
+                <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-3 sm:p-4 flex items-start gap-3">
                   <Clock
-                    size={18}
-                    className="text-brand-red flex-shrink-0 mt-0.5"
+                    size={16}
+                    className="text-brand-red flex-shrink-0 mt-0.5 sm:size-[18px]"
                     strokeWidth={1.5}
                   />
                   <div>
-                    <p className="font-display font-bold text-brand-charcoal text-sm uppercase tracking-wider">
+                    <p className="font-display font-bold text-brand-charcoal text-xs sm:text-sm uppercase tracking-wider">
                       Quick Delivery
                     </p>
-                    <p className="font-body text-gray-500 text-sm">
+                    <p className="font-body text-gray-500 text-xs sm:text-sm">
                       Pan-India dispatch available
                     </p>
                   </div>
