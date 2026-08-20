@@ -38,8 +38,6 @@ import { getProductImage } from "../data/productImages";
 // ─── Helper: Get raw product type from display label ──────────────────────
 
 function getRawProductType(displayLabel: string): string | undefined {
-  // TYPE_LABELS maps: { "Bar": "Bars & Rods", "Plate": "Plates & Sheets", ... }
-  // Find the key (raw type) where the value (display label) matches
   for (const [rawType, displayName] of Object.entries(TYPE_LABELS)) {
     if (displayName === displayLabel) {
       return rawType;
@@ -48,25 +46,18 @@ function getRawProductType(displayLabel: string): string | undefined {
   return undefined;
 }
 
-// ─── Helper: Get display label from raw product type ──────────────────────
-function getDisplayLabelFromRaw(rawType: string): string {
-  return TYPE_LABELS[rawType as keyof typeof TYPE_LABELS] || rawType;
-}
-
 /* ─── Helper: Get Product Image ───────────────────────────────────────────── */
 
 function getProductImageUrl(product: ScrapedProduct): {
   url: string;
   alt: string;
 } {
-  // Use first image from images array if available
   if (product.images && product.images.length > 0) {
     return {
       url: product.images[0].url,
       alt: product.images[0].alt || product.title,
     };
   }
-  // Fallback to default image based on product type/category
   return {
     url: getProductImage(product.product_type, product.category, product.title),
     alt: product.title,
@@ -114,10 +105,8 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
           loading="lazy"
         />
 
-        {/* Gradient Overlay on Hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
 
-        {/* Badges - Top Left */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           <span className="text-[10px] font-display font-bold px-3 py-1 rounded-full bg-brand-red text-white shadow-lg backdrop-blur-sm border border-white/10">
             {categoryLabel}
@@ -130,14 +119,12 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
           )}
         </div>
 
-        {/* Type Badge - Bottom Right */}
         <div className="absolute bottom-3 right-3 opacity-90 group-hover:opacity-100 transition-opacity">
           <span className="text-[10px] font-display font-semibold px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm text-brand-charcoal shadow-lg border border-white/20">
             {typeLabel}
           </span>
         </div>
 
-        {/* Quick View Overlay on Hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="bg-white/95 backdrop-blur-sm text-brand-charcoal font-display font-bold text-sm px-6 py-3 rounded-full shadow-xl hover:bg-brand-red hover:text-white transition-colors duration-200 flex items-center gap-2">
             <Eye size={16} />
@@ -146,14 +133,11 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Title */}
         <h3 className="font-display font-bold text-brand-charcoal text-sm leading-tight group-hover:text-brand-red transition-colors duration-200 line-clamp-2 min-h-[2.5rem]">
           {product.title}
         </h3>
 
-        {/* Grades */}
         {hasGrades && (
           <div className="mt-2 flex flex-wrap gap-1">
             {product.material_grades.slice(0, 3).map((grade, i) => (
@@ -172,12 +156,10 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
           </div>
         )}
 
-        {/* Description */}
         <p className="mt-2 font-body text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1 min-h-[2.5rem]">
           {shortDescription}
         </p>
 
-        {/* Specifications */}
         {hasSpecs && (
           <div className="mt-2 flex flex-wrap gap-1">
             {product.specifications.slice(0, 2).map((spec, i) => (
@@ -196,7 +178,6 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
           </div>
         )}
 
-        {/* Bottom Section */}
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Truck size={12} className="text-gray-400" />
@@ -249,10 +230,17 @@ function ProductCardSkeleton() {
 
 /* ─── Featured Categories Section ──────────────────────────────────────────── */
 
-function FeaturedCategories({ categories }: { categories: string[] }) {
+function FeaturedCategories({
+  categories,
+  currentCategory,
+  onCategoryClick,
+}: {
+  categories: string[];
+  currentCategory?: string;
+  onCategoryClick: (category: string) => void;
+}) {
   if (categories.length === 0) return null;
 
-  // Random shuffle categories
   const shuffledCategories = useMemo(() => {
     const shuffled = [...categories];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -274,20 +262,28 @@ function FeaturedCategories({ categories }: { categories: string[] }) {
         </span>
       </div>
       <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => onCategoryClick("")}
+          className={`px-4 py-2 rounded-full text-xs font-body font-medium transition-all duration-200 border ${
+            !currentCategory
+              ? "bg-brand-red text-white border-brand-red shadow-sm"
+              : "bg-gray-100 hover:bg-brand-red hover:text-white text-gray-600 border-transparent hover:border-brand-red/30"
+          }`}
+        >
+          All
+        </button>
         {shuffledCategories.map((cat) => (
-          <Link
+          <button
             key={cat}
-            to={`/products?category=${encodeURIComponent(cat)}`}
+            onClick={() => onCategoryClick(cat)}
             className={`px-4 py-2 rounded-full text-xs font-body font-medium transition-all duration-200 border ${
-              window.location.search.includes(
-                `category=${encodeURIComponent(cat)}`,
-              )
+              currentCategory === cat
                 ? "bg-brand-red text-white border-brand-red shadow-sm"
                 : "bg-gray-100 hover:bg-brand-red hover:text-white text-gray-600 border-transparent hover:border-brand-red/30"
             }`}
           >
             {getCategoryDisplayLabel(cat)}
-          </Link>
+          </button>
         ))}
       </div>
     </div>
@@ -303,29 +299,27 @@ export function ProductsPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [productTypes, setProductTypes] = useState<string[]>([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  // ── Read ALL filters from URL ──
+  const urlPage = parseInt(searchParams.get("page") || "1", 10);
+  const urlSearch = searchParams.get("search") || "";
+  const urlCategory = searchParams.get("category") || "";
+  const urlType = searchParams.get("type") || "";
+  const urlSort = (searchParams.get("sort") as "title" | "date") || "date";
+
+  const [searchTerm, setSearchTerm] = useState(urlSearch);
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
   const [selectedType, setSelectedType] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"title" | "date">("date");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<"title" | "date">(urlSort);
+  const [currentPage, setCurrentPage] = useState(
+    isNaN(urlPage) || urlPage < 1 ? 1 : urlPage,
+  );
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const productsPerPage = 12;
 
-  // Get unique product types with display labels
-  const uniqueProductTypes = useMemo(() => {
-    const uniqueTypes = new Set<string>();
-    products.forEach((product) => {
-      if (product.product_type) {
-        const displayLabel = getTypeDisplayLabel(product.product_type);
-        uniqueTypes.add(displayLabel);
-      }
-    });
-    return Array.from(uniqueTypes).sort();
-  }, [products]);
-
+  // ── Load products data ──
   useEffect(() => {
     const loadProductsData = () => {
       try {
@@ -338,20 +332,13 @@ export function ProductsPage() {
         setCategories(allCategories);
         setProductTypes(allTypes);
 
-        const categoryParam = searchParams.get("category");
-        if (categoryParam && allCategories.includes(categoryParam)) {
-          setSelectedCategory(categoryParam);
-        }
-
+        // Set initial selectedType from URL
         const typeParam = searchParams.get("type");
         if (typeParam) {
-          // Check if the typeParam is a raw type or display label
           const displayLabel = getTypeDisplayLabel(typeParam);
-          // If it's a raw type that has a display label, use the display label
           if (displayLabel !== typeParam) {
             setSelectedType(displayLabel);
           } else {
-            // It might already be a display label
             setSelectedType(typeParam);
           }
         }
@@ -363,8 +350,61 @@ export function ProductsPage() {
     };
 
     loadProductsData();
+  }, []);
+
+  // ── SYNC URL PARAMS → STATE when URL changes (fix for category filter) ──
+  useEffect(() => {
+    const category = searchParams.get("category") || "";
+    setSelectedCategory(category);
+
+    const search = searchParams.get("search") || "";
+    setSearchTerm(search);
+
+    const typeParam = searchParams.get("type") || "";
+    if (typeParam) {
+      const displayLabel = getTypeDisplayLabel(typeParam);
+      setSelectedType(displayLabel !== typeParam ? displayLabel : typeParam);
+    } else {
+      setSelectedType("");
+    }
+
+    const sortParam = searchParams.get("sort") as "title" | "date" | null;
+    if (sortParam) {
+      setSortBy(sortParam);
+    } else {
+      setSortBy("date");
+    }
+
+    const pageParam = parseInt(searchParams.get("page") || "1", 10);
+    setCurrentPage(isNaN(pageParam) || pageParam < 1 ? 1 : pageParam);
   }, [searchParams]);
 
+  // ── Update URL when category changes ──
+  const handleCategoryClick = (category: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
+    params.delete("page"); // Reset to page 1
+    setSearchParams(params);
+    setCurrentPage(1);
+  };
+
+  // ── Get unique product types with display labels ──
+  const uniqueProductTypes = useMemo(() => {
+    const uniqueTypes = new Set<string>();
+    products.forEach((product) => {
+      if (product.product_type) {
+        const displayLabel = getTypeDisplayLabel(product.product_type);
+        uniqueTypes.add(displayLabel);
+      }
+    });
+    return Array.from(uniqueTypes).sort();
+  }, [products]);
+
+  // ── Filter products ──
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
@@ -384,13 +424,11 @@ export function ProductsPage() {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
-    // FIX: Filter by display label - convert display label to raw type for comparison
     if (selectedType) {
       const rawType = getRawProductType(selectedType);
       if (rawType) {
         filtered = filtered.filter((p) => p.product_type === rawType);
       } else {
-        // If no raw type found, try to match directly (fallback)
         filtered = filtered.filter((p) => {
           const displayLabel = getTypeDisplayLabel(p.product_type);
           return displayLabel === selectedType;
@@ -411,7 +449,7 @@ export function ProductsPage() {
     return filtered;
   }, [products, searchTerm, selectedCategory, selectedType, sortBy]);
 
-  // Pagination
+  // ── Pagination ──
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = useMemo(() => {
     const start = (currentPage - 1) * productsPerPage;
@@ -419,16 +457,15 @@ export function ProductsPage() {
     return filteredProducts.slice(start, end);
   }, [filteredProducts, currentPage, productsPerPage]);
 
+  // ── Clear all filters ──
   const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedCategory("");
-    setSelectedType("");
     setSearchParams({});
     setCurrentPage(1);
     setShowCategoryDropdown(false);
     setShowTypeDropdown(false);
   };
 
+  // ── Update filter helper ──
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
@@ -494,8 +531,12 @@ export function ProductsPage() {
           </div>
         </div>
 
-        {/* Featured Categories */}
-        <FeaturedCategories categories={categories} />
+        {/* Featured Categories - FIXED: Now uses handleCategoryClick */}
+        <FeaturedCategories
+          categories={categories}
+          currentCategory={selectedCategory || undefined}
+          onCategoryClick={handleCategoryClick}
+        />
 
         {/* Filter/Search Bar */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6 hover:shadow-md transition-shadow duration-300">
@@ -511,13 +552,29 @@ export function ProductsPage() {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
+                  // Update URL with search
+                  const params = new URLSearchParams(searchParams);
+                  if (e.target.value) {
+                    params.set("search", e.target.value);
+                  } else {
+                    params.delete("search");
+                  }
+                  params.delete("page");
+                  setSearchParams(params);
                   setCurrentPage(1);
                 }}
                 className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-gray-200 focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none transition-all font-body text-sm bg-gray-50/50 focus:bg-white"
               />
               {searchTerm && (
                 <button
-                  onClick={() => setSearchTerm("")}
+                  onClick={() => {
+                    setSearchTerm("");
+                    const params = new URLSearchParams(searchParams);
+                    params.delete("search");
+                    params.delete("page");
+                    setSearchParams(params);
+                    setCurrentPage(1);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <X size={14} />
@@ -568,7 +625,16 @@ export function ProductsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => {
-                  setSortBy(e.target.value as "title" | "date");
+                  const newSort = e.target.value as "title" | "date";
+                  setSortBy(newSort);
+                  const params = new URLSearchParams(searchParams);
+                  if (newSort !== "date") {
+                    params.set("sort", newSort);
+                  } else {
+                    params.delete("sort");
+                  }
+                  params.delete("page");
+                  setSearchParams(params);
                   setCurrentPage(1);
                 }}
                 className="appearance-none pl-3 pr-8 py-2.5 rounded-xl border border-gray-200 focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none transition-all font-body text-sm bg-gray-50/50 focus:bg-white cursor-pointer"
@@ -648,7 +714,7 @@ export function ProductsPage() {
               )}
             </div>
 
-            {/* Type Filter Dropdown - FIXED: Now using uniqueProductTypes from actual products */}
+            {/* Type Filter Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowTypeDropdown(!showTypeDropdown)}
@@ -686,7 +752,6 @@ export function ProductsPage() {
                       key={typeDisplay}
                       onClick={() => {
                         setSelectedType(typeDisplay);
-                        // Get raw type for URL parameter
                         const rawType = getRawProductType(typeDisplay);
                         updateFilter("type", rawType || typeDisplay);
                         setShowTypeDropdown(false);
@@ -770,7 +835,7 @@ export function ProductsPage() {
           )}
         </div>
 
-        {/* Results Count and View Mode Indicator */}
+        {/* Results Count */}
         <div className="flex items-center justify-between mb-5">
           <p className="font-body text-gray-400 text-sm flex items-center gap-2">
             <TrendingUp size={14} className="text-gray-300" />
@@ -829,7 +894,17 @@ export function ProductsPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-8">
             <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              onClick={() => {
+                const newPage = Math.max(currentPage - 1, 1);
+                setCurrentPage(newPage);
+                const params = new URLSearchParams(searchParams);
+                if (newPage > 1) {
+                  params.set("page", String(newPage));
+                } else {
+                  params.delete("page");
+                }
+                setSearchParams(params);
+              }}
               disabled={currentPage === 1}
               className={`px-4 py-2 rounded-lg border text-sm font-body font-medium transition-all ${
                 currentPage === 1
@@ -853,7 +928,16 @@ export function ProductsPage() {
               return (
                 <button
                   key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
+                  onClick={() => {
+                    setCurrentPage(pageNum);
+                    const params = new URLSearchParams(searchParams);
+                    if (pageNum > 1) {
+                      params.set("page", String(pageNum));
+                    } else {
+                      params.delete("page");
+                    }
+                    setSearchParams(params);
+                  }}
                   className={`w-10 h-10 rounded-lg text-sm font-body font-medium transition-all ${
                     currentPage === pageNum
                       ? "bg-brand-red text-white shadow-md"
@@ -865,9 +949,17 @@ export function ProductsPage() {
               );
             })}
             <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
+              onClick={() => {
+                const newPage = Math.min(currentPage + 1, totalPages);
+                setCurrentPage(newPage);
+                const params = new URLSearchParams(searchParams);
+                if (newPage > 1) {
+                  params.set("page", String(newPage));
+                } else {
+                  params.delete("page");
+                }
+                setSearchParams(params);
+              }}
               disabled={currentPage === totalPages}
               className={`px-4 py-2 rounded-lg border text-sm font-body font-medium transition-all ${
                 currentPage === totalPages

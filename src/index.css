@@ -9,6 +9,8 @@
 
   body {
     @apply font-body text-brand-charcoal bg-white antialiased;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   h1,
@@ -18,6 +20,22 @@
   h5,
   h6 {
     @apply font-display;
+  }
+
+  /* --- MOBILE OVERFLOW FIX --- */
+  /* Prevent all elements from overflowing on mobile */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    display: block;
   }
 }
 
@@ -68,11 +86,37 @@
   .glass-panel {
     @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-lg;
   }
+
+  /* --- GRADE NAMES CONTAINER (FIX) --- */
+  .grade-bar {
+    @apply flex flex-wrap items-center gap-1 sm:gap-2 max-w-full overflow-hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .grade-bar .grade-item {
+    @apply inline-block px-1.5 sm:px-2 py-0.5 text-xs sm:text-sm font-medium;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+
+  /* --- PRODUCT HEADER FIX --- */
+  .product-header {
+    @apply w-full overflow-hidden;
+  }
+
+  .product-header .product-title {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
 }
 
-/* Steel texture overlay - REMOVED */
+/* --- STEEL TEXTURE OVERLAY - REMOVED --- */
 
-/* Scrollbar */
+/* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -83,7 +127,7 @@
   @apply bg-brand-red rounded-full;
 }
 
-/* Nav underline effect */
+/* --- NAV UNDERLINE EFFECT --- */
 .nav-link {
   @apply relative text-sm font-body font-semibold tracking-wide transition-colors duration-200;
 }
@@ -95,7 +139,7 @@
   @apply w-full;
 }
 
-/* Animations */
+/* --- ANIMATIONS --- */
 @keyframes fadeInUp {
   0% {
     opacity: 0;
@@ -143,8 +187,19 @@
   }
 }
 
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer utilities {
-  /* Dynamic viewport height for mobile */
+  /* --- DYNAMIC VIEWPORT HEIGHT --- */
   .h-dvh {
     height: 100dvh;
   }
@@ -161,6 +216,7 @@
     }
   }
 
+  /* --- ANIMATION UTILITIES --- */
   .animate-fade-in-up {
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -179,6 +235,11 @@
     animation: chevronBounce 2s infinite;
   }
 
+  .animate-slideDown {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  /* --- STAGGER DELAYS --- */
   .stagger-1 {
     animation-delay: 100ms;
   }
@@ -198,7 +259,7 @@
     animation-delay: 600ms;
   }
 
-  /* Mobile text utilities */
+  /* --- MOBILE TEXT UTILITIES --- */
   .text-mobile-sm {
     @apply text-xs sm:text-sm;
   }
@@ -209,7 +270,7 @@
     @apply text-base sm:text-lg;
   }
 
-  /* Mobile spacing utilities */
+  /* --- MOBILE SPACING UTILITIES --- */
   .gap-mobile-sm {
     @apply gap-1.5 sm:gap-2;
   }
@@ -230,18 +291,67 @@
     @apply p-4 sm:p-6;
   }
 
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* --- MOBILE OVERFLOW FIX UTILITIES --- */
+  .overflow-fix {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    overflow: hidden;
   }
 
-  .animate-slideDown {
-    animation: slideDown 0.2s ease-out;
+  .break-safe {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+
+  .no-overflow {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .wrap-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  /* --- GRADE NAME SPECIFIC --- */
+  .grade-name {
+    display: inline-block;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    padding: 0.125rem 0.25rem;
+  }
+
+  .grade-name-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* --- MOBILE MEDIA QUERY OVERRIDES --- */
+  @media (max-width: 640px) {
+    .grade-name {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.25rem;
+    }
+
+    .grade-name-container {
+      gap: 0.15rem 0.3rem;
+    }
+
+    .grade-bar .grade-item {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.3rem;
+    }
   }
 }
