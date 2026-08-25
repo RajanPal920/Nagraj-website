@@ -13160,7 +13160,7 @@
     ],
     "images": [
       {
-        "url": "images/products/ams-5862-uns-s15500.jpg"
+        "url": "/images/products/ams-5862-uns-s15500.jpg"
       }
     ],
     "attachments": [],
@@ -13738,7 +13738,7 @@
     ],
     "images": [
       {
-        "url": "images/products/inconel-625-round-bars.jpg"
+        "url": "/images/products/inconel-625-round-bars.jpg"
       }
     ],
     "attachments": [],
@@ -21538,7 +21538,9 @@
       "Automobile Steel",
       "Nagraj Metal Industries E46"
     ],
-    "images": [],
+    "images": [
+      {"url":"/images/products/e46-sheets-sail-tata-jsw-jspl-jindal.jpg"}
+    ],
     "attachments": [],
     "scraped_at": "",
     "status": "scraped"

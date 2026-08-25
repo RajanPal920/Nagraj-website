@@ -406,7 +406,7 @@ function StructuredStockTable({ items }: { items: any[] }) {
               {headers.map((header, idx) => (
                 <th
                   key={idx}
-                  className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest"
+                  className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest"
                 >
                   {header.replace(/_/g, " ")}
                 </th>
@@ -424,7 +424,7 @@ function StructuredStockTable({ items }: { items: any[] }) {
                 {headers.map((header, idx) => (
                   <td
                     key={idx}
-                    className="px-6 py-4 text-gray-700 text-base font-medium"
+                    className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-medium"
                   >
                     {item[header] || "—"}
                   </td>
@@ -437,16 +437,16 @@ function StructuredStockTable({ items }: { items: any[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
         >
           {showAll ? (
             <>
-              <ChevronUp size={18} />
+              <ChevronUp size={14} className="sm:size-[18px]" />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={18} />
+              <ChevronDown size={14} className="sm:size-[18px]" />
               Show All {items.length} Stock Items
             </>
           )}
@@ -467,7 +467,7 @@ function SimpleStockList({ items }: { items: string[] }) {
         <table className="w-full text-sm font-body">
           <thead>
             <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Available Stock
               </th>
             </tr>
@@ -480,7 +480,7 @@ function SimpleStockList({ items }: { items: string[] }) {
                   i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
                 } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
               >
-                <td className="px-6 py-4 text-gray-700 text-base font-mono font-medium">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-medium">
                   {item}
                 </td>
               </tr>
@@ -491,16 +491,16 @@ function SimpleStockList({ items }: { items: string[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
         >
           {showAll ? (
             <>
-              <ChevronUp size={18} />
+              <ChevronUp size={14} className="sm:size-[18px]" />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={18} />
+              <ChevronDown size={14} className="sm:size-[18px]" />
               Show All {items.length} Items
             </>
           )}
@@ -538,7 +538,7 @@ function StockAvailabilityBadge({ stockData }: { stockData: any }) {
   if (!hasStock) return null;
 
   return (
-    <span className="inline-flex items-center gap-2 text-sm font-display font-bold text-green-600 bg-green-50 px-4 py-2 rounded-full border border-green-200">
+    <span className="inline-flex items-center gap-2 text-[10px] sm:text-sm font-display font-bold text-green-600 bg-green-50 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-green-200">
       <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
       {stockCount > 1 ? `${stockCount} items in stock` : "In Stock"}
     </span>
@@ -568,10 +568,10 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
         <table className="w-full text-sm font-body">
           <thead>
             <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Element
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Composition (%)
               </th>
             </tr>
@@ -590,15 +590,15 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
                     i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
                   } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
                 >
-                  <td className="px-6 py-4 font-semibold text-brand-charcoal text-base">
+                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
                     {entry.element || "—"}
                     {isBalance && (
-                      <span className="ml-3 text-xs font-body text-gray-400 uppercase">
-                        (Balance)
+                      <span className="ml-1 sm:ml-3 text-[9px] sm:text-xs font-body text-gray-400 uppercase">
+                        (Bal)
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-gray-700 text-base font-mono font-semibold">
+                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-semibold">
                     {value}
                   </td>
                 </tr>
@@ -610,16 +610,16 @@ function ChemicalCompositionTable({ data }: { data: any[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
         >
           {showAll ? (
             <>
-              <ChevronUp size={18} />
+              <ChevronUp size={14} className="sm:size-[18px]" />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={18} />
+              <ChevronDown size={14} className="sm:size-[18px]" />
               Show All {validData.length} Elements
             </>
           )}
@@ -650,13 +650,13 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
         <table className="w-full text-sm font-body">
           <thead>
             <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Property
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Value
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Condition
               </th>
             </tr>
@@ -681,16 +681,16 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
                     i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
                   } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
                 >
-                  <td className="px-6 py-4 font-semibold text-brand-charcoal text-base">
+                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
                     {entry.property_name || entry.name || "—"}
                   </td>
-                  <td className="px-6 py-4 text-gray-700 text-base font-mono font-semibold">
+                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-semibold">
                     {displayValue}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 text-sm">
+                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-600 text-[10px] sm:text-sm">
                     {hasCondition ? (
-                      <span className="inline-flex items-center gap-2 bg-brand-red/10 px-3 py-1 rounded-full">
-                        <span className="w-2 h-2 rounded-full bg-brand-red" />
+                      <span className="inline-flex items-center gap-1.5 bg-brand-red/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-red" />
                         {entry.condition}
                       </span>
                     ) : (
@@ -706,16 +706,16 @@ function MechanicalPropertiesTable({ data }: { data: any[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
         >
           {showAll ? (
             <>
-              <ChevronUp size={18} />
+              <ChevronUp size={14} className="sm:size-[18px]" />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={18} />
+              <ChevronDown size={14} className="sm:size-[18px]" />
               Show All {validData.length} Properties
             </>
           )}
@@ -748,19 +748,19 @@ function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
         <table className="w-full text-sm font-body">
           <thead>
             <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Condition
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Temperature
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Holding Time
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Cooling
               </th>
-              <th className="px-6 py-5 text-left font-display font-extrabold text-xs text-white uppercase tracking-widest">
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
                 Notes
               </th>
             </tr>
@@ -773,19 +773,19 @@ function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
                   i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
                 } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
               >
-                <td className="px-6 py-4 font-semibold text-brand-charcoal text-base">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
                   {entry.condition || "—"}
                 </td>
-                <td className="px-6 py-4 text-gray-700 text-base font-mono">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono">
                   {entry.temperature || "—"}
                 </td>
-                <td className="px-6 py-4 text-gray-700 text-base font-mono">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono">
                   {entry.holding_time || "—"}
                 </td>
-                <td className="px-6 py-4 text-gray-700 text-base">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base">
                   {entry.cooling || "—"}
                 </td>
-                <td className="px-6 py-4 text-gray-600 text-sm">
+                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-600 text-[10px] sm:text-sm">
                   {entry.notes || "—"}
                 </td>
               </tr>
@@ -796,16 +796,16 @@ function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-4 text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
         >
           {showAll ? (
             <>
-              <ChevronUp size={18} />
+              <ChevronUp size={14} className="sm:size-[18px]" />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={18} />
+              <ChevronDown size={14} className="sm:size-[18px]" />
               Show All {validData.length} Heat Treatment Cycles
             </>
           )}
@@ -853,23 +853,29 @@ function StockSizesTable({ data }: { data: StockSizeCategory[] }) {
             <div key={idx}>
               {idx > 0 && <div className="border-t border-gray-200" />}
               <div
-                className="bg-gradient-to-r from-brand-red/15 via-brand-red/12 to-brand-red/10 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-brand-red/20 transition-all border-b border-brand-red/20"
+                className="bg-gradient-to-r from-brand-red/15 via-brand-red/12 to-brand-red/10 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between cursor-pointer hover:bg-brand-red/20 transition-all border-b border-brand-red/20"
                 onClick={() => toggleCategory(categoryKey)}
               >
-                <p className="font-display font-extrabold text-brand-charcoal text-base flex items-center gap-2">
-                  <Hash size={18} className="text-brand-red" />
+                <p className="font-display font-extrabold text-brand-charcoal text-xs sm:text-base flex items-center gap-2">
+                  <Hash size={14} className="sm:size-[18px] text-brand-red" />
                   {category.category}
                 </p>
-                <span className="text-sm font-display font-bold text-gray-600">
+                <span className="text-[10px] sm:text-sm font-display font-bold text-gray-600">
                   {category.items.length} sizes
                   {isExpanded ? (
-                    <ChevronUp size={16} className="inline ml-2" />
+                    <ChevronUp
+                      size={12}
+                      className="sm:size-[16px] inline ml-1 sm:ml-2"
+                    />
                   ) : (
-                    <ChevronDown size={16} className="inline ml-2" />
+                    <ChevronDown
+                      size={12}
+                      className="sm:size-[16px] inline ml-1 sm:ml-2"
+                    />
                   )}
                 </span>
               </div>
-              <table className="w-full text-sm font-body">
+              <table className="w-full text-xs sm:text-sm font-body">
                 <tbody>
                   {displayItems.map((item: string, i: number) => (
                     <tr
@@ -878,14 +884,14 @@ function StockSizesTable({ data }: { data: StockSizeCategory[] }) {
                         i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
                       } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
                     >
-                      <td className="px-6 py-3 text-gray-700 text-base font-mono font-medium">
+                      <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-gray-700 text-xs sm:text-base font-mono font-medium">
                         {item}
                       </td>
                     </tr>
                   ))}
                   {hasMore && !isExpanded && (
                     <tr className="bg-gray-50/80 hover:bg-gray-100">
-                      <td className="px-6 py-3 text-sm text-brand-red font-display font-bold">
+                      <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-[10px] sm:text-sm text-brand-red font-display font-bold">
                         +{category.items.length - 5} more sizes
                       </td>
                     </tr>
@@ -1080,6 +1086,17 @@ export function ProductPage() {
 
     const productData = product as any;
 
+    // ✅ FIX: Priority to product.image, then product.images[0].url, then getProductImage()
+    const heroImage =
+      productData.image || // ✅ 1. Direct image field
+      productData.images?.[0]?.url || // ✅ 2. images array
+      getProductImage(product.product_type, product.category, product.title); // ✅ 3. Fallback
+
+    const heroAlt =
+      productData.image_alt ||
+      product.images?.[0]?.alt ||
+      `${getTypeDisplayLabel(product.product_type)} — ${product.title}`;
+
     return {
       categoryLabel: getCategoryDisplayLabel(product.category),
       typeLabel: getTypeDisplayLabel(product.product_type),
@@ -1088,12 +1105,8 @@ export function ProductPage() {
         ? cleanText(product.description_text)
         : "",
       productData: productData,
-      heroImage:
-        product.images?.[0]?.url ||
-        getProductImage(product.product_type, product.category, product.title),
-      heroAlt:
-        product.images?.[0]?.alt ||
-        `${getTypeDisplayLabel(product.product_type)} — ${product.title}`,
+      heroImage: heroImage,
+      heroAlt: heroAlt,
       hasChem: product.chemical_composition?.some(hasChemicalData) || false,
       hasMech: product.mechanical_properties?.some(hasMechanicalData) || false,
       hasStockSizes:
@@ -1263,10 +1276,18 @@ export function ProductPage() {
         {/* ── Hero Section ────────────────────────────────────────────── */}
         <section id="product-hero" className="relative">
           <div className="relative w-full h-[320px] sm:h-[420px] lg:h-[500px] bg-gray-100 overflow-hidden">
+            {/* ✅ FIX: Add onError fallback to placeholder */}
             <img
-              src={heroImage}
+              src={
+                heroImage ||
+                "https://via.placeholder.com/1200x500/0066cc/ffffff?text=Product+Image"
+              }
               alt={heroAlt}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  "https://via.placeholder.com/1200x500/0066cc/ffffff?text=Product+Image";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
