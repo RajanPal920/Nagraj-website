@@ -68,7 +68,7 @@ export function Hero() {
           </p>
 
           {/* Heading - Smaller */}
-        <h1 className="text-3xl font-bold text-brand-red uppercase">
+          <h1 className="text-3xl font-bold text-brand-red uppercase">
             NAGRAJ
           </h1>
           <h2 className="text-base font-semibold text-brand-charcoal mb-2 ml-1 text-lg">
@@ -148,7 +148,7 @@ export function Hero() {
       <div className="relative z-10 container-xl w-full px-5 sm:px-8 lg:px-16 xl:px-24 pb-10 sm:pb-8 hidden sm:block">
         <div className="w-full max-w-md sm:max-w-3xl mx-auto sm:mx-0 text-center sm:text-left">
           {/* ISO Certification Badge */}
-          <div className="inline-flex items-center gap-2 mb-4 bg-brand-red/25 backdrop-blur-md border border-brand-red/40 px-4 py-2 rounded-full">
+          <div className="inline-flex items-center gap-2 mb-2 bg-brand-red/25 backdrop-blur-md border border-brand-red/40 px-4 py-2 rounded-full">
             <Award size={10} className="text-brand-red" />
             <span className="text-white font-display font-bold text-[8px] sm:text-xs uppercase tracking-wider">
               ISO Certified Company
@@ -156,9 +156,17 @@ export function Hero() {
           </div>
 
           {/* Tagline */}
-          <p className="text-brand-red font-display font-semibold text-[10px] sm:text-sm md:text-base uppercase tracking-[0.15em] mb-1 sm:mb-3 animate-fade-in-up stagger-2">
+          {/* <p className="text-brand-red font-display font-semibold text-[10px] sm:text-sm md:text-base uppercase tracking-[0.15em] mb-1 sm:mb-3 animate-fade-in-up stagger-2">
             Dynamic Group · Young Visionaries · Excellence Driven
-          </p>
+          </p> */}
+
+          {/* Heading */}
+          {/* <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 animate-fade-in-up stagger-1">
+            NAGRAJ
+          </h1>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white/90 mb-3 sm:mb-4 animate-fade-in-up stagger-2">
+            Metal <span className="text-brand-red">Industries</span>
+          </h2> */}
 
           {/* Sub-headline */}
           <p className="font-body text-white text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl leading-relaxed mb-3 sm:mb-5 animate-fade-in-up stagger-3 drop-shadow-md max-w-full sm:max-w-xl mx-auto sm:mx-0">

@@ -141,8 +141,8 @@ export function AboutPage() {
         </div>
 
         {/* Overlay - Light Red on Desktop */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
+        {/* <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div> */}
 
         {/* Bottom gradient shadow - Light Red on Desktop */}
         <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
@@ -153,7 +153,38 @@ export function AboutPage() {
         {/* Red bottom border line - Desktop only */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
 
-        {/* ================= MOBILE CONTENT ================= */}
+        {/* =============== DESKTOP CONTENT =============== */}
+        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
+          <div className="max-w-3xl">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              About <span className="text-brand-red">Nagraj</span> Metal
+              Industries
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
+              Leading manufacturer and supplier of high-quality metal products
+              with decades of industry experience and commitment to excellence.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              {/* Our Story Button - Navigates to Journey Section */}
+              <a
+                href="#about-journey"
+                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
+              >
+                Our Story
+              </a>
+
+              {/* Contact Us Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="px-6 py-3 border-2 border-white text-white font-semibold rounded hover:bg-white/10 transition-colors inline-block"
+              >
+                Contact Us
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* =============== MOBILE CONTENT =============== */}
         <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
           {/* Hero Image */}
           <div className="w-full flex justify-center items-center px-4 mt-5">
@@ -200,22 +231,29 @@ export function AboutPage() {
               ))}
             </div>
 
-            {/* Mobile CTA */}
-            <div className="relative z-20 pointer-events-auto">
-              <Link
-                to="/contact"
-                id="about-cta-mobile"
-                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+            {/* Mobile Buttons - Fixed with proper navigation */}
+            <div className="flex flex-col gap-2 mt-4">
+              {/* Our Story Button - Navigates to Journey Section */}
+              <a
+                href="#about-journey"
+                className="w-full bg-brand-red text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm"
               >
-                Enquire Now
+                Our Story
                 <ArrowRight size={16} />
-              </Link>
+              </a>
+
+              {/* Contact Us Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="w-full border-2 border-brand-red text-brand-red bg-transparent py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 active:scale-95 text-sm hover:bg-brand-red/5"
+              >
+                Contact Us
+                <ArrowRight size={16} />
+              </a>
             </div>
           </div>
         </div>
+
         {/* Scroll indicator - Desktop only */}
         <a
           href="#about-story"
@@ -228,6 +266,70 @@ export function AboutPage() {
             strokeWidth={1.5}
           />
         </a>
+      </section>
+
+      {/* ── Our Journey / Milestones ─────────────────────────────────────── */}
+      <section
+        id="about-journey"
+        className="section-padding bg-gray-50 scroll-mt-20"
+      >
+        <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
+          <div className="text-center mb-14">
+            <p className="section-label text-brand-red">Our Journey</p>
+            <h2 className="section-title text-brand-charcoal mx-auto">
+              How We've <span className="text-brand-red">Grown</span>
+            </h2>
+            <div className="section-divider mx-auto bg-brand-red" />
+            <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
+              From a focused Mumbai trading desk to an ISO-certified,
+              multi-product operation serving buyers across India.
+            </p>
+          </div>
+
+          {/* Vertical timeline */}
+          <div className="relative max-w-3xl mx-auto">
+            {/* Vertical line */}
+            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-brand-red via-brand-red/50 to-transparent hidden sm:block" />
+
+            <div className="space-y-8">
+              {milestones.map(({ icon: Icon, title, description }, i) => (
+                <div
+                  key={title}
+                  id={`milestone-${i}`}
+                  className="relative flex items-start gap-6 sm:gap-10 group"
+                >
+                  {/* Circle node */}
+                  <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-full bg-white border-2 border-brand-red group-hover:border-brand-red-dark group-hover:bg-brand-red/5 shadow-card transition-all duration-300 items-center justify-center z-10">
+                    <Icon
+                      size={22}
+                      className="text-brand-red group-hover:text-brand-red-dark transition-colors duration-300"
+                      strokeWidth={1.75}
+                    />
+                  </div>
+
+                  {/* Mobile icon */}
+                  <div className="sm:hidden flex-shrink-0 w-10 h-10 rounded-full bg-brand-red/10 border border-brand-red flex items-center justify-center">
+                    <Icon
+                      size={18}
+                      className="text-brand-red"
+                      strokeWidth={1.75}
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 bg-white rounded-lg border border-gray-100 shadow-card group-hover:shadow-card-hover group-hover:-translate-y-0.5 group-hover:border-brand-red/30 transition-all duration-300 p-6">
+                    <h3 className="font-display font-bold text-brand-red text-lg mb-2">
+                      {title}
+                    </h3>
+                    <p className="font-body text-gray-500 text-sm leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── Our Story ────────────────────────────────────────────────────── */}
