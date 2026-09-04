@@ -4,8 +4,6 @@ import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
-  Beaker,
-  Gauge,
   CheckCircle2,
   Tag,
   Layers,
@@ -29,22 +27,20 @@ import {
   ChevronDown,
   ChevronUp,
   ClipboardCheck,
-  List,
   Hash,
   Warehouse,
   Building2,
-  Factory,
   FlaskConical,
   Thermometer,
-  Weight,
-  Ruler as RulerIcon,
-  Thermometer as ThermometerIcon,
-  Timer,
-  Fan,
-  AlertCircle,
   Building,
   RefreshCw,
   Search,
+  Gauge,
+  ShoppingBag,
+  Send,
+  Mail,
+  MapPin,
+  Check,
 } from "lucide-react";
 import { useProduct } from "../hooks/useProduct";
 import {
@@ -329,6 +325,357 @@ function hasHeatTreatmentData(entry: any): boolean {
   );
 }
 
+/* ─── Table Components ────────────────────────────────────────────────────── */
+
+function ChemicalCompositionTable({ data }: { data: any[] }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const validData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter(hasChemicalData);
+  }, [data]);
+
+  if (!validData.length) {
+    return null;
+  }
+
+  const displayData = showAll ? validData : validData.slice(0, 10);
+  const hasMore = validData.length > 10;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Element
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Composition (%)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.map((entry, i) => {
+              const isBalance = ["fe", "al", "co", "ti", "cu", "ni"].includes(
+                entry.element?.toLowerCase() || "",
+              );
+              const value = formatChemicalValue(entry);
+
+              return (
+                <tr
+                  key={i}
+                  className={`border-b border-gray-100 ${
+                    i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                  } hover:bg-gray-100/50 transition-colors`}
+                >
+                  <td className="px-6 py-3.5 font-medium text-gray-800">
+                    {entry.element || "—"}
+                    {isBalance && (
+                      <span className="ml-2 text-xs text-gray-400">
+                        (Balance)
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-3.5 text-gray-700 font-mono">
+                    {value}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="w-full py-3 text-sm font-medium text-[#c41e24] hover:text-[#c41e24]/80 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border-t border-gray-200"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp size={16} />
+              Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDown size={16} />
+              Show All {validData.length} Elements
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function MechanicalPropertiesTable({ data }: { data: any[] }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const validData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter(hasMechanicalData);
+  }, [data]);
+
+  if (!validData.length) {
+    return null;
+  }
+
+  const displayData = showAll ? validData : validData.slice(0, 8);
+  const hasMore = validData.length > 8;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Property
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Value
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Condition
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.map((entry, i) => {
+              const hasCondition =
+                entry.condition &&
+                entry.condition !== "—" &&
+                entry.condition !== "";
+
+              let displayValue = formatMechanicalValue(entry);
+
+              if (displayValue === "—" && entry.property_value) {
+                displayValue = entry.property_value;
+              }
+
+              return (
+                <tr
+                  key={i}
+                  className={`border-b border-gray-100 ${
+                    i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                  } hover:bg-gray-100/50 transition-colors`}
+                >
+                  <td className="px-6 py-3.5 font-medium text-gray-800">
+                    {entry.property_name || entry.name || "—"}
+                  </td>
+                  <td className="px-6 py-3.5 text-gray-700 font-mono">
+                    {displayValue}
+                  </td>
+                  <td className="px-6 py-3.5 text-gray-600">
+                    {hasCondition ? (
+                      <span className="inline-flex items-center gap-1.5 bg-[#c41e24]/10 px-3 py-1 rounded-full text-xs font-medium text-[#c41e24]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#c41e24]" />
+                        {entry.condition}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="w-full py-3 text-sm font-medium text-[#c41e24] hover:text-[#c41e24]/80 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border-t border-gray-200"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp size={16} />
+              Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDown size={16} />
+              Show All {validData.length} Properties
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const validData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter(hasHeatTreatmentData);
+  }, [data]);
+
+  if (!validData.length) {
+    return null;
+  }
+
+  const displayData = showAll ? validData : validData.slice(0, 5);
+  const hasMore = validData.length > 5;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Condition
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Temperature
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Holding Time
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Cooling
+              </th>
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
+                Notes
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {displayData.map((entry, i) => (
+              <tr
+                key={i}
+                className={`border-b border-gray-100 ${
+                  i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                } hover:bg-gray-100/50 transition-colors`}
+              >
+                <td className="px-6 py-3.5 font-medium text-gray-800">
+                  {entry.condition || "—"}
+                </td>
+                <td className="px-6 py-3.5 text-gray-700 font-mono">
+                  {entry.temperature || "—"}
+                </td>
+                <td className="px-6 py-3.5 text-gray-700 font-mono">
+                  {entry.holding_time || "—"}
+                </td>
+                <td className="px-6 py-3.5 text-gray-700">
+                  {entry.cooling || "—"}
+                </td>
+                <td className="px-6 py-3.5 text-gray-600">
+                  {entry.notes || "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="w-full py-3 text-sm font-medium text-[#c41e24] hover:text-[#c41e24]/80 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border-t border-gray-200"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp size={16} />
+              Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDown size={16} />
+              Show All {validData.length} Heat Treatment Cycles
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function StockSizesTable({ data }: { data: StockSizeCategory[] }) {
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(data.map((_, idx) => `category-${idx}`)),
+  );
+
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  const toggleCategory = (categoryKey: string) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryKey)) {
+        newSet.delete(categoryKey);
+      } else {
+        newSet.add(categoryKey);
+      }
+      return newSet;
+    });
+  };
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        {data.map((category, idx) => {
+          const categoryKey = `category-${idx}`;
+          const isExpanded = expandedCategories.has(categoryKey);
+          const displayItems = isExpanded
+            ? category.items
+            : category.items.slice(0, 5);
+          const hasMore = category.items.length > 5;
+
+          return (
+            <div key={idx}>
+              {idx > 0 && <div className="border-t border-gray-200" />}
+              <div
+                className="px-6 py-3.5 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-200"
+                onClick={() => toggleCategory(categoryKey)}
+              >
+                <p className="font-medium text-gray-800 flex items-center gap-2">
+                  <Hash size={16} className="text-[#c41e24]" />
+                  {category.category}
+                </p>
+                <span className="text-sm text-gray-500 flex items-center gap-2">
+                  {category.items.length} sizes
+                  {isExpanded ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </span>
+              </div>
+              <table className="w-full text-sm">
+                <tbody>
+                  {displayItems.map((item: string, i: number) => (
+                    <tr
+                      key={i}
+                      className={`border-b border-gray-100 ${
+                        i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                      } hover:bg-gray-100/50 transition-colors`}
+                    >
+                      <td className="px-6 py-3 text-gray-700 font-mono">
+                        {item}
+                      </td>
+                    </tr>
+                  ))}
+                  {hasMore && !isExpanded && (
+                    <tr className="bg-gray-50">
+                      <td className="px-6 py-2.5 text-sm text-[#c41e24] font-medium">
+                        +{category.items.length - 5} more sizes
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Current Stock Components ────────────────────────────────────────────── */
 
 function CurrentStockDisplay({ stockData }: { stockData: any }) {
@@ -398,15 +745,15 @@ function StructuredStockTable({ items }: { items: any[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm font-body">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
+            <tr className="bg-gray-50 border-b border-gray-200">
               {headers.map((header, idx) => (
                 <th
                   key={idx}
-                  className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest"
+                  className="px-6 py-4 text-left font-semibold text-gray-700 text-sm"
                 >
                   {header.replace(/_/g, " ")}
                 </th>
@@ -417,15 +764,12 @@ function StructuredStockTable({ items }: { items: any[] }) {
             {displayItems.map((item, i) => (
               <tr
                 key={i}
-                className={`transition-all ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
+                className={`border-b border-gray-100 ${
+                  i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                } hover:bg-gray-100/50 transition-colors`}
               >
                 {headers.map((header, idx) => (
-                  <td
-                    key={idx}
-                    className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-medium"
-                  >
+                  <td key={idx} className="px-6 py-3.5 text-gray-700">
                     {item[header] || "—"}
                   </td>
                 ))}
@@ -437,16 +781,16 @@ function StructuredStockTable({ items }: { items: any[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 text-sm font-medium text-[#c41e24] hover:text-[#c41e24]/80 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border-t border-gray-200"
         >
           {showAll ? (
             <>
-              <ChevronUp size={14} className="sm:size-[18px]" />
+              <ChevronUp size={16} />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={14} className="sm:size-[18px]" />
+              <ChevronDown size={16} />
               Show All {items.length} Stock Items
             </>
           )}
@@ -462,12 +806,12 @@ function SimpleStockList({ items }: { items: string[] }) {
   const hasMore = items.length > 10;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm font-body">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-4 text-left font-semibold text-gray-700 text-sm">
                 Available Stock
               </th>
             </tr>
@@ -476,13 +820,11 @@ function SimpleStockList({ items }: { items: string[] }) {
             {displayItems.map((item, i) => (
               <tr
                 key={i}
-                className={`transition-all ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
+                className={`border-b border-gray-100 ${
+                  i % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                } hover:bg-gray-100/50 transition-colors`}
               >
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-medium">
-                  {item}
-                </td>
+                <td className="px-6 py-3.5 text-gray-700 font-mono">{item}</td>
               </tr>
             ))}
           </tbody>
@@ -491,16 +833,16 @@ function SimpleStockList({ items }: { items: string[] }) {
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
+          className="w-full py-3 text-sm font-medium text-[#c41e24] hover:text-[#c41e24]/80 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 border-t border-gray-200"
         >
           {showAll ? (
             <>
-              <ChevronUp size={14} className="sm:size-[18px]" />
+              <ChevronUp size={16} />
               Show Less
             </>
           ) : (
             <>
-              <ChevronDown size={14} className="sm:size-[18px]" />
+              <ChevronDown size={16} />
               Show All {items.length} Items
             </>
           )}
@@ -538,371 +880,10 @@ function StockAvailabilityBadge({ stockData }: { stockData: any }) {
   if (!hasStock) return null;
 
   return (
-    <span className="inline-flex items-center gap-2 text-[10px] sm:text-sm font-display font-bold text-green-600 bg-green-50 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-green-200">
+    <span className="inline-flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 px-4 py-2 rounded-full border border-green-200">
       <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
       {stockCount > 1 ? `${stockCount} items in stock` : "In Stock"}
     </span>
-  );
-}
-
-/* ─── Table Components ────────────────────────────────────────────────────── */
-
-function ChemicalCompositionTable({ data }: { data: any[] }) {
-  const [showAll, setShowAll] = useState(false);
-
-  const validData = useMemo(() => {
-    if (!data || !Array.isArray(data)) return [];
-    return data.filter(hasChemicalData);
-  }, [data]);
-
-  if (!validData.length) {
-    return null;
-  }
-
-  const displayData = showAll ? validData : validData.slice(0, 10);
-  const hasMore = validData.length > 10;
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm font-body">
-          <thead>
-            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Element
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Composition (%)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayData.map((entry, i) => {
-              const isBalance = ["fe", "al", "co", "ti", "cu", "ni"].includes(
-                entry.element?.toLowerCase() || "",
-              );
-              const value = formatChemicalValue(entry);
-
-              return (
-                <tr
-                  key={i}
-                  className={`transition-all ${
-                    i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                  } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
-                >
-                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
-                    {entry.element || "—"}
-                    {isBalance && (
-                      <span className="ml-1 sm:ml-3 text-[9px] sm:text-xs font-body text-gray-400 uppercase">
-                        (Bal)
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-semibold">
-                    {value}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {hasMore && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
-        >
-          {showAll ? (
-            <>
-              <ChevronUp size={14} className="sm:size-[18px]" />
-              Show Less
-            </>
-          ) : (
-            <>
-              <ChevronDown size={14} className="sm:size-[18px]" />
-              Show All {validData.length} Elements
-            </>
-          )}
-        </button>
-      )}
-    </div>
-  );
-}
-
-function MechanicalPropertiesTable({ data }: { data: any[] }) {
-  const [showAll, setShowAll] = useState(false);
-
-  const validData = useMemo(() => {
-    if (!data || !Array.isArray(data)) return [];
-    return data.filter(hasMechanicalData);
-  }, [data]);
-
-  if (!validData.length) {
-    return null;
-  }
-
-  const displayData = showAll ? validData : validData.slice(0, 8);
-  const hasMore = validData.length > 8;
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm font-body">
-          <thead>
-            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Property
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Value
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Condition
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayData.map((entry, i) => {
-              const hasCondition =
-                entry.condition &&
-                entry.condition !== "—" &&
-                entry.condition !== "";
-
-              let displayValue = formatMechanicalValue(entry);
-
-              if (displayValue === "—" && entry.property_value) {
-                displayValue = entry.property_value;
-              }
-
-              return (
-                <tr
-                  key={i}
-                  className={`transition-all ${
-                    i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                  } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
-                >
-                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
-                    {entry.property_name || entry.name || "—"}
-                  </td>
-                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono font-semibold">
-                    {displayValue}
-                  </td>
-                  <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-600 text-[10px] sm:text-sm">
-                    {hasCondition ? (
-                      <span className="inline-flex items-center gap-1.5 bg-brand-red/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-red" />
-                        {entry.condition}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {hasMore && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
-        >
-          {showAll ? (
-            <>
-              <ChevronUp size={14} className="sm:size-[18px]" />
-              Show Less
-            </>
-          ) : (
-            <>
-              <ChevronDown size={14} className="sm:size-[18px]" />
-              Show All {validData.length} Properties
-            </>
-          )}
-        </button>
-      )}
-    </div>
-  );
-}
-
-/* ─── Heat Treatment Table ────────────────────────────────────────────────── */
-
-function HeatTreatmentTable({ data }: { data: HeatTreatment[] }) {
-  const [showAll, setShowAll] = useState(false);
-
-  const validData = useMemo(() => {
-    if (!data || !Array.isArray(data)) return [];
-    return data.filter(hasHeatTreatmentData);
-  }, [data]);
-
-  if (!validData.length) {
-    return null;
-  }
-
-  const displayData = showAll ? validData : validData.slice(0, 5);
-  const hasMore = validData.length > 5;
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm font-body">
-          <thead>
-            <tr className="bg-gradient-to-r from-brand-red via-brand-red/95 to-brand-red/90 border-b border-brand-red/20">
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Condition
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Temperature
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Holding Time
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Cooling
-              </th>
-              <th className="px-3 py-3 sm:px-6 sm:py-5 text-left font-display font-extrabold text-[10px] sm:text-xs text-white uppercase tracking-wider sm:tracking-widest">
-                Notes
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayData.map((entry, i) => (
-              <tr
-                key={i}
-                className={`transition-all ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
-              >
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 font-semibold text-brand-charcoal text-xs sm:text-base">
-                  {entry.condition || "—"}
-                </td>
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono">
-                  {entry.temperature || "—"}
-                </td>
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base font-mono">
-                  {entry.holding_time || "—"}
-                </td>
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-700 text-xs sm:text-base">
-                  {entry.cooling || "—"}
-                </td>
-                <td className="px-3 py-2.5 sm:px-6 sm:py-4 text-gray-600 text-[10px] sm:text-sm">
-                  {entry.notes || "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {hasMore && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="w-full py-3 sm:py-4 text-xs sm:text-sm font-display font-bold text-brand-red hover:text-white hover:bg-brand-red/10 bg-gray-50/50 hover:bg-brand-red transition-all flex items-center justify-center gap-2 border-t border-gray-200/80"
-        >
-          {showAll ? (
-            <>
-              <ChevronUp size={14} className="sm:size-[18px]" />
-              Show Less
-            </>
-          ) : (
-            <>
-              <ChevronDown size={14} className="sm:size-[18px]" />
-              Show All {validData.length} Heat Treatment Cycles
-            </>
-          )}
-        </button>
-      )}
-    </div>
-  );
-}
-
-/* ─── Stock Sizes Table ────────────────────────────────────────────────────── */
-
-function StockSizesTable({ data }: { data: StockSizeCategory[] }) {
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(data.map((_, idx) => `category-${idx}`)),
-  );
-
-  if (!data || data.length === 0) {
-    return null;
-  }
-
-  const toggleCategory = (categoryKey: string) => {
-    setExpandedCategories((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryKey)) {
-        newSet.delete(categoryKey);
-      } else {
-        newSet.add(categoryKey);
-      }
-      return newSet;
-    });
-  };
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-      <div className="overflow-x-auto">
-        {data.map((category, idx) => {
-          const categoryKey = `category-${idx}`;
-          const isExpanded = expandedCategories.has(categoryKey);
-          const displayItems = isExpanded
-            ? category.items
-            : category.items.slice(0, 5);
-          const hasMore = category.items.length > 5;
-
-          return (
-            <div key={idx}>
-              {idx > 0 && <div className="border-t border-gray-200" />}
-              <div
-                className="bg-gradient-to-r from-brand-red/15 via-brand-red/12 to-brand-red/10 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between cursor-pointer hover:bg-brand-red/20 transition-all border-b border-brand-red/20"
-                onClick={() => toggleCategory(categoryKey)}
-              >
-                <p className="font-display font-extrabold text-brand-charcoal text-xs sm:text-base flex items-center gap-2">
-                  <Hash size={14} className="sm:size-[18px] text-brand-red" />
-                  {category.category}
-                </p>
-                <span className="text-[10px] sm:text-sm font-display font-bold text-gray-600">
-                  {category.items.length} sizes
-                  {isExpanded ? (
-                    <ChevronUp
-                      size={12}
-                      className="sm:size-[16px] inline ml-1 sm:ml-2"
-                    />
-                  ) : (
-                    <ChevronDown
-                      size={12}
-                      className="sm:size-[16px] inline ml-1 sm:ml-2"
-                    />
-                  )}
-                </span>
-              </div>
-              <table className="w-full text-xs sm:text-sm font-body">
-                <tbody>
-                  {displayItems.map((item: string, i: number) => (
-                    <tr
-                      key={i}
-                      className={`transition-all ${
-                        i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
-                      } hover:bg-brand-red/8 border-b border-gray-100/60 hover:border-brand-red/30`}
-                    >
-                      <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-gray-700 text-xs sm:text-base font-mono font-medium">
-                        {item}
-                      </td>
-                    </tr>
-                  ))}
-                  {hasMore && !isExpanded && (
-                    <tr className="bg-gray-50/80 hover:bg-gray-100">
-                      <td className="px-3 sm:px-6 py-2.5 sm:py-3 text-[10px] sm:text-sm text-brand-red font-display font-bold">
-                        +{category.items.length - 5} more sizes
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
@@ -911,36 +892,25 @@ function StockSizesTable({ data }: { data: StockSizeCategory[] }) {
 function SectionHeading({
   icon: Icon,
   label,
-  badge,
   description,
 }: {
   icon: React.ElementType;
   label: string;
-  badge?: string;
   description?: string;
 }) {
   return (
-    <div className="mb-6 pb-4 border-b-2 border-brand-red/20">
-      <div className="flex items-center gap-3">
-        <div className="p-3 rounded-xl bg-brand-red/15 shadow-sm">
-          <Icon size={22} className="text-brand-red" strokeWidth={1.75} />
+    <div className="mb-6">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2 rounded-lg bg-[#c41e24]/10">
+          <Icon size={20} className="text-[#c41e24]" strokeWidth={1.75} />
         </div>
-        <div>
-          <h2 className="font-display font-extrabold text-brand-charcoal text-2xl sm:text-3xl tracking-tight">
-            {label}
-          </h2>
-          {description && (
-            <p className="text-gray-500 text-sm mt-1 font-body">
-              {description}
-            </p>
-          )}
-        </div>
-        {badge && (
-          <span className="ml-auto text-xs font-display font-bold text-white bg-brand-red px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
-            {badge}
-          </span>
-        )}
+        <h2 className="font-display font-bold text-gray-900 text-xl">
+          {label}
+        </h2>
       </div>
+      {description && (
+        <p className="text-gray-500 text-sm ml-11">{description}</p>
+      )}
     </div>
   );
 }
@@ -954,16 +924,16 @@ function ChipList({
 }) {
   if (!items?.length) return null;
   const colorClasses = {
-    red: "bg-brand-red/8 border-brand-red/20 text-brand-red",
-    gold: "bg-brand-gold/10 border-brand-gold/30 text-brand-charcoal",
-    gray: "bg-gray-100 border-gray-200 text-gray-600",
+    red: "bg-[#c41e24]/10 text-[#c41e24] border-[#c41e24]/20",
+    gold: "bg-amber-50 text-amber-700 border-amber-200",
+    gray: "bg-gray-100 text-gray-700 border-gray-200",
   };
   return (
     <div className="flex flex-wrap gap-2">
       {items.map((item, i) => (
         <span
           key={i}
-          className={`text-sm font-body px-4 py-2 rounded-full border ${colorClasses[color]} hover:scale-[1.02] transition-transform`}
+          className={`text-sm font-medium px-4 py-2 rounded-full border ${colorClasses[color]} hover:scale-[1.02] transition-transform cursor-default`}
         >
           {item}
         </span>
@@ -986,16 +956,15 @@ function BulletList({ items }: { items: string[] }) {
   if (!filtered.length) return null;
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2.5">
       {filtered.map((item, i) => (
-        <li
-          key={i}
-          className="flex items-start gap-3 group hover:bg-gray-50/80 p-2 rounded-lg transition-colors"
-        >
-          <div className="w-2 h-2 rounded-full bg-brand-red mt-2 flex-shrink-0 group-hover:scale-125 transition-transform" />
-          <span className="font-body text-gray-600 text-base leading-relaxed group-hover:text-brand-charcoal transition-colors">
-            {item}
-          </span>
+        <li key={i} className="flex items-start gap-3">
+          <Check
+            size={18}
+            className="text-[#c41e24] mt-0.5 flex-shrink-0"
+            strokeWidth={2.5}
+          />
+          <span className="text-gray-700 leading-relaxed">{item}</span>
         </li>
       ))}
     </ul>
@@ -1005,16 +974,11 @@ function BulletList({ items }: { items: string[] }) {
 function FeatureCard({ feature, index }: { feature: string; index: number }) {
   const Icon = getFeatureIcon(feature);
   return (
-    <div
-      className="group flex items-start gap-3 p-4 rounded-lg bg-gray-50/80 hover:bg-brand-red/5 border border-gray-100 hover:border-brand-red/30 transition-all duration-200 hover:shadow-sm"
-      style={{ animationDelay: `${index * 50}ms` }}
-    >
-      <div className="w-10 h-10 rounded-lg bg-brand-red/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red/20 transition-colors">
-        <Icon size={18} className="text-brand-red" strokeWidth={1.75} />
+    <div className="flex items-start gap-3 p-4 rounded-xl bg-white border border-gray-200 hover:border-[#c41e24]/30 hover:shadow-md transition-all duration-200">
+      <div className="w-9 h-9 rounded-lg bg-[#c41e24]/10 flex items-center justify-center flex-shrink-0">
+        <Icon size={17} className="text-[#c41e24]" strokeWidth={1.75} />
       </div>
-      <span className="font-body text-gray-600 text-sm leading-relaxed group-hover:text-brand-charcoal transition-colors">
-        {feature}
-      </span>
+      <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
     </div>
   );
 }
@@ -1049,10 +1013,8 @@ export function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const { product, loading, error } = useProduct(slug);
 
-  // ✅ ALL HOOKS MUST BE AT THE TOP - BEFORE ANY EARLY RETURNS
   const [showAll, setShowAll] = useState(false);
 
-  // ✅ Single useMemo for all product checks
   const productChecks = useMemo(() => {
     if (!product) {
       return {
@@ -1086,17 +1048,6 @@ export function ProductPage() {
 
     const productData = product as any;
 
-    // ✅ FIX: Priority to product.image, then product.images[0].url, then getProductImage()
-    const heroImage =
-      productData.image || // ✅ 1. Direct image field
-      productData.images?.[0]?.url || // ✅ 2. images array
-      getProductImage(product.product_type, product.category, product.title); // ✅ 3. Fallback
-
-    const heroAlt =
-      productData.image_alt ||
-      product.images?.[0]?.alt ||
-      `${getTypeDisplayLabel(product.product_type)} — ${product.title}`;
-
     return {
       categoryLabel: getCategoryDisplayLabel(product.category),
       typeLabel: getTypeDisplayLabel(product.product_type),
@@ -1105,8 +1056,12 @@ export function ProductPage() {
         ? cleanText(product.description_text)
         : "",
       productData: productData,
-      heroImage: heroImage,
-      heroAlt: heroAlt,
+      heroImage:
+        product.images?.[0]?.url ||
+        getProductImage(product.product_type, product.category, product.title),
+      heroAlt:
+        product.images?.[0]?.alt ||
+        `${getTypeDisplayLabel(product.product_type)} — ${product.title}`,
       hasChem: product.chemical_composition?.some(hasChemicalData) || false,
       hasMech: product.mechanical_properties?.some(hasMechanicalData) || false,
       hasStockSizes:
@@ -1188,7 +1143,6 @@ export function ProductPage() {
     };
   }, [product]);
 
-  // Destructure all values from the single useMemo
   const {
     categoryLabel,
     typeLabel,
@@ -1217,19 +1171,18 @@ export function ProductPage() {
     hasMetaDescription,
   } = productChecks;
 
-  // ✅ NOW it's safe to have early returns - after all hooks are called
   if (loading) return <Skeleton />;
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20 px-4">
         <Package size={48} className="text-gray-400" strokeWidth={1} />
-        <h1 className="font-display font-bold text-xl text-brand-charcoal">
+        <h1 className="font-display font-bold text-xl text-gray-900">
           Failed to load product
         </h1>
-        <p className="font-body text-gray-400 text-sm">{error}</p>
+        <p className="text-gray-400 text-sm">{error}</p>
         <Link
           to="/products"
-          className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
+          className="border-2 border-[#c41e24] text-[#c41e24] hover:bg-[#c41e24] hover:text-white font-medium px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
         >
           Back to Products
         </Link>
@@ -1241,16 +1194,15 @@ export function ProductPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 pt-20 px-4">
         <Package size={48} className="text-gray-400" strokeWidth={1} />
-        <h1 className="font-display font-bold text-2xl text-brand-charcoal">
+        <h1 className="font-display font-bold text-2xl text-gray-900">
           Product Not Found
         </h1>
-        <p className="font-body text-gray-400 text-sm max-w-xs text-center">
-          We couldn't find a product matching <strong>{slug}</strong>. It may
-          have been moved.
+        <p className="text-gray-400 text-sm max-w-xs text-center">
+          We couldn't find a product matching <strong>{slug}</strong>.
         </p>
         <Link
           to="/products"
-          className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-sm transition-all duration-200 text-sm"
+          className="border-2 border-[#c41e24] text-[#c41e24] hover:bg-[#c41e24] hover:text-white font-medium px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
         >
           Browse All Products
         </Link>
@@ -1258,7 +1210,6 @@ export function ProductPage() {
     );
   }
 
-  // ── Rest of your component JSX ──
   return (
     <>
       <title>
@@ -1272,67 +1223,57 @@ export function ProductPage() {
         }
       />
 
-      <div className="bg-white">
+      <div className="bg-gray-50 min-h-screen">
         {/* ── Hero Section ────────────────────────────────────────────── */}
-        <section id="product-hero" className="relative">
-          <div className="relative w-full h-[320px] sm:h-[420px] lg:h-[500px] bg-gray-100 overflow-hidden">
-            {/* ✅ FIX: Add onError fallback to placeholder */}
+        <section className="relative">
+          <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] bg-gray-200 overflow-hidden">
             <img
-              src={
-                heroImage ||
-                "https://via.placeholder.com/1200x500/0066cc/ffffff?text=Product+Image"
-              }
+              src={heroImage}
               alt={heroAlt}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  "https://via.placeholder.com/1200x500/0066cc/ffffff?text=Product+Image";
-              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
 
-            {/* Badges - Fixed for mobile */}
-            <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 flex flex-wrap gap-1.5 sm:gap-2">
+            <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
               <span
-                className={`text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full ${
+                className={`text-xs font-medium px-3 py-1.5 rounded-full ${
                   isSpecialized
-                    ? "bg-brand-red text-white"
-                    : "bg-white/90 text-brand-charcoal"
+                    ? "bg-[#c41e24] text-white"
+                    : "bg-white/90 text-gray-800"
                 } shadow-lg`}
               >
                 {categoryLabel}
               </span>
-              <span className="text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white/90 text-brand-charcoal shadow-lg">
+              <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-white/90 text-gray-800 shadow-lg">
                 {typeLabel}
               </span>
               {hasCurrentStock && (
                 <StockAvailabilityBadge stockData={product.current_stock} />
               )}
               {!hasCurrentStock && (
-                <span className="text-[10px] sm:text-sm font-display font-bold px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-green-500/90 text-white shadow-lg">
+                <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-green-500/90 text-white shadow-lg">
                   {availability}
                 </span>
               )}
             </div>
 
-            {/* Title - Fixed for mobile */}
-            <div className="absolute bottom-4 left-3 right-3 sm:bottom-8 sm:left-8 sm:right-8 lg:left-16 xl:left-24">
-              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight max-w-4xl drop-shadow-lg [word-wrap:break-word] hyphens-auto">
+            <div className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10 lg:left-16 xl:left-24">
+              <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight max-w-4xl drop-shadow-lg">
                 {product.title}
               </h1>
               {hasMaterialGrades && (
-                <div className="flex flex-wrap gap-1.5 sm:gap-2.5 mt-2 sm:mt-4">
+                <div className="flex flex-wrap gap-2 mt-3">
                   {product.material_grades.slice(0, 4).map((grade, i) => (
                     <span
                       key={i}
-                      className="text-[10px] sm:text-sm font-body px-2 py-0.5 sm:px-4 sm:py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm"
+                      className="text-xs font-medium px-3 py-1 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm"
                     >
                       {grade}
                     </span>
                   ))}
                   {product.material_grades.length > 4 && (
-                    <span className="text-[10px] sm:text-sm font-body px-2 py-0.5 sm:px-4 sm:py-1.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+                    <span className="text-xs font-medium px-3 py-1 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm">
                       +{product.material_grades.length - 4}
                     </span>
                   )}
@@ -1343,29 +1284,25 @@ export function ProductPage() {
         </section>
 
         {/* ── Content ──────────────────────────────────────────────────── */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-8 sm:py-12 lg:py-16">
-          {/* Key Specs - Stack on mobile */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 py-8 sm:py-12">
+          {/* Key Specs */}
           {keySpecs.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 -mt-6 relative z-10">
               {keySpecs.map((spec, idx) => {
                 const Icon = spec.icon;
                 return (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-3 sm:p-4 bg-gray-50/80 rounded-xl border border-gray-100/80 hover:border-brand-red/30 hover:bg-brand-red/5 transition-all duration-200 group"
+                    className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center gap-3 hover:shadow-md transition-shadow"
                   >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-red/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red/20 transition-colors">
-                      <Icon
-                        size={18}
-                        className="text-brand-red sm:size-[22px]"
-                        strokeWidth={1.5}
-                      />
+                    <div className="w-10 h-10 rounded-lg bg-[#c41e24]/10 flex items-center justify-center flex-shrink-0">
+                      <Icon size={18} className="text-[#c41e24]" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] sm:text-xs font-body text-gray-400 uppercase tracking-wider">
+                    <div className="min-w-0">
+                      <p className="text-xs text-gray-400 uppercase tracking-wider">
                         {spec.label}
                       </p>
-                      <p className="text-sm sm:text-base font-semibold text-brand-charcoal truncate group-hover:text-brand-red transition-colors">
+                      <p className="text-sm font-semibold text-gray-800 truncate">
                         {spec.value}
                       </p>
                     </div>
@@ -1375,34 +1312,30 @@ export function ProductPage() {
             </div>
           )}
 
-          <div className="grid lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-14">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 mt-8">
             {/* ── Left: Main Content ── */}
-            <div className="lg:col-span-2 space-y-10 sm:space-y-12">
-              {/* Overview Section */}
-              <section id="product-overview">
+            <div className="lg:col-span-2 space-y-10">
+              {/* Overview */}
+              <section>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 sm:p-2.5 rounded-lg bg-brand-red/10">
-                    <FileText
-                      size={18}
-                      className="text-brand-red sm:size-[20px]"
-                      strokeWidth={1.75}
-                    />
+                  <div className="p-2 rounded-lg bg-[#c41e24]/10">
+                    <FileText size={18} className="text-[#c41e24]" />
                   </div>
-                  <h2 className="font-display font-bold text-brand-charcoal text-lg sm:text-xl md:text-2xl">
+                  <h2 className="font-display font-bold text-gray-900 text-xl">
                     Overview
                   </h2>
                 </div>
 
                 {hasMetaDescription && (
-                  <div className="bg-gradient-to-r from-brand-red/5 to-transparent border-l-4 border-brand-red rounded-r-xl p-4 sm:p-5 mb-4">
-                    <p className="font-body text-gray-600 text-sm sm:text-base leading-relaxed">
+                  <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+                    <p className="text-gray-700 leading-relaxed">
                       {product.meta_description}
                     </p>
                   </div>
                 )}
 
                 {descriptionText && descriptionText.length > 20 && (
-                  <div className="space-y-3 sm:space-y-4 text-gray-700 leading-relaxed">
+                  <div className="space-y-4 text-gray-700 leading-relaxed">
                     {descriptionText
                       .split(/\n\n+/)
                       .filter(
@@ -1417,14 +1350,13 @@ export function ProductPage() {
                 )}
               </section>
 
-              {/* Key Features Section - Only show if hasFeatures is true */}
+              {/* Key Features */}
               {hasFeatures && (
-                <section id="product-features" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Sparkles}
                     label="Key Features"
-                    badge="Benefits"
-                    description="Key advantages and characteristics of this material"
+                    description="Key advantages and characteristics"
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {product.features
@@ -1442,9 +1374,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Applications Section - Only show if hasApplications is true */}
+              {/* Applications */}
               {hasApplications && (
-                <section id="product-applications" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Building2}
                     label="Applications"
@@ -1454,9 +1386,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Material Grades Section - Only show if hasMaterialGrades is true */}
+              {/* Material Grades */}
               {hasMaterialGrades && (
-                <section id="product-material-grades" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Tag}
                     label="Material Grades"
@@ -1466,9 +1398,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Equivalent Grades Section - Only show if hasEquivalentGrades is true */}
+              {/* Equivalent Grades */}
               {hasEquivalentGrades && (
-                <section id="product-equivalent-grades" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Globe}
                     label="Equivalent Grades"
@@ -1478,7 +1410,7 @@ export function ProductPage() {
                     {product.equivalent_grades.map((grade, i) => (
                       <span
                         key={i}
-                        className="text-sm font-body px-4 py-2 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-charcoal hover:bg-brand-gold/20 transition-colors"
+                        className="text-sm font-medium px-4 py-2 rounded-full bg-amber-50 text-amber-700 border border-amber-200"
                       >
                         {grade}
                       </span>
@@ -1487,9 +1419,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Specifications Section - Only show if hasSpecifications is true */}
+              {/* Specifications */}
               {hasSpecifications && (
-                <section id="product-specifications" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Layers}
                     label="Specifications & Standards"
@@ -1499,9 +1431,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Chemical Composition Section - Only show if hasChem is true */}
+              {/* Chemical Composition */}
               {hasChem && (
-                <section id="product-chemical-composition" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={FlaskConical}
                     label="Chemical Composition"
@@ -1513,9 +1445,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Mechanical Properties Section - Only show if hasMech is true */}
+              {/* Mechanical Properties */}
               {hasMech && (
-                <section id="product-mechanical-properties" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Gauge}
                     label="Mechanical Properties"
@@ -1527,11 +1459,11 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Heat Treatment Section - Only show if hasHeatTreatment is true */}
+              {/* Heat Treatment */}
               {hasHeatTreatment && (
-                <section id="product-heat-treatment" className="pt-0">
+                <section>
                   <SectionHeading
-                    icon={ThermometerIcon}
+                    icon={Thermometer}
                     label="Heat Treatment"
                     description="Heat treatment cycles and conditions"
                   />
@@ -1539,9 +1471,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Availability Section - Only show if hasAvailability is true */}
+              {/* Availability */}
               {hasAvailability && (
-                <section id="product-availability" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Building}
                     label="Available Forms"
@@ -1551,9 +1483,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Common Trade Names Section - Only show if hasCommonTradeNames is true */}
+              {/* Common Trade Names */}
               {hasCommonTradeNames && (
-                <section id="product-trade-names" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={RefreshCw}
                     label="Common Trade Names"
@@ -1564,7 +1496,7 @@ export function ProductPage() {
                       (name: string, i: number) => (
                         <span
                           key={i}
-                          className="text-sm font-body px-4 py-2 rounded-full bg-brand-red/5 border border-brand-red/20 text-brand-charcoal hover:bg-brand-red/10 transition-colors"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-[#c41e24]/5 text-gray-700 border border-[#c41e24]/20"
                         >
                           {name}
                         </span>
@@ -1574,9 +1506,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Current Stock Section - Only show if hasCurrentStock is true */}
+              {/* Current Stock */}
               {hasCurrentStock && (
-                <section id="product-current-stock" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Warehouse}
                     label="Current Stock Availability"
@@ -1586,9 +1518,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Stock Sizes Section - Only show if hasStockSizes is true */}
+              {/* Stock Sizes */}
               {hasStockSizes && (
-                <section id="product-stock-sizes" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Grid3X3}
                     label="Stock Sizes"
@@ -1598,9 +1530,9 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Tests Section - Only show if hasTests is true */}
+              {/* Tests */}
               {hasTests && (
-                <section id="product-tests" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={ClipboardCheck}
                     label="Tests Performed"
@@ -1610,30 +1542,29 @@ export function ProductPage() {
                 </section>
               )}
 
-              {/* Packing Section - Only show if packingText is truthy */}
+              {/* Packing */}
               {packingText && (
-                <section id="product-packing" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Package}
                     label="Packing & Delivery"
                     description="Packaging and shipping information"
                   />
-                  <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-4 sm:p-5 flex items-start gap-3 sm:gap-4">
+                  <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-start gap-4">
                     <Truck
-                      size={18}
-                      className="text-brand-red flex-shrink-0 mt-0.5 sm:size-[22px]"
-                      strokeWidth={1.5}
+                      size={20}
+                      className="text-[#c41e24] flex-shrink-0 mt-0.5"
                     />
-                    <p className="font-body text-gray-600 text-sm sm:text-base leading-relaxed">
+                    <p className="text-gray-700 leading-relaxed">
                       {packingText}
                     </p>
                   </div>
                 </section>
               )}
 
-              {/* People Also Search Section - Only show if hasPeopleAlsoSearch is true */}
+              {/* People Also Search */}
               {hasPeopleAlsoSearch && (
-                <section id="product-people-also-search" className="pt-0">
+                <section>
                   <SectionHeading
                     icon={Search}
                     label="People Also Search"
@@ -1644,7 +1575,7 @@ export function ProductPage() {
                       (term: string, i: number) => (
                         <span
                           key={i}
-                          className="text-sm font-body px-4 py-2 rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-brand-red/5 hover:border-brand-red/30 hover:text-brand-red transition-colors"
+                          className="text-sm font-medium px-4 py-2 rounded-full bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#c41e24]/5 hover:border-[#c41e24]/30 hover:text-[#c41e24] transition-colors cursor-default"
                         >
                           {term}
                         </span>
@@ -1655,183 +1586,154 @@ export function ProductPage() {
               )}
 
               {/* Back Link */}
-              <div className="pt-6 border-t border-gray-100">
+              <div className="pt-6 border-t border-gray-200">
                 <Link
                   to="/products"
-                  id="product-page-back"
-                  className="inline-flex items-center gap-2 text-base font-display font-bold text-gray-400 hover:text-brand-red transition-colors duration-200"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-[#c41e24] transition-colors"
                 >
-                  <ArrowLeft size={18} />
+                  <ArrowLeft size={16} />
                   Browse All Products
                 </Link>
               </div>
             </div>
 
             {/* ── Sidebar ── */}
-            <aside className="lg:col-span-1">
-              <div className="sticky top-24 space-y-5">
-                {/* Enquiry Card */}
-                <div className="bg-gradient-to-br from-brand-red to-brand-red/90 rounded-2xl p-6 sm:p-8 shadow-xl">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
-                    <FileText
-                      size={20}
-                      className="text-white sm:size-[24px]"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                  <p className="text-white/80 font-display font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-1">
-                    Need this product?
-                  </p>
-                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white mb-2 leading-tight">
-                    Get a Quote
-                  </h3>
-                  <p className="font-body text-white/70 text-sm mb-5 sm:mb-6 leading-relaxed">
-                    Share your grade, size and quantity — we'll respond within
-                    one business day.
-                  </p>
-                  <Link
-                    to="/contact"
-                    id={`product-${product.slug}-enquire`}
-                    className="bg-white hover:bg-gray-50 text-brand-red font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm sm:text-base w-full"
-                  >
-                    Enquire Now
-                    <ArrowRight size={16} className="sm:size-[18px]" />
-                  </Link>
+            <aside className="lg:col-span-1 space-y-5">
+              {/* Enquiry Card */}
+              <div className="bg-[#c41e24] rounded-2xl p-6 shadow-lg">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+                  <Send size={20} className="text-white" />
                 </div>
+                <p className="text-white/80 text-xs font-medium uppercase tracking-wider mb-1">
+                  Need this product?
+                </p>
+                <h3 className="font-display font-bold text-xl text-white mb-2">
+                  Get a Quote
+                </h3>
+                <p className="text-white/70 text-sm mb-5 leading-relaxed">
+                  Share your grade, size and quantity — we'll respond within one
+                  business day.
+                </p>
+                <Link
+                  to="/contact"
+                  className="bg-white hover:bg-gray-50 text-[#c41e24] font-medium px-6 py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm w-full"
+                >
+                  Enquire Now
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
 
-                {/* Call Card */}
-                <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
-                  <p className="font-body text-gray-400 text-sm mb-3">
-                    Prefer to call?
-                  </p>
-                  <a
-                    href="tel:+917073875529"
-                    id={`product-${product.slug}-call`}
-                    className="flex items-center gap-3 group"
-                  >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300">
-                      <Phone
-                        size={16}
-                        className="text-brand-red group-hover:text-white transition-colors sm:size-[20px]"
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                    <div>
-                      <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base group-hover:text-brand-red transition-colors">
-                        +91 7073875529
-                      </p>
-                      <p className="font-body text-gray-400 text-xs sm:text-sm">
-                        Mumbai office
-                      </p>
-                    </div>
-                  </a>
-                </div>
-
-                {/* Product Details */}
-                <div className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
-                    <Package
+              {/* Call Card */}
+              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-gray-400 text-sm mb-3">Prefer to call?</p>
+                <a
+                  href="tel:+917073875529"
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#c41e24]/10 flex items-center justify-center group-hover:bg-[#c41e24] transition-colors duration-300">
+                    <Phone
                       size={16}
-                      className="text-gray-400"
-                      strokeWidth={1.5}
+                      className="text-[#c41e24] group-hover:text-white transition-colors"
                     />
-                    <p className="font-body text-gray-400 text-xs uppercase tracking-wider">
-                      Product Details
-                    </p>
                   </div>
                   <div>
-                    <p className="font-body text-gray-400 text-sm mb-1">Type</p>
-                    <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base">
-                      {product.product_type || "—"}
+                    <p className="font-medium text-gray-900 group-hover:text-[#c41e24] transition-colors">
+                      +91 7073875529
                     </p>
+                    <p className="text-gray-400 text-sm">Mumbai office</p>
                   </div>
-                  <div>
-                    <p className="font-body text-gray-400 text-sm mb-1">
-                      Category
-                    </p>
-                    <p className="font-display font-bold text-brand-charcoal text-sm sm:text-base">
-                      {categoryLabel || "—"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-body text-gray-400 text-sm mb-1">Form</p>
-                    <p className="font-display font-bold text-brand-red text-sm sm:text-base">
-                      {typeLabel || "—"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-body text-gray-400 text-sm mb-1">
-                      Status
-                    </p>
-                    {hasCurrentStock ? (
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <p className="font-display font-bold text-green-600 text-sm sm:text-base">
-                          In Stock
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="font-display font-bold text-green-600 text-sm sm:text-base">
-                        {availability || "—"}
-                      </p>
-                    )}
-                  </div>
-                  {hasMaterialGrades && (
-                    <div>
-                      <p className="font-body text-gray-400 text-sm mb-2">
-                        Key Grades
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {product.material_grades.slice(0, 4).map((g, i) => (
-                          <span
-                            key={i}
-                            className="text-xs sm:text-sm font-body bg-brand-red/8 text-brand-charcoal border border-brand-red/15 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full"
-                          >
-                            {g}
-                          </span>
-                        ))}
-                        {product.material_grades.length > 4 && (
-                          <span className="text-xs sm:text-sm font-body text-gray-400">
-                            +{product.material_grades.length - 4}
-                          </span>
-                        )}
-                      </div>
+                </a>
+              </div>
+
+              {/* Product Details */}
+              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm space-y-4">
+                <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
+                  <Package size={16} className="text-gray-400" />
+                  <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">
+                    Product Details
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Type</p>
+                  <p className="font-medium text-gray-900">
+                    {product.product_type || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Category</p>
+                  <p className="font-medium text-gray-900">
+                    {categoryLabel || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Form</p>
+                  <p className="font-medium text-[#c41e24]">
+                    {typeLabel || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Status</p>
+                  {hasCurrentStock ? (
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <p className="font-medium text-green-600">In Stock</p>
                     </div>
-                  )}
-                  {product.publish_date && (
-                    <div>
-                      <p className="font-body text-gray-400 text-sm mb-1">
-                        Published
-                      </p>
-                      <p className="font-body text-gray-600 text-sm">
-                        {new Date(product.publish_date).toLocaleDateString(
-                          "en-IN",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          },
-                        )}
-                      </p>
-                    </div>
+                  ) : (
+                    <p className="font-medium text-green-600">
+                      {availability || "—"}
+                    </p>
                   )}
                 </div>
-
-                {/* Delivery Info */}
-                <div className="bg-gray-50/80 rounded-xl border border-gray-100 p-3 sm:p-4 flex items-start gap-3">
-                  <Clock
-                    size={16}
-                    className="text-brand-red flex-shrink-0 mt-0.5 sm:size-[18px]"
-                    strokeWidth={1.5}
-                  />
+                {hasMaterialGrades && (
                   <div>
-                    <p className="font-display font-bold text-brand-charcoal text-xs sm:text-sm uppercase tracking-wider">
-                      Quick Delivery
-                    </p>
-                    <p className="font-body text-gray-500 text-xs sm:text-sm">
-                      Pan-India dispatch available
+                    <p className="text-gray-400 text-sm mb-2">Key Grades</p>
+                    <div className="flex flex-wrap gap-2">
+                      {product.material_grades.slice(0, 4).map((g, i) => (
+                        <span
+                          key={i}
+                          className="text-xs font-medium bg-[#c41e24]/10 text-gray-800 px-2.5 py-1 rounded-full"
+                        >
+                          {g}
+                        </span>
+                      ))}
+                      {product.material_grades.length > 4 && (
+                        <span className="text-xs text-gray-400">
+                          +{product.material_grades.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {product.publish_date && (
+                  <div>
+                    <p className="text-gray-400 text-sm mb-1">Published</p>
+                    <p className="text-gray-600 text-sm">
+                      {new Date(product.publish_date).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        },
+                      )}
                     </p>
                   </div>
+                )}
+              </div>
+
+              {/* Delivery Info */}
+              <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-3 shadow-sm">
+                <Clock
+                  size={16}
+                  className="text-[#c41e24] flex-shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="font-medium text-gray-900 text-sm uppercase tracking-wider">
+                    Quick Delivery
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Pan-India dispatch available
+                  </p>
                 </div>
               </div>
             </aside>

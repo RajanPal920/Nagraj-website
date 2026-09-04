@@ -1,3 +1,5 @@
+// src/data/products.ts
+
 import allProductsData from "../data/products.json";
 
 export interface ProductInfo {
@@ -122,37 +124,87 @@ export interface ScrapedProduct {
   status: string;
 }
 
+// ─── NORMALIZE CATEGORY AND PRODUCT TYPE ──────────────────────────────────
+// This maps singular to plural to avoid duplicates in the menu
+const NORMALIZE_MAP: Record<string, string> = {
+  Plate: "Plates",
+  Bar: "Bars",
+  Sheet: "Sheets",
+  Pipe: "Pipes",
+  Rod: "Rods",
+  Strip: "Strips",
+  Flange: "Flanges",
+  Fitting: "Fittings",
+  Forging: "Forgings",
+  Fastener: "Fasteners",
+  "Welding Wire": "Welding Wires",
+  "Hollow Section": "Hollow Sections",
+  "Structural Profile": "Structural Profiles",
+  Coil: "Coils",
+};
+
+const normalizeCategory = (category: string): string => {
+  if (!category) return category;
+  // Check if category contains any of the keys in NORMALIZE_MAP
+  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
+    if (category === key || category.includes(key)) {
+      return value;
+    }
+  }
+  return category;
+};
+
+const normalizeProductType = (type: string): string => {
+  if (!type) return type;
+  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
+    if (type === key || type.includes(key)) {
+      return value;
+    }
+  }
+  return type;
+};
+
 // ── Module-level product data ──────────────────────────────────────────────
 
 let productsCache: ScrapedProduct[] | null = null;
 let loadPromise: Promise<ScrapedProduct[]> | null = null;
 
 /**
+ * Normalize a product's category and product_type
+ */
+const normalizeProduct = (product: ScrapedProduct): ScrapedProduct => {
+  return {
+    ...product,
+    category: normalizeCategory(product.category),
+    product_type: normalizeProductType(product.product_type),
+  };
+};
+
+/**
  * Load products from the JSON file.
  * Uses a module-level cache to avoid re-loading on every call.
  */
 export function loadProducts(): Promise<ScrapedProduct[]> {
-  // If already cached, return immediately
   if (productsCache) {
     return Promise.resolve(productsCache);
   }
 
-  // If already loading, return the existing promise
   if (loadPromise) {
     return loadPromise;
   }
 
-  // Start loading
   loadPromise = new Promise((resolve, reject) => {
     try {
-      // Check if allProductsData exists and is an array
       if (!allProductsData || !Array.isArray(allProductsData)) {
         console.error("Products data is missing or invalid:", allProductsData);
         reject(new Error("Products data is missing or invalid"));
         return;
       }
 
-      const data = allProductsData as unknown as ScrapedProduct[];
+      // Normalize all products
+      const data = (allProductsData as unknown as ScrapedProduct[]).map(
+        normalizeProduct,
+      );
       productsCache = data;
       loadPromise = null;
       resolve(data);
@@ -173,12 +225,14 @@ export function loadProducts(): Promise<ScrapedProduct[]> {
 export function getProducts(): ScrapedProduct[] {
   if (!productsCache) {
     try {
-      // Check if allProductsData exists and is an array
       if (!allProductsData || !Array.isArray(allProductsData)) {
         console.error("Products data is missing or invalid:", allProductsData);
         return [];
       }
-      productsCache = allProductsData as unknown as ScrapedProduct[];
+      // Normalize all products
+      productsCache = (allProductsData as unknown as ScrapedProduct[]).map(
+        normalizeProduct,
+      );
     } catch (error) {
       console.error("Error getting products:", error);
       return [];

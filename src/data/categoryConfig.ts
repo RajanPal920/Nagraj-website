@@ -84,7 +84,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
 // src/data/categoryConfig.ts
 export const TYPE_LABELS: Record<string, string> = {
   Bar: "Bars & Rods",
-  Plate: "Plates & Sheets",
+  Plates: "Plates & Sheets",
   Fitting: "Fittings",
   Pipe: "Pipes & Tubes",
   "Welding Wire": "Welding Wire",

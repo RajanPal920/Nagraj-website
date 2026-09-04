@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Phone, Menu, X, ChevronDown } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { Cog, Diamond, Star, Package } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Cog, Diamond, Star, Package, ChevronRight } from "lucide-react";
 import {
   CATEGORY_GROUPS,
   GROUP_ORDER,
@@ -29,24 +29,69 @@ const groupIcons: Record<string, React.ElementType> = {
   Other: Package,
 };
 
+// ─── Specialized Product Names ──────────────────────────────────────────────
+const SPECIALIZED_PRODUCT_NAMES = [
+  "High Tensile Strength",
+  "Cold Rolled",
+  "Hot Rolled IS 2062 Plates",
+  "Abrasion Resistant Plates",
+  "16MO3-15MO3 & SA 204 Plates",
+  "Manganese Steel Plates",
+  "Quenched & Tempered Plates",
+  "Boiler Quality Steel Plates",
+  "Chrome Moly Plates",
+  "Chequered Plate",
+  "Tata Structura 355",
+  "Corten Steel Plates",
+  "DSQ Plates",
+];
+
+// ─── Categories to normalize ──────────────────────────────────────────────
+const NORMALIZE_MAP: Record<string, string> = {
+  Plate: "Plates",
+  Bar: "Bars",
+  Sheet: "Sheets",
+  Pipe: "Pipes",
+  Rod: "Rods",
+  Strip: "Strips",
+  Flange: "Flanges",
+  Fitting: "Fittings",
+  Forging: "Forgings",
+  Fastener: "Fasteners",
+};
+
+const normalizeCategory = (category: string): string => {
+  if (!category) return category;
+  return NORMALIZE_MAP[category] || category;
+};
+
+const filterProductTypes = (types: string[]): string[] => {
+  return types
+    .filter((type) => type !== "Plate")
+    .map((type) => NORMALIZE_MAP[type] || type)
+    .filter((type, index, self) => self.indexOf(type) === index)
+    .sort();
+};
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Mega menu state
   const [categories, setCategories] = useState<
     Array<{
       name: string;
       displayName: string;
       group: string;
       count: number;
+      products: any[];
     }>
   >([]);
   const [loading, setLoading] = useState(true);
-  const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
 
-  // Make header solid if not on homepage, or if scrolled on homepage
   const isSolid = location.pathname !== "/" || scrolled;
 
   useEffect(() => {
@@ -55,52 +100,86 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Load categories
   useEffect(() => {
     const loadCategories = () => {
       try {
         setLoading(true);
+
         const products = getProducts();
 
-        // Count products per category
-        const categoryCount = new Map<string, number>();
-        if (products && Array.isArray(products)) {
-          products.forEach((product) => {
-            if (product && product.category) {
-              const count = categoryCount.get(product.category) || 0;
-              categoryCount.set(product.category, count + 1);
-            }
-          });
+        const normalizedProducts = products.map((product) => ({
+          ...product,
+          category:
+            product.category === "Plate"
+              ? "Plates"
+              : normalizeCategory(product.category),
+          product_type:
+            product.product_type === "Plate"
+              ? "Plates"
+              : normalizeCategory(product.product_type),
+        }));
+
+        setAllProducts(normalizedProducts || []);
+
+        if (!normalizedProducts || !Array.isArray(normalizedProducts)) {
+          setCategories([]);
+          return;
         }
 
-        // Build category list from config
-        const categoryList: Array<{
-          name: string;
-          displayName: string;
-          group: string;
-          count: number;
-        }> = [];
+        const categoryMap = new Map<
+          string,
+          {
+            products: any[];
+            group: string;
+            count: number;
+          }
+        >();
 
+        const categoryGroupMap = new Map<string, string>();
         for (const [group, cats] of Object.entries(CATEGORY_GROUPS)) {
           for (const cat of cats) {
-            const count = categoryCount.get(cat) || 0;
-            // Only include categories that have products
-            if (count > 0) {
-              categoryList.push({
-                name: cat,
-                displayName: getCategoryDisplayLabel(cat),
-                group: group,
-                count: count,
-              });
-            }
+            categoryGroupMap.set(cat, group);
           }
         }
 
+        normalizedProducts.forEach((product) => {
+          if (!product || !product.category) return;
+
+          let categoryName = product.category.trim();
+          if (categoryName === "Plate") {
+            categoryName = "Plates";
+          }
+
+          const group = categoryGroupMap.get(categoryName) || "Other";
+
+          const existing = categoryMap.get(categoryName);
+
+          if (existing) {
+            existing.products.push(product);
+            existing.count += 1;
+          } else {
+            categoryMap.set(categoryName, {
+              products: [product],
+              group: group,
+              count: 1,
+            });
+          }
+        });
+
+        const categoryList = Array.from(categoryMap.entries()).map(
+          ([name, data]) => ({
+            name,
+            displayName: getCategoryDisplayLabel(name) || name,
+            group: data.group,
+            count: data.count,
+            products: data.products,
+          }),
+        );
+
         setCategories(categoryList);
 
-        // Set default active group
         if (categoryList.length > 0) {
-          setActiveGroup(categoryList[0].group);
+          setActiveCategory(categoryList[0].name);
         }
       } catch (error) {
         console.error("Error loading categories:", error);
@@ -112,9 +191,130 @@ export function Header() {
     loadCategories();
   }, []);
 
-  // Get categories for a specific group
   const getCategoriesByGroup = (group: string) => {
     return categories.filter((cat) => cat.group === group);
+  };
+
+  const getSpecializedProducts = () => {
+    if (!allProducts.length) return [];
+
+    return allProducts.filter((product) => {
+      const productName = (product.name || product.title || "").toLowerCase();
+      return SPECIALIZED_PRODUCT_NAMES.some((specialName) => {
+        const searchTerm = specialName.toLowerCase();
+        return (
+          productName.includes(searchTerm) || searchTerm.includes(productName)
+        );
+      });
+    });
+  };
+
+  // Get unique product types - DO NOT include "Specialized Products" here
+  const getUniqueProductTypes = () => {
+    const products = getProducts();
+    const types = new Set<string>();
+    products.forEach((product) => {
+      if (product.product_type) {
+        let type = product.product_type;
+        if (type === "Plate") {
+          type = "Plates";
+        }
+        type = normalizeCategory(type);
+        types.add(type);
+      }
+    });
+
+    types.delete("Plate");
+    return filterProductTypes(Array.from(types));
+  };
+
+  // Get products for a specific type
+  const getProductsByType = (type: string) => {
+    const products = getProducts();
+    return products.filter((product) => {
+      let productType = product.product_type;
+      if (productType === "Plate") {
+        productType = "Plates";
+      }
+      productType = normalizeCategory(productType);
+      return productType === type;
+    });
+  };
+
+  const productTypes = getUniqueProductTypes();
+  const [selectedType, setSelectedType] = useState<string | null>(
+    productTypes.length > 0 ? productTypes[0] : null,
+  );
+  const [selectedSpecialized, setSelectedSpecialized] = useState(false);
+
+  const isSpecializedProduct = (product: any) => {
+    const productName = (product.name || product.title || "").toLowerCase();
+    return SPECIALIZED_PRODUCT_NAMES.some((specialName) => {
+      const searchTerm = specialName.toLowerCase();
+      return (
+        productName.includes(searchTerm) || searchTerm.includes(productName)
+      );
+    });
+  };
+
+  const getSpecializedCategories = () => {
+    const specialized = getSpecializedProducts();
+    const cats = new Set<string>();
+    specialized.forEach((p) => {
+      if (p.category) {
+        let cat = p.category;
+        if (cat === "Plate") {
+          cat = "Plates";
+        }
+        cats.add(cat);
+      }
+    });
+    return Array.from(cats).sort();
+  };
+
+  const getSpecializedProductsByCategory = (category: string) => {
+    const specialized = getSpecializedProducts();
+    return specialized.filter((p) => {
+      let cat = p.category;
+      if (cat === "Plate") {
+        cat = "Plates";
+      }
+      return cat === category;
+    });
+  };
+
+  // ─── Handle clicks ────────────────────────────────────────────────────────
+  const handleProductTypeClick = (type: string | null) => {
+    setSelectedType(type);
+    setSelectedSpecialized(false);
+    if (type) {
+      navigate(`/products?type=${encodeURIComponent(type)}`);
+    } else {
+      navigate("/products");
+    }
+  };
+
+  const handleSpecializedClick = () => {
+    setSelectedSpecialized(true);
+    setSelectedType(null);
+    navigate("/products?specialized=true");
+  };
+
+  // Get products to show in the right column
+  const getProductsToShow = () => {
+    if (selectedSpecialized) {
+      return getSpecializedProducts();
+    }
+    if (selectedType === null) {
+      return getProducts();
+    }
+    return getProductsByType(selectedType);
+  };
+
+  const getTitle = () => {
+    if (selectedSpecialized) return "Specialized Products";
+    if (selectedType === null) return "All Products";
+    return selectedType;
   };
 
   return (
@@ -148,128 +348,220 @@ export function Header() {
           {navLinks.map((link) =>
             link.label === "Products" ? (
               <div key={link.href} className="group relative whitespace-nowrap">
-                <Link
-                  to={link.href}
-                  className={`nav-link text-black hover:text-brand-red flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base ${
+                <button
+                  className={`nav-link text-black hover:text-brand-red flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base cursor-default ${
                     location.pathname === link.href
                       ? "text-brand-red after:w-full"
                       : "text-black/90 hover:text-brand-red"
                   }`}
+                  onClick={(e) => e.preventDefault()}
                 >
                   {link.label}
                   <ChevronDown
                     size={14}
-                    className="group-hover:rotate-180 transition-transform duration-200 text-current"
+                    className="group-hover:rotate-180 transition-transform duration-200"
                   />
-                </Link>
+                </button>
 
-                {/* Mega Menu Dropdown */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[800px] mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-50">
-                  <div className="bg-white shadow-2xl rounded-lg border border-gray-100 flex overflow-hidden h-[500px]">
-                    {/* Left Sidebar: Groups */}
-                    <div className="w-1/3 bg-gray-50 border-r border-gray-100 py-4 overflow-y-auto scrollbar-thin">
-                      {loading ? (
-                        <div className="px-6 py-3 text-sm text-gray-400">
-                          Loading...
+                {/* PROFESSIONAL MEGA MENU */}
+                <div
+                  className="
+                    absolute top-full
+                    left-1/2 -translate-x-1/2
+                    w-[900px]
+                    mt-1
+                    opacity-0 invisible
+                    group-hover:opacity-100
+                    group-hover:visible
+                    transition-all duration-300
+                    pointer-events-none
+                    group-hover:pointer-events-auto
+                    z-50
+                  "
+                >
+                  <div className="bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-100">
+                    <div className="flex max-h-[480px]">
+                      {/* LEFT COLUMN - Product Types */}
+                      <div className="w-[35%] bg-gray-50 border-r border-gray-200 py-2 max-h-[480px] overflow-y-auto">
+                        <div className="px-5 py-3 border-b border-gray-200">
+                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                            Products
+                          </span>
                         </div>
-                      ) : categories.length === 0 ? (
-                        <div className="px-6 py-3 text-sm text-gray-400">
-                          No categories available
-                        </div>
-                      ) : (
-                        GROUP_ORDER.map((group) => {
-                          const groupCats = getCategoriesByGroup(group);
-                          if (groupCats.length === 0) return null;
-                          const isActive = activeGroup === group;
-                          const IconComp = groupIcons[group] || Package;
-
-                          return (
+                        {loading ? (
+                          <div className="px-5 py-4 text-sm text-gray-400">
+                            Loading...
+                          </div>
+                        ) : productTypes.length === 0 ? (
+                          <div className="px-5 py-4 text-sm text-gray-400">
+                            No products found
+                          </div>
+                        ) : (
+                          <>
                             <button
-                              key={group}
-                              onMouseEnter={() => setActiveGroup(group)}
-                              className={`block w-full text-left px-6 py-3 text-sm font-display font-semibold transition-all duration-200 flex items-center gap-3 ${
-                                isActive
-                                  ? "bg-brand-red text-white border-l-4 border-black"
-                                  : "text-black hover:bg-brand-red/10 hover:text-brand-red border-l-4 border-transparent hover:border-brand-red/30"
+                              onMouseEnter={() => {
+                                setSelectedType(null);
+                                setSelectedSpecialized(false);
+                              }}
+                              onClick={() => handleProductTypeClick(null)}
+                              className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 ${
+                                selectedType === null && !selectedSpecialized
+                                  ? "bg-[#c41e24] text-white"
+                                  : "text-gray-700 hover:bg-gray-200/50"
                               }`}
                             >
-                              <span className="flex-shrink-0">
-                                <IconComp
-                                  size={18}
-                                  className={
-                                    isActive ? "text-white" : "text-brand-red"
-                                  }
-                                  strokeWidth={2}
-                                />
+                              <span className="text-sm font-medium">
+                                All Products
                               </span>
-                              <span className="flex-1 text-left">{group}</span>
-                              <span className="text-xs opacity-60">
-                                {groupCats.length}
-                              </span>
+                              {selectedType === null &&
+                                !selectedSpecialized && (
+                                  <ChevronRight
+                                    size={14}
+                                    className="text-white"
+                                  />
+                                )}
                             </button>
-                          );
-                        })
-                      )}
-                    </div>
+                            {productTypes.map((type) => (
+                              <button
+                                key={type}
+                                onMouseEnter={() => {
+                                  setSelectedType(type);
+                                  setSelectedSpecialized(false);
+                                }}
+                                onClick={() => handleProductTypeClick(type)}
+                                className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 ${
+                                  selectedType === type
+                                    ? "bg-[#c41e24] text-white"
+                                    : "text-gray-700 hover:bg-gray-200/50"
+                                }`}
+                              >
+                                <span className="text-sm font-medium">
+                                  {type}
+                                </span>
+                                {selectedType === type && (
+                                  <ChevronRight
+                                    size={14}
+                                    className="text-white"
+                                  />
+                                )}
+                              </button>
+                            ))}
+                            {/* Specialized Products - Separate button */}
+                            <button
+                              onMouseEnter={() => {
+                                setSelectedSpecialized(true);
+                                setSelectedType(null);
+                              }}
+                              onClick={handleSpecializedClick}
+                              className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 mt-2 border-t border-gray-200 pt-2 ${
+                                selectedSpecialized
+                                  ? "bg-[#c41e24] text-white"
+                                  : "text-gray-700 hover:bg-gray-200/50"
+                              }`}
+                            >
+                              <span className="text-sm font-medium flex items-center gap-2">
+                                <Star
+                                  size={14}
+                                  className={
+                                    selectedSpecialized
+                                      ? "text-white"
+                                      : "text-[#c41e24]"
+                                  }
+                                />
+                                Specialized Products
+                              </span>
+                              {selectedSpecialized && (
+                                <ChevronRight
+                                  size={14}
+                                  className="text-white"
+                                />
+                              )}
+                            </button>
+                          </>
+                        )}
+                      </div>
 
-                    {/* Right Panel: Categories */}
-                    <div className="w-2/3 p-8 bg-white overflow-y-auto scrollbar-thin">
-                      {loading ? (
-                        <p className="text-sm text-gray-400">
-                          Loading categories...
-                        </p>
-                      ) : categories.length === 0 ? (
-                        <p className="text-sm text-gray-400">
-                          No categories available
-                        </p>
-                      ) : (
-                        (() => {
-                          const currentGroup = activeGroup || GROUP_ORDER[0];
-                          const groupCats = getCategoriesByGroup(currentGroup);
+                      {/* RIGHT COLUMN - Products preview */}
+                      <div className="w-[65%] bg-white py-2 max-h-[480px] overflow-y-auto">
+                        {(() => {
+                          const productsToShow = getProductsToShow();
+                          const title = getTitle();
+                          const isSpecializedView = selectedSpecialized;
 
-                          if (groupCats.length === 0) {
+                          if (productsToShow.length === 0) {
                             return (
-                              <p className="text-sm text-gray-400">
-                                No categories in this group
-                              </p>
+                              <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                                <div className="text-center">
+                                  <Package
+                                    size={32}
+                                    className="mx-auto mb-2 text-gray-300"
+                                    strokeWidth={1}
+                                  />
+                                  No products found
+                                </div>
+                              </div>
                             );
                           }
 
                           return (
-                            <div>
-                              <h4 className="font-display font-bold text-brand-red text-lg border-b border-brand-red/20 pb-2 mb-4">
-                                {currentGroup}
-                              </h4>
-                              <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
-                                {groupCats.map((cat) => (
-                                  <li key={cat.name}>
+                            <div className="p-3">
+                              <div className="flex items-center justify-between px-3 py-2.5 mb-2 border-b border-gray-100">
+                                <span className="text-sm font-semibold text-gray-800">
+                                  {title}
+                                </span>
+                                <span className="text-[10px] font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+                                  {productsToShow.length} products
+                                </span>
+                              </div>
+                              <div className="space-y-1">
+                                {productsToShow.slice(0, 10).map((product) => {
+                                  const isSpecial =
+                                    isSpecializedProduct(product);
+                                  return (
                                     <Link
-                                      to={`/products?category=${encodeURIComponent(cat.name)}`}
-                                      className="flex items-center gap-2 text-sm font-body text-black/80 hover:text-brand-red transition-colors duration-200 group/link"
+                                      key={product.slug || product.id}
+                                      to={`/product/${product.slug}`}
+                                      className="
+                                        block
+                                        px-3 py-2
+                                        text-sm
+                                        text-gray-700
+                                        hover:text-[#c41e24]
+                                        hover:bg-[#c41e24]/5
+                                        transition-all
+                                        duration-200
+                                        rounded-lg
+                                        border-l-2 border-transparent
+                                        hover:border-[#c41e24]
+                                      "
                                     >
-                                      <span className="w-1.5 h-1.5 rounded-full bg-brand-red/40 group-hover/link:bg-brand-red transition-colors" />
-                                      <span className="group-hover/link:translate-x-1 transition-transform">
-                                        {cat.displayName}
-                                      </span>
-                                      <span className="text-xs text-gray-400 ml-auto">
-                                        {cat.count}
-                                      </span>
+                                      <div className="flex items-center justify-between">
+                                        <span>
+                                          {product.name || product.title}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                          {product.category}
+                                        </span>
+                                      </div>
+                                      {isSpecializedView && isSpecial && (
+                                        <span className="text-[10px] text-[#c41e24] bg-[#c41e24]/10 px-1.5 py-0.5 rounded-full mt-1 inline-block">
+                                          Special
+                                        </span>
+                                      )}
                                     </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                              <div className="mt-6 pt-4 border-t border-gray-100">
-                                <Link
-                                  to="/products"
-                                  className="text-sm font-display font-bold text-brand-red hover:text-brand-red/80 transition-colors flex items-center gap-2"
-                                >
-                                  View All Products →
-                                </Link>
+                                  );
+                                })}
+                                {productsToShow.length > 10 && (
+                                  <div className="text-center text-xs text-gray-400 py-2">
+                                    + {productsToShow.length - 10} more
+                                    products. Click to view all.
+                                  </div>
+                                )}
                               </div>
                             </div>
                           );
-                        })()
-                      )}
+                        })()}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -349,47 +641,48 @@ export function Header() {
             </Link>
           ))}
 
-          {/* Mobile Categories */}
-          {!loading && categories.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-gray-100">
-              <p className="text-xs font-body text-gray-400 uppercase tracking-wider px-6 py-2">
-                Categories
-              </p>
-              {GROUP_ORDER.map((group) => {
-                const groupCats = getCategoriesByGroup(group);
-                if (groupCats.length === 0) return null;
-                const IconComp = groupIcons[group] || Package;
-
-                return (
-                  <div key={group} className="mt-1">
-                    <p className="text-xs font-body text-gray-400 px-6 py-1 flex items-center gap-2">
-                      <IconComp
-                        size={14}
-                        className="text-brand-red"
-                        strokeWidth={2}
-                      />
-                      {group}
-                    </p>
-                    {groupCats.map((cat) => (
-                      <Link
-                        key={cat.name}
-                        to={`/products?category=${encodeURIComponent(cat.name)}`}
-                        onClick={() => setMobileOpen(false)}
-                        className="flex items-center justify-between py-2.5 px-6 ml-4 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <span className="font-body text-sm text-gray-700">
-                          {cat.displayName}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {cat.count}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {/* Mobile Product Types */}
+          <div className="mt-2 pt-2 border-t border-gray-100">
+            <p className="text-xs font-body text-gray-400 uppercase tracking-wider px-6 py-2">
+              Product Types
+            </p>
+            <button
+              onClick={() => {
+                handleProductTypeClick(null);
+                setMobileOpen(false);
+              }}
+              className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <span className="font-body text-sm text-gray-700">
+                All Products
+              </span>
+            </button>
+            {productTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() => {
+                  handleProductTypeClick(type);
+                  setMobileOpen(false);
+                }}
+                className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <span className="font-body text-sm text-gray-700">{type}</span>
+              </button>
+            ))}
+            {/* Specialized Products in mobile */}
+            <button
+              onClick={() => {
+                handleSpecializedClick();
+                setMobileOpen(false);
+              }}
+              className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors mt-2 border-t border-gray-200 pt-2"
+            >
+              <span className="font-body text-sm text-gray-700 flex items-center gap-2">
+                <Star size={14} className="text-[#c41e24]" />
+                Specialized Products
+              </span>
+            </button>
+          </div>
 
           <a
             href="tel:+917073875529"
