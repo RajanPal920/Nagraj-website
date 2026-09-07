@@ -17,6 +17,8 @@ import {
   CheckCircle,
   Clock,
   ChevronDown,
+  Layers,
+  Filter,
 } from "lucide-react";
 import {
   getProducts,
@@ -276,6 +278,7 @@ export function ProductsPage() {
   const [products, setProducts] = useState<ScrapedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
+  const [typeMenuOpen, setTypeMenuOpen] = useState(false);
 
   const urlCategory = searchParams.get("category") || "";
   const urlType = searchParams.get("type") || "";
@@ -337,12 +340,31 @@ export function ProductsPage() {
     setCurrentPage(1);
   };
 
+  const handleTypeClick = (type: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (type) {
+      params.set("type", type);
+    } else {
+      params.delete("type");
+    }
+    params.delete("page");
+    setSearchParams(params);
+    setCurrentPage(1);
+    setTypeMenuOpen(false);
+  };
+
   const clearFilters = () => {
     setSearchParams({});
     setCurrentPage(1);
   };
 
-  // ─── Filtering Logic: Only show products matching the selected Type (e.g., Bars) and Category (e.g., Tool Bar) ───
+  // Get unique types for the dropdown
+  const availableTypes = useMemo(() => {
+    const uniqueTypes = new Set(products.map((p) => p.product_type));
+    return [...uniqueTypes];
+  }, [products]);
+
+  // ─── Filtering Logic ────────────────────────────────────────────
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
@@ -357,9 +379,9 @@ export function ProductsPage() {
     return filtered;
   }, [products, selectedType, selectedCategory]);
 
-  // ─── Get Unique Categories ONLY for the selected Type (e.g., if "Bars" selected, show only Tool Bar, Aluminum Bar, etc.) ───
+  // ─── Get Unique Categories ONLY for the selected Type ───
   const availableCategories = useMemo(() => {
-    if (!selectedType) return categories; // If no type selected, show all categories
+    if (!selectedType) return categories;
     const typeProducts = products.filter(
       (p) => p.product_type === selectedType,
     );
@@ -517,10 +539,10 @@ export function ProductsPage() {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Category & View Controls */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
-          {/* Horizontal Category Buttons (Only for the selected Product Type) */}
-          <div className="flex flex-wrap gap-2 mb-4">
+        {/* Premium Filter Container */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
+          {/* Horizontal Category Buttons */}
+          <div className="flex flex-wrap gap-2 mb-5">
             <button
               onClick={() => handleCategoryClick("")}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
@@ -546,27 +568,107 @@ export function ProductsPage() {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            {/* View Mode Toggle */}
+          {/* Bottom Controls Area (Fill the empty space) */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between border-t border-gray-100 pt-4">
+            {/* Left Side: Type Selector & Active Filters */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Type Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setTypeMenuOpen(!typeMenuOpen)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all text-sm font-semibold text-gray-700"
+                >
+                  <Layers size={16} className="text-[#c41e24]" />
+                  {selectedType
+                    ? getTypeDisplayLabel(selectedType)
+                    : "All Types"}
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${typeMenuOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {typeMenuOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+                    <button
+                      onClick={() => handleTypeClick("")}
+                      className={`w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 ${!selectedType ? "text-[#c41e24] bg-[#c41e24]/5" : "text-gray-700"}`}
+                    >
+                      All Types
+                    </button>
+                    {availableTypes.map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => handleTypeClick(type)}
+                        className={`w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 ${selectedType === type ? "text-[#c41e24] bg-[#c41e24]/5" : "text-gray-700"}`}
+                      >
+                        {getTypeDisplayLabel(type)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Active Filter Chips */}
+              {(selectedCategory || selectedType) && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-medium text-gray-400 flex items-center gap-1">
+                    <Filter size={12} /> Active:
+                  </span>
+                  {selectedCategory && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#c41e24]/10 text-[#c41e24]">
+                      {getCategoryDisplayLabel(selectedCategory)}
+                      <button
+                        onClick={() => {
+                          setSelectedCategory("");
+                          const params = new URLSearchParams(searchParams);
+                          params.delete("category");
+                          setSearchParams(params);
+                        }}
+                        className="hover:text-[#c41e24]/80"
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  )}
+                  {selectedType && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+                      {getTypeDisplayLabel(selectedType)}
+                      <button
+                        onClick={() => {
+                          setSelectedType("");
+                          const params = new URLSearchParams(searchParams);
+                          params.delete("type");
+                          setSearchParams(params);
+                        }}
+                        className="hover:text-blue-800"
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  )}
+                  <button
+                    onClick={clearFilters}
+                    className="text-xs font-medium text-gray-400 hover:text-[#c41e24] underline underline-offset-2"
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Right Side: View Mode Toggle */}
             <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 flex-shrink-0">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all duration-200 ${
-                  viewMode === "grid"
-                    ? "bg-white shadow-sm text-[#c41e24]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
+                className={`p-2 rounded-lg transition-all duration-200 ${viewMode === "grid" ? "bg-white shadow-sm text-[#c41e24]" : "text-gray-400 hover:text-gray-600"}`}
                 aria-label="Grid view"
               >
                 <Grid3X3 size={18} />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all duration-200 ${
-                  viewMode === "list"
-                    ? "bg-white shadow-sm text-[#c41e24]"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
+                className={`p-2 rounded-lg transition-all duration-200 ${viewMode === "list" ? "bg-white shadow-sm text-[#c41e24]" : "text-gray-400 hover:text-gray-600"}`}
                 aria-label="List view"
               >
                 <List size={18} />
