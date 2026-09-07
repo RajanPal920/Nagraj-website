@@ -786,7 +786,7 @@ export function TechnicalInfoPage() {
         content="Technical information including chemical composition, pipe specifications, and AMS standards from Nagraj Metal Industries."
       />
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+{/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         id="technical-hero"
         className="relative min-h-[60vh] sm:min-h-screen sm:h-screen flex items-end sm:items-center justify-start sm:justify-center overflow-hidden bg-white sm:bg-[#102F3D] md:!bg-transparent pt-20 sm:pt-0"
@@ -803,8 +803,8 @@ export function TechnicalInfoPage() {
         </div>
 
         {/* Overlay - Light Red on Desktop */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
+        {/* <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div> */}
 
         {/* Bottom gradient shadow - Light Red on Desktop */}
         <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
@@ -814,6 +814,32 @@ export function TechnicalInfoPage() {
 
         {/* Red bottom border line - Desktop only */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+
+        {/* ================= DESKTOP CONTENT ================= */}
+        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
+          <div className="max-w-3xl">
+            {/* Transparent background, white text */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Technical <span className="text-brand-red">Information</span>
+            </h1>
+            {/* Transparent background, white text */}
+            <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
+              Browse through our comprehensive technical data including chemical
+              compositions, pipe specifications, and AMS standards.
+            </p>
+            
+            {/* Desktop CTA */}
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to="/contact"
+                id="technical-cta-desktop"
+                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
+              >
+                Enquire Now
+              </Link>
+            </div>
+          </div>
+        </div>
 
         {/* ================= MOBILE CONTENT ================= */}
         <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
@@ -879,8 +905,6 @@ export function TechnicalInfoPage() {
             </div>
           </div>
         </div>
-
-        {/* ================= DESKTOP CONTENT ================= */}
 
         {/* Scroll indicator - Desktop only */}
         <a

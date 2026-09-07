@@ -160,7 +160,7 @@ export function AboutPage() {
               About <span className="text-brand-red">Nagraj</span> Metal
               Industries
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
+            <p className="text-left sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
               Leading manufacturer and supplier of high-quality metal products
               with decades of industry experience and commitment to excellence.
             </p>

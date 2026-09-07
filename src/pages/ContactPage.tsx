@@ -101,7 +101,6 @@ export function ContactPage() {
         name="description"
         content="Contact Nagraj Metal Industries for product enquiries, pricing, and quotes. Reach our Mumbai or Pune office by phone, email, or through our enquiry form."
       />
-
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         id="contact-hero"
@@ -119,8 +118,8 @@ export function ContactPage() {
         </div>
 
         {/* Overlay - Light Red on Desktop */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
+        {/* <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div> */}
 
         {/* Bottom gradient shadow - Light Red on Desktop */}
         <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
@@ -130,6 +129,56 @@ export function ContactPage() {
 
         {/* Red bottom border line - Desktop only */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+
+        {/* ================= DESKTOP CONTENT ================= */}
+        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
+          <div className="max-w-3xl">
+            {/* Transparent background, white text */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Contact <span className="text-brand-red">Us</span>
+            </h1>
+            {/* Transparent background, white text */}
+            <p className="text-left sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
+              Reach out to Nagraj Metal Industries for product enquiries,
+              pricing, and quotes. We respond within one business day.
+            </p>
+
+            {/* Desktop Contact Details */}
+            <div className="space-y-3 mb-8">
+              {contactDetails
+                .slice(0, 2)
+                .map(({ id, icon: Icon, label, display, href }) => (
+                  <a
+                    key={id}
+                    href={href}
+                    className="flex items-center gap-3 group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-brand-red/50 flex items-center justify-center flex-shrink-0">
+                      <Icon size={18} className="text-brand-red" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-red-900 text-xs">{label}</p>
+                      <p className="font-body font-semibold text-white text-base">
+                        {display}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+            </div>
+
+            {/* Desktop CTA */}
+            <div className="relative z-20 pointer-events-auto">
+              <a
+                href="tel:+917073875529"
+                id="contact-cta-desktop"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-red hover:bg-brand-red-dark text-white font-semibold rounded transition-all duration-200"
+              >
+                Enquire Now
+                <Phone size={16} />
+              </a>
+            </div>
+          </div>
+        </div>
 
         {/* ================= MOBILE CONTENT ================= */}
         <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
@@ -198,7 +247,6 @@ export function ContactPage() {
           </div>
         </div>
 
-        {/* ================= DESKTOP CONTENT ================= */}
         {/* Scroll indicator - Desktop only */}
         <a
           href="#contact-main"

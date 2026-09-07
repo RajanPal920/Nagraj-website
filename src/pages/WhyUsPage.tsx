@@ -16,6 +16,8 @@ import {
   Package,
   ChevronDown,
   Building2,
+  Shield,
+  Truck,
 } from "lucide-react";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
@@ -176,11 +178,6 @@ export function WhyUsPage() {
             loading="eager"
           />
         </div>
-
-        {/* Overlay - Light Red on Desktop */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
-
         {/* Bottom gradient shadow - Light Red on Desktop */}
         <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
 
@@ -190,7 +187,40 @@ export function WhyUsPage() {
         {/* Red bottom border line - Desktop only */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
 
-        {/* ================= MOBILE CONTENT ================= */}
+        {/* =============== DESKTOP CONTENT =============== */}
+        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
+          <div className="max-w-3xl">
+            {/* Removed bg color, transparent background, white text */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Why <span className="text-brand-red">Choose</span> <span className="text-[#4a0c12] ">Us</span>
+            </h1>
+            {/* Removed bg color, transparent background, white text */}
+            <p className="text-left sm:text-lg md:text-xl bg-white bg-clip-text text-transparent mb-6 sm:mb-8 leading-relaxed">
+              Discover why industrial buyers choose Nagraj Metal Industries —
+              MTC-backed quality, transparent pricing, pan-India dispatch, and
+              417+ products in stock.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              {/* Enquire Now Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
+              >
+                Enquire Now
+              </a>
+
+              {/* View Products Button - Navigates to Products Page */}
+              <a
+                href="/products"
+                className="px-6 py-3 border-2 border-white text-white font-semibold rounded hover:bg-white/10 transition-colors inline-block"
+              >
+                View Products
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* =============== MOBILE CONTENT =============== */}
         <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
           {/* Hero Image */}
           <div className="w-full flex justify-center items-center px-4 mt-5">
@@ -210,9 +240,11 @@ export function WhyUsPage() {
               </span>
             </div>
 
+            {/* Removed bg color, transparent background, red text */}
             <h1 className="text-2xl font-bold text-brand-red uppercase">
               Why Us
             </h1>
+            {/* Removed bg color, transparent background, charcoal text */}
             <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
               Discover why industrial buyers choose Nagraj Metal Industries —
               MTC-backed quality, transparent pricing, pan-India dispatch, and
@@ -237,22 +269,29 @@ export function WhyUsPage() {
               ))}
             </div>
 
-            {/* Mobile CTA */}
-            <div className="relative z-20 pointer-events-auto">
-              <Link
-                to="/contact"
-                id="why-us-cta-mobile"
-                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+            {/* Mobile Buttons */}
+            <div className="flex flex-col gap-2 mt-4">
+              {/* Enquire Now Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="w-full bg-brand-red text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm"
               >
                 Enquire Now
                 <ArrowRight size={16} />
-              </Link>
+              </a>
+
+              {/* View Products Button - Navigates to Products Page */}
+              <a
+                href="/products"
+                className="w-full border-2 border-brand-red text-brand-red bg-transparent py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 active:scale-95 text-sm hover:bg-brand-red/5"
+              >
+                View Products
+                <ArrowRight size={16} />
+              </a>
             </div>
           </div>
         </div>
+
         {/* Scroll indicator - Desktop only */}
         <a
           href="#why-us-pillars"

@@ -6,6 +6,7 @@ import {
   X,
   ChevronDown,
   Building2,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -59,10 +60,6 @@ export function CertificatesPage() {
           />
         </div>
 
-        {/* Overlay - Light Red on Desktop */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div>
-
         {/* Bottom gradient shadow - Light Red on Desktop */}
         <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
 
@@ -71,6 +68,38 @@ export function CertificatesPage() {
 
         {/* Red bottom border line - Desktop only */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+
+        {/* =============== DESKTOP CONTENT =============== */}
+        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
+          <div className="max-w-3xl">
+            {/* Added Gradient Text Class */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight bg-gradient-to-r from-[#4a0c12] to-[#8a1c22] bg-clip-text text-transparent">
+              Our <span className="text-brand-red">Certificates</span>
+            </h1>
+            {/* Added Gradient Text Class */}
+            <p className="text-left sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed bg-gradient-to-r from-[#4a0c12] to-[#8a1c22] bg-clip-text text-transparent">
+              Nagraj Metal Industries is officially registered under the Udyam
+              portal, recognized as a Micro, Small & Medium Enterprise.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              {/* View Certificates Button - Navigates to Certificates Section */}
+              <a
+                href="#certificates-main"
+                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
+              >
+                View Certificates
+              </a>
+
+              {/* Enquire Now Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="px-6 py-3 border-2 border-white text-white font-semibold rounded hover:bg-white/10 transition-colors inline-block"
+              >
+                Enquire Now
+              </a>
+            </div>
+          </div>
+        </div>
 
         {/* ================= MOBILE CONTENT ================= */}
         <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
@@ -92,10 +121,12 @@ export function CertificatesPage() {
               </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-brand-red uppercase">
+            {/* Added Gradient Text Class */}
+            <h1 className="text-2xl font-bold uppercase bg-gradient-to-r from-[#4a0c12] to-[#8a1c22] bg-clip-text text-transparent">
               Certificates
             </h1>
-            <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
+            {/* Added Gradient Text Class */}
+            <p className="text-[11px] leading-6 mt-2 mb-4 bg-gradient-to-r from-[#4a0c12] to-[#8a1c22] bg-clip-text text-transparent">
               Nagraj Metal Industries is officially registered under the Udyam
               portal, recognized as a Micro, Small & Medium Enterprise.
             </p>
@@ -120,25 +151,28 @@ export function CertificatesPage() {
               </div>
             </div>
 
-            {/* Mobile CTA */}
-            <div className="relative z-20 pointer-events-auto">
-              <Link
-                to="/contact"
-                id="certificates-cta-mobile"
-                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+            {/* Mobile Buttons */}
+            <div className="flex flex-col gap-2 mt-4">
+              {/* View Certificates Button - Navigates to Certificates Section */}
+              <a
+                href="#certificates-main"
+                className="w-full bg-brand-red text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm"
+              >
+                View Certificates
+                <ArrowRight size={16} />
+              </a>
+
+              {/* Enquire Now Button - Navigates to Contact Page */}
+              <a
+                href="/contact"
+                className="w-full border-2 border-brand-red text-brand-red bg-transparent py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 active:scale-95 text-sm hover:bg-brand-red/5"
               >
                 Enquire Now
-                <ChevronDown size={16} className="rotate-[-90deg]" />
-              </Link>
+                <ArrowRight size={16} />
+              </a>
             </div>
           </div>
         </div>
-
-        {/* ================= DESKTOP CONTENT ================= */}
-
 
         {/* Scroll indicator - Desktop only */}
         <a
