@@ -3,22 +3,20 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
-  Search,
   Grid3X3,
   List,
   Package,
   Truck,
   ArrowRight,
   X,
-  Sparkles,
   TrendingUp,
   Shield,
   Eye,
   Award,
-  Zap,
   Factory,
   CheckCircle,
   Clock,
+  ChevronDown,
 } from "lucide-react";
 import {
   getProducts,
@@ -34,19 +32,38 @@ import {
 import { getProductImage } from "../data/productImages";
 import ProductHero from "../../public/images/productHero.png";
 
-// ─── Helper: Get raw product type from display label ──────────────────────
+// ─── Normalization Helpers (Matches Header) ──────────────────────────────
+const NORMALIZE_MAP: Record<string, string> = {
+  Plate: "Plate & Sheets",
+  Plates: "Plate & Sheets",
+  Sheet: "Plate & Sheets",
+  Sheets: "Plate & Sheets",
+  Bar: "Bars",
+  Rod: "Bars",
+  Rods: "Bars",
+  Strip: "Strips",
+  Pipe: "Pipes",
+  Flange: "Flanges",
+  Fitting: "Fittings",
+  Forging: "Forgings",
+  Fastener: "Fasteners",
+};
 
-function getRawProductType(displayLabel: string): string | undefined {
-  for (const [rawType, displayName] of Object.entries(TYPE_LABELS)) {
-    if (displayName === displayLabel) {
-      return rawType;
-    }
+const normalizeCategory = (category: string): string => {
+  if (!category) return category;
+  if (
+    category === "Plate" ||
+    category === "Plates" ||
+    category === "Sheet" ||
+    category === "Sheets"
+  ) {
+    return "Plate & Sheets";
   }
-  return undefined;
-}
+  if (category === "Rod" || category === "Rods") return "Bars";
+  return NORMALIZE_MAP[category] || category;
+};
 
 /* ─── Helper: Get Product Image ───────────────────────────────────────────── */
-
 function getProductImageUrl(product: ScrapedProduct): {
   url: string;
   alt: string;
@@ -64,7 +81,6 @@ function getProductImageUrl(product: ScrapedProduct): {
 }
 
 /* ─── Hero Stats Badge ────────────────────────────────────────────────────── */
-
 function HeroStat({
   icon: Icon,
   label,
@@ -90,7 +106,6 @@ function HeroStat({
 }
 
 /* ─── Product Card Component ──────────────────────────────────────────────── */
-
 function ProductCard({ product }: { product: ScrapedProduct }) {
   const categoryLabel = getCategoryDisplayLabel(product.category);
   const typeLabel = getTypeDisplayLabel(product.product_type);
@@ -227,7 +242,6 @@ function ProductCard({ product }: { product: ScrapedProduct }) {
 }
 
 /* ─── Loading Skeleton ────────────────────────────────────────────────────── */
-
 function ProductCardSkeleton() {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
@@ -257,18 +271,15 @@ function ProductCardSkeleton() {
 }
 
 /* ─── Main Products Page ──────────────────────────────────────────────────── */
-
 export function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<ScrapedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
 
-  const urlSearch = searchParams.get("search") || "";
   const urlCategory = searchParams.get("category") || "";
   const urlType = searchParams.get("type") || "";
 
-  const [searchTerm, setSearchTerm] = useState(urlSearch);
   const [selectedCategory, setSelectedCategory] = useState(urlCategory);
   const [selectedType, setSelectedType] = useState(urlType);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -280,10 +291,20 @@ export function ProductsPage() {
       try {
         setLoading(true);
         const allProducts = getProducts();
-        setProducts(allProducts);
+
+        const normalizedProducts = allProducts.map((product) => ({
+          ...product,
+          category: normalizeCategory(product.category),
+          product_type: normalizeCategory(product.product_type),
+        }));
+
+        setProducts(normalizedProducts);
 
         const allCategories = getAllCategories();
-        setCategories(allCategories);
+        const normalizedCategories = allCategories.map((cat) =>
+          normalizeCategory(cat),
+        );
+        setCategories([...new Set(normalizedCategories)]);
       } catch (error) {
         console.error("Error loading products:", error);
       } finally {
@@ -296,13 +317,12 @@ export function ProductsPage() {
 
   useEffect(() => {
     const category = searchParams.get("category") || "";
-    setSelectedCategory(category);
+    setSelectedCategory(category ? normalizeCategory(category) : "");
 
     const type = searchParams.get("type") || "";
-    setSelectedType(type);
+    setSelectedType(type ? normalizeCategory(type) : "");
 
-    const search = searchParams.get("search") || "";
-    setSearchTerm(search);
+    setCurrentPage(1);
   }, [searchParams]);
 
   const handleCategoryClick = (category: string) => {
@@ -322,31 +342,30 @@ export function ProductsPage() {
     setCurrentPage(1);
   };
 
+  // ─── Filtering Logic: Only show products matching the selected Type (e.g., Bars) and Category (e.g., Tool Bar) ───
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
-          p.title?.toLowerCase().includes(term) ||
-          p.description_text?.toLowerCase().includes(term) ||
-          p.material_grades?.some((g) => g.toLowerCase().includes(term)) ||
-          p.category?.toLowerCase().includes(term) ||
-          p.product_type?.toLowerCase().includes(term),
-      );
+    if (selectedType) {
+      filtered = filtered.filter((p) => p.product_type === selectedType);
     }
 
     if (selectedCategory) {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
-    if (selectedType) {
-      filtered = filtered.filter((p) => p.product_type === selectedType);
-    }
-
     return filtered;
-  }, [products, searchTerm, selectedCategory, selectedType]);
+  }, [products, selectedType, selectedCategory]);
+
+  // ─── Get Unique Categories ONLY for the selected Type (e.g., if "Bars" selected, show only Tool Bar, Aluminum Bar, etc.) ───
+  const availableCategories = useMemo(() => {
+    if (!selectedType) return categories; // If no type selected, show all categories
+    const typeProducts = products.filter(
+      (p) => p.product_type === selectedType,
+    );
+    const uniqueCats = new Set(typeProducts.map((p) => p.category));
+    return [...uniqueCats];
+  }, [products, selectedType, categories]);
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = useMemo(() => {
@@ -358,7 +377,7 @@ export function ProductsPage() {
   // Get clean page title
   const getPageTitle = () => {
     if (selectedCategory) {
-      return getCategoryDisplayLabel(selectedCategory);
+      return `${getCategoryDisplayLabel(selectedCategory)} ${getTypeDisplayLabel(selectedType || "")}`;
     }
     if (selectedType) {
       return getTypeDisplayLabel(selectedType);
@@ -368,8 +387,8 @@ export function ProductsPage() {
 
   // Get page description
   const getPageDescription = () => {
-    if (selectedCategory) {
-      return `Explore our premium collection of ${getCategoryDisplayLabel(selectedCategory)}. High-quality materials tested and certified for industrial applications.`;
+    if (selectedCategory && selectedType) {
+      return `Explore our premium collection of ${getCategoryDisplayLabel(selectedCategory)} ${getTypeDisplayLabel(selectedType)}. High-quality materials tested and certified for industrial applications.`;
     }
     if (selectedType) {
       return `Discover our premium ${getTypeDisplayLabel(selectedType)} collection. Quality tested materials available with pan-India supply.`;
@@ -429,7 +448,7 @@ export function ProductsPage() {
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-6 bg-[#c41e24] rounded-full" />
                   <span className="text-white/80 font-bold text-xs uppercase tracking-[0.15em] bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
-                    {selectedCategory || selectedType
+                    {selectedType || selectedCategory
                       ? "Collection"
                       : "Premium Collection"}
                   </span>
@@ -484,7 +503,7 @@ export function ProductsPage() {
               <HeroStat
                 icon={Factory}
                 label="Categories"
-                value={categories.length}
+                value={availableCategories.length}
               />
               <HeroStat
                 icon={Clock}
@@ -498,48 +517,37 @@ export function ProductsPage() {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and View Controls */}
+        {/* Category & View Controls */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  const params = new URLSearchParams(searchParams);
-                  if (e.target.value) {
-                    params.set("search", e.target.value);
-                  } else {
-                    params.delete("search");
-                  }
-                  params.delete("page");
-                  setSearchParams(params);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-11 pr-12 py-2.5 rounded-xl border border-gray-200 focus:border-[#c41e24] focus:ring-2 focus:ring-[#c41e24]/10 outline-none transition-all text-sm bg-gray-50 focus:bg-white"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => {
-                    setSearchTerm("");
-                    const params = new URLSearchParams(searchParams);
-                    params.delete("search");
-                    params.delete("page");
-                    setSearchParams(params);
-                    setCurrentPage(1);
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
+          {/* Horizontal Category Buttons (Only for the selected Product Type) */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={() => handleCategoryClick("")}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+                !selectedCategory
+                  ? "bg-[#c41e24] text-white border-[#c41e24] shadow-md"
+                  : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-[#c41e24]/10 hover:border-[#c41e24]/30 hover:text-[#c41e24]"
+              }`}
+            >
+              All {getTypeDisplayLabel(selectedType || "")}
+            </button>
+            {availableCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryClick(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+                  selectedCategory === cat
+                    ? "bg-[#c41e24] text-white border-[#c41e24] shadow-md"
+                    : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-[#c41e24]/10 hover:border-[#c41e24]/30 hover:text-[#c41e24]"
+                }`}
+              >
+                {getCategoryDisplayLabel(cat)}
+              </button>
+            ))}
+          </div>
 
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            {/* View Mode Toggle */}
             <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 flex-shrink-0">
               <button
                 onClick={() => setViewMode("grid")}
@@ -565,74 +573,6 @@ export function ProductsPage() {
               </button>
             </div>
           </div>
-
-          {/* Active Filters */}
-          {(selectedCategory || selectedType || searchTerm) && (
-            <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              {selectedCategory && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#c41e24]/10 text-[#c41e24]">
-                  {getCategoryDisplayLabel(selectedCategory)}
-                  <button
-                    onClick={() => {
-                      setSelectedCategory("");
-                      const params = new URLSearchParams(searchParams);
-                      params.delete("category");
-                      params.delete("page");
-                      setSearchParams(params);
-                      setCurrentPage(1);
-                    }}
-                    className="hover:text-[#c41e24]/80"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {selectedType && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                  {getTypeDisplayLabel(selectedType)}
-                  <button
-                    onClick={() => {
-                      setSelectedType("");
-                      const params = new URLSearchParams(searchParams);
-                      params.delete("type");
-                      params.delete("page");
-                      setSearchParams(params);
-                      setCurrentPage(1);
-                    }}
-                    className="hover:text-blue-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {searchTerm && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                  "{searchTerm}"
-                  <button
-                    onClick={() => {
-                      setSearchTerm("");
-                      const params = new URLSearchParams(searchParams);
-                      params.delete("search");
-                      params.delete("page");
-                      setSearchParams(params);
-                      setCurrentPage(1);
-                    }}
-                    className="hover:text-gray-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {(selectedCategory || selectedType || searchTerm) && (
-                <button
-                  onClick={clearFilters}
-                  className="text-xs font-medium text-gray-400 hover:text-[#c41e24] transition-colors"
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Results Count */}
@@ -675,8 +615,8 @@ export function ProductsPage() {
               No products found
             </h3>
             <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-              Try adjusting your search or filter criteria to find what you're
-              looking for.
+              Try selecting a different category to find what you're looking
+              for.
             </p>
             <button
               onClick={clearFilters}

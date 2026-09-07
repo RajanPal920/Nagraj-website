@@ -48,11 +48,14 @@ const SPECIALIZED_PRODUCT_NAMES = [
 
 // ─── Categories to normalize ──────────────────────────────────────────────
 const NORMALIZE_MAP: Record<string, string> = {
-  Plate: "Plates",
+  Plate: "Plate & Sheets", // Merged
+  Plates: "Plate & Sheets", // Merged
+  Sheet: "Plate & Sheets", // Merged
+  Sheets: "Plate & Sheets", // Merged
   Bar: "Bars",
-  Sheet: "Sheets",
+  Rod: "Bars", // Merged into Bars
+  Rods: "Bars", // Merged into Bars
   Pipe: "Pipes",
-  Rod: "Rods",
   Strip: "Strips",
   Flange: "Flanges",
   Fitting: "Fittings",
@@ -62,15 +65,37 @@ const NORMALIZE_MAP: Record<string, string> = {
 
 const normalizeCategory = (category: string): string => {
   if (!category) return category;
+  // Merge Plate, Plates, Sheet, Sheets into Plate & Sheets
+  if (
+    category === "Plate" ||
+    category === "Plates" ||
+    category === "Sheet" ||
+    category === "Sheets"
+  ) {
+    return "Plate & Sheets";
+  }
+  // Merge Rod, Rods into Bars
+  if (category === "Rod" || category === "Rods") return "Bars";
   return NORMALIZE_MAP[category] || category;
 };
 
 const filterProductTypes = (types: string[]): string[] => {
-  return types
-    .filter((type) => type !== "Plate")
-    .map((type) => NORMALIZE_MAP[type] || type)
-    .filter((type, index, self) => self.indexOf(type) === index)
-    .sort();
+  return (
+    types
+      // Remove Plate, Sheets, Rod, Rods from the raw list (they will be merged)
+      .filter(
+        (type) =>
+          type !== "Plate" &&
+          type !== "Plates" &&
+          type !== "Sheet" &&
+          type !== "Sheets" &&
+          type !== "Rod" &&
+          type !== "Rods",
+      )
+      .map((type) => NORMALIZE_MAP[type] || type)
+      .filter((type, index, self) => self.indexOf(type) === index)
+      .sort()
+  );
 };
 
 export function Header() {
@@ -110,12 +135,12 @@ export function Header() {
         const normalizedProducts = products.map((product) => ({
           ...product,
           category:
-            product.category === "Plate"
-              ? "Plates"
+            product.category === "Plate" || product.category === "Sheet"
+              ? "Plate & Sheets"
               : normalizeCategory(product.category),
           product_type:
-            product.product_type === "Plate"
-              ? "Plates"
+            product.product_type === "Plate" || product.product_type === "Sheet"
+              ? "Plate & Sheets"
               : normalizeCategory(product.product_type),
         }));
 
@@ -146,8 +171,8 @@ export function Header() {
           if (!product || !product.category) return;
 
           let categoryName = product.category.trim();
-          if (categoryName === "Plate") {
-            categoryName = "Plates";
+          if (categoryName === "Plate" || categoryName === "Sheet") {
+            categoryName = "Plate & Sheets";
           }
 
           const group = categoryGroupMap.get(categoryName) || "Other";
@@ -216,8 +241,13 @@ export function Header() {
     products.forEach((product) => {
       if (product.product_type) {
         let type = product.product_type;
-        if (type === "Plate") {
-          type = "Plates";
+        if (
+          type === "Plate" ||
+          type === "Plates" ||
+          type === "Sheet" ||
+          type === "Sheets"
+        ) {
+          type = "Plate & Sheets";
         }
         type = normalizeCategory(type);
         types.add(type);
@@ -225,6 +255,11 @@ export function Header() {
     });
 
     types.delete("Plate");
+    types.delete("Plates");
+    types.delete("Sheet");
+    types.delete("Sheets");
+    types.delete("Rod");
+    types.delete("Rods");
     return filterProductTypes(Array.from(types));
   };
 
@@ -233,8 +268,13 @@ export function Header() {
     const products = getProducts();
     return products.filter((product) => {
       let productType = product.product_type;
-      if (productType === "Plate") {
-        productType = "Plates";
+      if (
+        productType === "Plate" ||
+        productType === "Plates" ||
+        productType === "Sheet" ||
+        productType === "Sheets"
+      ) {
+        productType = "Plate & Sheets";
       }
       productType = normalizeCategory(productType);
       return productType === type;
@@ -263,8 +303,8 @@ export function Header() {
     specialized.forEach((p) => {
       if (p.category) {
         let cat = p.category;
-        if (cat === "Plate") {
-          cat = "Plates";
+        if (cat === "Plate" || cat === "Sheet") {
+          cat = "Plate & Sheets";
         }
         cats.add(cat);
       }
@@ -276,8 +316,8 @@ export function Header() {
     const specialized = getSpecializedProducts();
     return specialized.filter((p) => {
       let cat = p.category;
-      if (cat === "Plate") {
-        cat = "Plates";
+      if (cat === "Plate" || cat === "Sheet") {
+        cat = "Plate & Sheets";
       }
       return cat === category;
     });
