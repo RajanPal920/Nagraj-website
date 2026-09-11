@@ -124,44 +124,107 @@ export interface ScrapedProduct {
   status: string;
 }
 
-// ─── NORMALIZE CATEGORY AND PRODUCT TYPE ──────────────────────────────────
-// This maps singular to plural to avoid duplicates in the menu
-const NORMALIZE_MAP: Record<string, string> = {
-  Plate: "Plates",
-  Bar: "Bars",
-  Sheet: "Sheets",
-  Pipe: "Pipes",
-  Rod: "Rods",
-  Strip: "Strips",
-  Flange: "Flanges",
-  Fitting: "Fittings",
-  Forging: "Forgings",
-  Fastener: "Fasteners",
-  "Welding Wire": "Welding Wires",
-  "Hollow Section": "Hollow Sections",
-  "Structural Profile": "Structural Profiles",
-  Coil: "Coils",
-};
-
-const normalizeCategory = (category: string): string => {
-  if (!category) return category;
-  // Check if category contains any of the keys in NORMALIZE_MAP
-  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
-    if (category === key || category.includes(key)) {
-      return value;
-    }
-  }
-  return category;
-};
-
+// ═══════════════════════════════════════════════════════════════════════════
+// NORMALIZE PRODUCT TYPE
+// Sirf product shape normalize karo — material/category nahi
+// ═══════════════════════════════════════════════════════════════════════════
 const normalizeProductType = (type: string): string => {
   if (!type) return type;
-  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
-    if (type === key || type.includes(key)) {
-      return value;
-    }
-  }
-  return type;
+  const trimmed = type.trim();
+  const lower = trimmed.toLowerCase();
+
+  // ─── STRICT MAPPING (exact match only) ───────────────────────
+  const TYPE_MAP: Record<string, string> = {
+    // Bars
+    bar: "Round Bars",
+    bars: "Round Bars",
+    rod: "Round Bars",
+    rods: "Round Bars",
+    roundbar: "Round Bars",
+    roundbars: "Round Bars",
+
+    // Pipes
+    pipe: "Pipes & Tubes",
+    pipes: "Pipes & Tubes",
+    tube: "Pipes & Tubes",
+    tubes: "Pipes & Tubes",
+
+    // Plates
+    plate: "Plates & Sheets",
+    plates: "Plates & Sheets",
+    sheet: "Plates & Sheets",
+    sheets: "Plates & Sheets",
+    coil: "Plates & Sheets",
+    coils: "Plates & Sheets",
+
+    // Flanges
+    flange: "Flanges",
+    flanges: "Flanges",
+
+    // Fittings
+    fitting: "Fittings",
+    fittings: "Fittings",
+
+    // Forgings
+    forging: "Forgings",
+    forgings: "Forgings",
+
+    // Fasteners
+    fastener: "Fasteners",
+    fasteners: "Fasteners",
+
+    // Pins
+    pin: "Pins",
+    pins: "Pins",
+
+    // Welding
+    "welding wire": "Welding Electrodes",
+    "welding wires": "Welding Electrodes",
+    "welding electrode": "Welding Electrodes",
+    "welding electrodes": "Welding Electrodes",
+
+    // Galvanized
+    galvanized: "Galvanized",
+    galvanised: "Galvanized",
+    "galvanized steel": "Galvanized",
+
+    // Hollow
+    "hollow section": "Hollow Sections",
+    "hollow sections": "Hollow Sections",
+
+    // Structural
+    "structural profile": "Structural Profiles",
+    "structural profiles": "Structural Profiles",
+
+    // Strips
+    strip: "Strips",
+    strips: "Strips",
+
+    // Cold Work Tool Steels
+    "cold work tool steel": "Cold Work Tool Steels",
+    "cold work tool steels": "Cold Work Tool Steels",
+    "tool steel": "Cold Work Tool Steels",
+    "tool steels": "Cold Work Tool Steels",
+  };
+
+  if (TYPE_MAP[lower]) return TYPE_MAP[lower];
+
+  // ⚠️ IMPORTANT: Partial match HATA diya — warna "Carbon Steel" jaisa
+  // material name bhi "Bar" se match kar jaayega aur galat normalize hoga
+
+  // Agar exact match nahi mila, toh trimmed value as-is return karo
+  return trimmed;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NORMALIZE CATEGORY — RAW PRESERVE
+// Category ko touch mat karo, warna "Carbon Steel" jaise materials ka
+// original meaning lost ho jaayega. Ye already clean hain products.json me.
+// ═══════════════════════════════════════════════════════════════════════════
+const normalizeCategory = (category: string): string => {
+  if (!category) return category;
+  // Sirf trim karo, kuch aur mat karo
+  return category.trim();
 };
 
 // ── Module-level product data ──────────────────────────────────────────────
@@ -175,7 +238,9 @@ let loadPromise: Promise<ScrapedProduct[]> | null = null;
 const normalizeProduct = (product: ScrapedProduct): ScrapedProduct => {
   return {
     ...product,
+    // ✅ Category ko RAW rakho — "Carbon Steel" waisa hi rahe
     category: normalizeCategory(product.category),
+    // ✅ Product type ko normalize karo — "Bar" → "Round Bars"
     product_type: normalizeProductType(product.product_type),
   };
 };
@@ -282,7 +347,9 @@ export function getAllProductTypes(): string[] {
  */
 export function getProductsByCategory(category: string): ScrapedProduct[] {
   const products = getProducts();
-  return products.filter((p) => p.category === category);
+  return products.filter(
+    (p) => p.category?.toLowerCase() === category.toLowerCase(),
+  );
 }
 
 /**
@@ -290,7 +357,43 @@ export function getProductsByCategory(category: string): ScrapedProduct[] {
  */
 export function getProductsByType(type: string): ScrapedProduct[] {
   const products = getProducts();
-  return products.filter((p) => p.product_type === type);
+  return products.filter(
+    (p) => p.product_type?.toLowerCase() === type.toLowerCase(),
+  );
+}
+
+/**
+ * Get products by BOTH type AND category (AND condition).
+ * Ye function strict filtering ke liye use hoga.
+ */
+export function getProductsByTypeAndCategory(
+  type: string,
+  category: string,
+): ScrapedProduct[] {
+  const products = getProducts();
+  const typeLower = type.toLowerCase().trim();
+  const catLower = category.toLowerCase().trim();
+
+  return products.filter((p) => {
+    const pType = (p.product_type || "").toLowerCase().trim();
+    if (pType !== typeLower) return false;
+
+    const pCat = (p.category || "").toLowerCase().trim();
+    const pTitle = (p.title || "").toLowerCase().trim();
+
+    // Category match — multiple fields me check
+    return (
+      pCat === catLower ||
+      pCat.includes(catLower) ||
+      pTitle.includes(catLower) ||
+      (p.material_grades || []).some((g) =>
+        g.toLowerCase().includes(catLower),
+      ) ||
+      (p.equivalent_grades || []).some((g) =>
+        g.toLowerCase().includes(catLower),
+      )
+    );
+  });
 }
 
 /**

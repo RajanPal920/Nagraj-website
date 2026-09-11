@@ -5,58 +5,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getProducts } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 
-// ─── NORMALIZE MAP ─────────────────────────────────────────────────────────
-const NORMALIZE_MAP: Record<string, string> = {
-  Plate: "Plates & Sheets",
-  Plates: "Plates & Sheets",
-  Sheet: "Plates & Sheets",
-  Sheets: "Plates & Sheets",
-  Bar: "Round Bars",
-  Bars: "Round Bars",
-  Rod: "Round Bars",
-  Rods: "Round Bars",
-  Pipe: "Pipes & Tubes",
-  Pipes: "Pipes & Tubes",
-  Tube: "Pipes & Tubes",
-  Tubes: "Pipes & Tubes",
-  Strip: "Strips",
-  Flange: "Flanges",
-  Fitting: "Fittings",
-  Forging: "Forgings",
-  Fastener: "Fasteners",
-  Pin: "Pins",
-  "Welding Wire": "Welding Electrodes",
-  "Welding Wire ": "Welding Electrodes",
-  "Welding Electrode": "Welding Electrodes",
-  "Welding Electrodes": "Welding Electrodes",
-  "Hollow Section": "Hollow Sections",
-  "Structural Profile": "Structural Profiles",
-  Coil: "Coils",
-  "Cold Work Tool Steel": "Cold Work Tool Steels",
-  "Cold Work Tool Steels": "Cold Work Tool Steels",
-  "Tool Steel": "Cold Work Tool Steels",
-  "Galvanized Steel": "Galvanized",
-  Galvanised: "Galvanized",
-  Galvanized: "Galvanized",
-};
-
-const normalizeCategory = (category: string): string => {
-  if (!category) return category;
-  const trimmed = category.trim();
-
-  if (NORMALIZE_MAP[trimmed]) return NORMALIZE_MAP[trimmed];
-
-  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
-    if (trimmed.toLowerCase() === key.toLowerCase()) return value;
-  }
-
-  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
-    if (trimmed.toLowerCase().includes(key.toLowerCase())) return value;
-  }
-
-  return trimmed;
-};
-
 // ─── CATEGORY FALLBACK IMAGES ─────────────────────────────────────────────
 const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Pipes & Tubes": "/images/pipe.jpg",
@@ -229,533 +177,101 @@ const SPECIALIZED_MENU_DATA: Record<
     name: "DSQ Plates",
     image: "/images/sheet.jpg",
   },
+  // ✅ NAYA ENTRY — Fittings
+  Fittings: {
+    name: "Fittings",
+    subItems: ["Buttweld Fittings", "Forged Fittings"],
+    image: "/images/fitting.jpg",
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// STRICT MATCH — Title + Type + Category + Material sab check karega
+// SPECIALIZED FILTER
 // ═══════════════════════════════════════════════════════════════════════════
-function strictMatch(product: ScrapedProduct, query: string): boolean {
-  const q = query.toLowerCase().trim();
+function isSpecializedMatch(
+  product: ScrapedProduct,
+  categoryQuery?: string,
+): boolean {
+  const allKeys = [
+    "high tensile",
+    "sailhard",
+    "uttamhard",
+    "evonith",
+    "abrex",
+    "hardox",
+    "nm400",
+    "nm450",
+    "nm500",
+    "rockstar",
+    "rockhard",
+    "is 2062",
+    "e250",
+    "e350",
+    "e450",
+    "s355j2",
+    "16mo3",
+    "15mo3",
+    "sa 204",
+    "manganese",
+    "x120mn12",
+    "sidur",
+    "s690ql",
+    "welten",
+    "en10023",
+    "boiler",
+    "is2041",
+    "sa 516",
+    "a387",
+    "sa387",
+    "chrome moly",
+    "chequered",
+    "is 3502",
+    "tata structura",
+    "corten",
+    "weathering",
+    "dsq",
+    // ✅ FITTINGS & FLANGES KEYS
+    "buttweld",
+    "forged fitting",
+    "forged fittings",
+    "elbow",
+    "tee",
+    "reducer",
+    "pipe fitting",
+    "flange",
+    "fastener",
+    "nut",
+    "bolt",
+    "washer",
+    "stud",
+  ];
 
-  const pType = (product.product_type || "").toLowerCase().trim();
-  const pCat = (product.category || "").toLowerCase().trim();
-  const pTitle = (product.title || "").toLowerCase().trim();
-
-  // ─── ✅ MATERIAL / SUB-CATEGORY FILTERS ────────────────────────────
-  // Ye product_type nahi hain, ye material/category level filters hain
-  const MATERIAL_FILTERS: Record<string, string[]> = {
-    "carbon steel": ["carbon steel", "carbon", "cs ", "cs-"],
-    "stainless steel": [
-      "stainless",
-      "ss ",
-      "ss-",
-      "304",
-      "316",
-      "321",
-      "347",
-      "410",
-      "416",
-      "420",
-      "904l",
-    ],
-    "alloy steel": [
-      "alloy steel",
-      "alloy",
-      "chrome moly",
-      "crmo",
-      "4140",
-      "4340",
-      "8620",
-      "en19",
-      "en24",
-    ],
-    aluminium: ["aluminium", "aluminum", "al "],
-    "aluminium alloy": [
-      "aluminium",
-      "aluminum",
-      "7075",
-      "6061",
-      "5083",
-      "5052",
-      "2024",
-      "2014",
-    ],
-    "nickel alloy": [
-      "nickel alloy",
-      "nickel",
-      "inconel",
-      "monel",
-      "hastelloy",
-      "incoloy",
-    ],
-    inconel: ["inconel"],
-    monel: ["monel"],
-    hastelloy: ["hastelloy"],
-    incoloy: ["incoloy"],
-    "copper alloy": ["copper alloy", "copper", "brass", "bronze"],
-    "copper nickel": ["copper nickel", "cupro nickel", "cu-ni", "cu ni"],
-    "cupro nickel": ["cupro nickel", "copper nickel", "cu-ni"],
-    duplex: [
-      "duplex",
-      "s31803",
-      "s32205",
-      "s32750",
-      "s32760",
-      "s32550",
-      "2205",
-      "2507",
-    ],
-    "duplex and super duplex": ["duplex", "super duplex"],
-    "duplex and super duplex pipes": ["duplex", "super duplex"],
-    titanium: ["titanium", "ti grade", "grade 2", "grade 5"],
-    "tool steel": [
-      "tool steel",
-      "d2",
-      "d3",
-      "hchcr",
-      "ohns",
-      "ohms",
-      "o1",
-      "p20",
-    ],
-    "hot work steel": ["hot work", "h11", "h13", "h21"],
-    "high tensile": ["high tensile", "ht bolt"],
-    tantalum: ["tantalum"],
-    "corten steel": ["corten", "weathering"],
-    "en series": [
-      "en8",
-      "en9",
-      "en19",
-      "en24",
-      "en25",
-      "en26",
-      "en30",
-      "en31",
-      "en36",
-      "en39",
-      "en40",
-      "en41",
-      "en47",
-      "en57",
-      "en58",
-    ],
-    "precipitation hardening steel": [
-      "17-4",
-      "15-5",
-      "13-8",
-      "custom 455",
-      "ph ",
-    ],
-    "f series": ["f11", "f22", "f91", "f5", "f9"],
-    "alloy steel round": ["alloy steel"],
-    "alloy steel plates": ["alloy steel"],
-    "alloy steel pipe": ["alloy steel"],
-    "alloy steel f series": ["f11", "f22", "f91", "f5", "f9"],
-    "stainless steel plates": [
-      "stainless",
-      "ss ",
-      "304",
-      "316",
-      "321",
-      "347",
-      "904",
-    ],
-    "stainless steel pipes & tubes": [
-      "stainless",
-      "ss ",
-      "304",
-      "316",
-      "321",
-      "347",
-      "904",
-    ],
-    "stainless steel round bars": [
-      "stainless",
-      "ss ",
-      "303",
-      "304",
-      "316",
-      "321",
-      "347",
-      "410",
-      "416",
-      "420",
-      "431",
-      "440c",
-    ],
-    "stainless steel": ["stainless", "ss ", "ss-", "304", "316", "321", "347"],
-    "stainless steel electrode": [
-      "er308",
-      "er316",
-      "er347",
-      "er321",
-      "er410",
-      "ss welding",
-    ],
-    carbon: ["carbon steel", "carbon"],
-    "buttweld fittings": ["buttweld"],
-    "forged fittings": ["forged fitting"],
-    "copper wires": ["copper wire", "ercuni", "ercu"],
-    "cobalt base electrode": ["cobalt", "ecocr", "stellite"],
-    "aluminium wires": ["aluminium welding", "er4043", "er5356", "er1100"],
-    "hot dip galvanized angles": ["galvanized angle"],
-    "hot dip galvanized channels": ["galvanized channel"],
-    "pto pins": ["pto"],
-    "pipe linch pin": ["linch pin", "pipe pin"],
-    "high tensile strength": ["high tensile", "ht bolt"],
-  };
-
-  if (MATERIAL_FILTERS[q]) {
-    const searchText = [
-      pTitle,
-      pCat,
-      pType,
-      ...(product.material_grades || []),
-      ...(product.equivalent_grades || []),
-    ]
-      .join(" ")
-      .toLowerCase();
-    return MATERIAL_FILTERS[q].some((kw) => searchText.includes(kw));
-  }
-
-  // ─── MAIN CATEGORY DEFINITIONS with their keywords ─────────────────
-  const CATEGORY_KEYWORDS: Record<string, string[]> = {
-    "pipes & tubes": [
-      "pipe",
-      "pipes",
-      "tube",
-      "tubes",
-      "seamless",
-      "erw",
-      "welded",
-      "a106",
-      "a333",
-      "a335",
-      "api 5l",
-      "astm a312",
-      "sa312",
-      "inconel",
-      "monel",
-      "hastelloy",
-      "incoloy",
-    ],
-    "plates & sheets": [
-      "plate",
-      "plates",
-      "sheet",
-      "sheets",
-      "coil",
-      "coils",
-      "astm a36",
-      "is 2062",
-      "sa 516",
-      "a387",
-      "sa387",
-      "chrome moly",
-      "boiler quality",
-      "bq plate",
-      "abrex",
-      "hardox",
-      "nm400",
-      "nm450",
-      "nm500",
-      "rockstar",
-      "rockhard",
-      "evonith",
-      "uttamhard",
-      "sailhard",
-      "s690ql",
-      "welten",
-      "manganese",
-      "x120mn12",
-      "sidur",
-      "dsq",
-      "chequered",
-      "is 3502",
-      "16mo3",
-      "15mo3",
-      "sa 204",
-      "17-4ph",
-      "17-4 ph",
-      "904l plate",
-      "310s plate",
-      "317l plate",
-      "316l plate",
-      "304l plate",
-      "corten",
-      "355j2",
-      "s355j2",
-      "sa 387",
-      "a283",
-      "is2041",
-      "r260",
-      "ss 409m",
-      "ss 441",
-      "253ma",
-      "1.4410",
-      "1.4501",
-      "s32750",
-      "s32760",
-      "s32550",
-      "en19 plate",
-      "en24 plate",
-      "c45 plate",
-      "c40 plate",
-      "7075 plate",
-      "5083 plate",
-      "6061 plate",
-      "7050 plate",
-      "5754 sheet",
-    ],
-    "round bars": [
-      "round bar",
-      "round bars",
-      "bar",
-      "bars",
-      "rod",
-      "rods",
-      "bright bar",
-      "black bar",
-      "forged bar",
-      "hex bar",
-      "square bar",
-      "astm a276",
-      "astm a479",
-      "astm a182",
-      "en8",
-      "en9",
-      "en19",
-      "en24",
-      "en25",
-      "en26",
-      "en30",
-      "en31",
-      "en36",
-      "en39",
-      "en40",
-      "en41",
-      "en47",
-      "en57",
-      "en58",
-      "sae 4140",
-      "sae 4340",
-      "sae 8620",
-      "sae 52100",
-      "sae 1018",
-      "sae 4130",
-      "100cr6",
-      "suj2",
-      "aisi 1144",
-      "ss 303",
-      "ss 410",
-      "ss 416",
-      "ss 420",
-      "ss 431",
-      "ss 440c",
-      "ss 446",
-      "904l bar",
-      "17-4 ph bar",
-      "15-5 ph",
-      "13-8 mo",
-      "custom 455",
-      "a286",
-      "alloy 20 bar",
-      "alloy 188",
-      "c932",
-      "c145",
-      "c175",
-      "c150",
-      "c182",
-      "c70600",
-      "c63000",
-      "c86300",
-      "stellite",
-      "kovar",
-      "hymu 80",
-      "maraging",
-      "nitronic",
-    ],
-    "cold work tool steels": [
-      "tool steel",
-      "d2",
-      "d3",
-      "hchcr",
-      "ohns",
-      "ohms",
-      "aisi o1",
-      "d2 tool",
-      "d3 tool",
-      "1.2379",
-      "1.2085",
-      "1.2365",
-      "1.2436",
-      "1.2714",
-      "1.2738",
-      "1.2316",
-      "s7",
-      "h13",
-      "h11",
-      "h21",
-      "m2",
-      "m35",
-      "m42",
-      "p20",
-      "toolox",
-    ],
-    flanges: [
-      "flange",
-      "flanges",
-      "weld neck",
-      "slip on",
-      "blind flange",
-      "socket weld",
-    ],
-    fasteners: [
-      "fastener",
-      "bolt",
-      "nut",
-      "washer",
-      "stud",
-      "screw",
-      "a193",
-      "b7",
-      "b16",
-    ],
-    fittings: [
-      "fitting",
-      "elbow",
-      "tee",
-      "reducer",
-      "buttweld",
-      "forged fitting",
-      "astm a234",
-    ],
-    "welding electrodes": [
-      "welding",
-      "electrode",
-      "wire",
-      "filler",
-      "er4043",
-      "er5356",
-      "er1100",
-      "er307",
-      "er308",
-      "er316",
-      "er321",
-      "er347",
-      "er410",
-      "er2209",
-      "er2594",
-      "er630",
-      "ecocr",
-      "e307-16",
-      "ercuni",
-    ],
-    galvanized: [
-      "galvanized",
-      "galvanised",
-      "gi pipe",
-      "gp coil",
-      "hdg",
-      "hot dip",
-    ],
-    pins: ["pin", "pins", "linch pin", "pto pin"],
-  };
-
-  const categoryKeywords = CATEGORY_KEYWORDS[q];
-  if (categoryKeywords) {
-    if (pType === q) return true;
-    return categoryKeywords.some((kw) => pTitle.includes(kw));
-  }
-
-  // ─── SPECIALIZED CATEGORIES ────────────────────────────────────────
-  const specializedKeywords: Record<string, string[]> = {
-    "high tensile strength": [
-      "sailhard",
-      "uttamhard",
-      "evonith",
-      "high tensile",
-    ],
-    "cold rolled": ["crca", "cold rolled"],
-    "hot rolled is 2062 plates": [
-      "is 2062",
-      "is2062",
-      "e250",
-      "e350",
-      "e450",
-      "s355j2",
-    ],
-    "abrasion resistant plates": [
-      "abrex",
-      "hardox",
-      "nm400",
-      "nm450",
-      "nm500",
-      "rockstar",
-      "rockhard",
-      "abrasion",
-    ],
-    "16mo3-15mo3 & sa 204 plates": ["16mo3", "15mo3", "sa 204"],
-    "manganese steel plates": ["manganese", "x120mn12", "sidur"],
-    "quenched & tempered plates": ["s690ql", "welten", "quenched", "tempered"],
-    "boiler quality steel plates": ["is2041", "sa 516", "boiler"],
-    "chrome moly plates": ["a387", "sa387", "chrome moly"],
-    "chequered plate": ["chequered", "is 3502"],
-    "tata structura 355": ["tata structura"],
-    "corten steel plates": ["corten", "weathering"],
-    "dsq plates": ["dsq"],
-    "evonith hard (evslas07)": ["evonith", "evslas"],
-    uttamhard: ["uttamhard"],
-    sailhard: ["sailhard"],
-    "crca coils": ["crca"],
-    "is 2062 plates": ["is 2062"],
-    "is 2062 e250br": ["e250"],
-    "is 2062 e350": ["e350"],
-    "is 2062 e350br plates": ["e350br"],
-    "is 2062 e350c": ["e350c"],
-    "s355j2+n plates": ["s355j2"],
-    "is 2062 e450br": ["e450br"],
-    "abrex 450 plates": ["abrex 450"],
-    "abrex 500 plates": ["abrex 500"],
-    "nm400 plates": ["nm400"],
-    "nm500 plates": ["nm500"],
-    "rockstar 400 plates": ["rockstar 400"],
-    "rockstar 450 plates": ["rockstar 450"],
-    "rockstar 500 plates": ["rockstar 500"],
-    "industries we serve": ["industries we serve"],
-    "16mo3 plate": ["16mo3"],
-    "x120mn12 /sidur 3401": ["x120mn12", "sidur"],
-    "high manganese plate/steels": ["manganese"],
-    "s690ql plate": ["s690ql"],
-    "en10023-6 s690ql": ["en10023"],
-    "welten 780e plates /sheets": ["welten", "780e"],
-    "is2041 r260 plate": ["is2041"],
-    "sa 516 grade 70 plate": ["sa 516"],
-    "a387 grade 5 class 2": ["a387 grade 5"],
-    "a387 grade 22 class 2": ["a387 grade 22"],
-    "a387/sa387 chrome moly plates": ["a387/sa387"],
-    "is 3502 chequered plates": ["is 3502"],
-  };
-
-  const keywords = specializedKeywords[q];
-  if (keywords) {
-    const searchText = [
-      pTitle,
-      pCat,
-      pType,
-      ...(product.material_grades || []),
-      ...(product.equivalent_grades || []),
-    ]
-      .join(" ")
-      .toLowerCase();
-    return keywords.some((kw) => searchText.includes(kw));
-  }
-
-  // Fallback
-  const searchText = [pTitle, pCat, pType, ...(product.material_grades || [])]
+  const searchText = [
+    product.title || "",
+    product.category || "",
+    product.product_type || "",
+    ...(product.material_grades || []),
+    ...(product.equivalent_grades || []),
+    ...((product as any).availability || []), // ✅ availability bhi check
+  ]
     .join(" ")
     .toLowerCase();
-  return searchText.includes(q);
+
+  // ✅ Agar categoryQuery diya gaya hai, to usse priority do
+  if (categoryQuery) {
+    const cq = categoryQuery.toLowerCase().trim();
+    const tokens = cq.split(/\s+/).filter((t) => t.length > 2);
+
+    // Token-based match: "Buttweld Fittings" → ["buttweld", "fittings"]
+    if (tokens.length > 0 && tokens.every((t) => searchText.includes(t))) {
+      return true;
+    }
+
+    // Direct substring match
+    if (searchText.includes(cq)) return true;
+  }
+
+  return allKeys.some((k) => searchText.includes(k));
 }
 
 export function ProductsPage() {
@@ -776,67 +292,50 @@ export function ProductsPage() {
     setLoading(false);
   }, []);
 
-  // ─── Strict Filtering (with AND condition) ────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  // STRICT FILTERING — Guaranteed category-wise products
+  // ═══════════════════════════════════════════════════════════════════════
   const filteredProducts = useMemo(() => {
     let result = allProducts.filter((p) => {
-      // ✅ NEW: Agar type aur category DONO hain, toh AND karo
-      if (typeFilter && categoryFilter) {
-        return strictMatch(p, typeFilter) && strictMatch(p, categoryFilter);
-      }
-      if (typeFilter) return strictMatch(p, typeFilter);
-      if (categoryFilter) return strictMatch(p, categoryFilter);
+      const pType = (p.product_type || "").trim().toLowerCase();
+      const pCat = (p.category || "").trim().toLowerCase();
+      const pTitle = (p.title || "").trim().toLowerCase();
+      const typeLower = (typeFilter || "").trim().toLowerCase();
+      const catLower = (categoryFilter || "").trim().toLowerCase();
 
-      if (isSpecialized) {
-        const allKeys = [
-          "high tensile",
-          "sailhard",
-          "uttamhard",
-          "evonith",
-          "abrex",
-          "hardox",
-          "nm400",
-          "nm450",
-          "nm500",
-          "rockstar",
-          "rockhard",
-          "is 2062",
-          "e250",
-          "e350",
-          "e450",
-          "s355j2",
-          "16mo3",
-          "15mo3",
-          "sa 204",
-          "manganese",
-          "x120mn12",
-          "sidur",
-          "s690ql",
-          "welten",
-          "en10023",
-          "boiler",
-          "is2041",
-          "sa 516",
-          "a387",
-          "sa387",
-          "chrome moly",
-          "chequered",
-          "is 3502",
-          "tata structura",
-          "corten",
-          "weathering",
-          "dsq",
-        ];
-        const searchText = [
-          p.title || "",
-          p.category || "",
-          p.product_type || "",
-          ...(p.material_grades || []),
-          ...(p.equivalent_grades || []),
-        ]
-          .join(" ")
-          .toLowerCase();
-        return allKeys.some((k) => searchText.includes(k));
+      // ── CASE 1: Type + Category dono hain → AND condition
+      if (typeFilter && categoryFilter) {
+        // Step 1: Type STRICT match
+        if (pType !== typeLower) return false;
+
+        // Step 2: Category — sirf category field ya title se match
+        if (pCat === catLower) return true;
+        if (pCat.includes(catLower)) return true;
+        if (pTitle.includes(catLower)) return true;
+
+        return false;
       }
+
+      // ── CASE 2: Sirf type filter → EXACT product_type match ONLY
+      if (typeFilter) {
+        return pType === typeLower;
+      }
+
+      // ── CASE 3: Sirf category filter → SIRF category / title match
+      if (categoryFilter) {
+        if (pCat === catLower) return true;
+        if (pCat.includes(catLower)) return true;
+        if (pTitle.includes(catLower)) return true;
+
+        return false;
+      }
+
+      // ── CASE 4: Specialized products
+      // ✅ categoryFilter pass kiya — fittings sub-items ke liye
+      if (isSpecialized) {
+        return isSpecializedMatch(p, categoryFilter || undefined);
+      }
+
       return true;
     });
 
@@ -939,7 +438,6 @@ export function ProductsPage() {
   // ═══════════════════════════════════════════════════════════════════════
   // VIEW 2: FILTERED PRODUCTS LISTING
   // ═══════════════════════════════════════════════════════════════════════
-  // Page title: agar dono filters hain toh "Type — Category" dikhao
   const pageTitle =
     typeFilter && categoryFilter
       ? `${typeFilter} — ${categoryFilter}`
@@ -965,7 +463,6 @@ export function ProductsPage() {
   const isSubItem =
     parentCategoryKey !== null && parentCategoryKey !== categoryFilter;
 
-  // showSubItems: sirf tab jab koi product na mile AUR subItems hon AUR AND filter NA ho
   const showSubItems =
     !typeFilter &&
     filteredProducts.length === 0 &&
@@ -1093,7 +590,6 @@ export function ProductsPage() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B1A1A]"></div>
             </div>
           ) : showSubItems ? (
-            /* SHOW SUB-CATEGORY CARDS */
             <>
               <div className="mb-8">
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
@@ -1144,7 +640,6 @@ export function ProductsPage() {
               </div>
             </>
           ) : filteredProducts.length === 0 ? (
-            /* EMPTY STATE */
             <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
               <h3 className="text-xl font-bold text-gray-800 mb-2">
                 No products found
@@ -1170,7 +665,6 @@ export function ProductsPage() {
               </div>
             </div>
           ) : (
-            /* PRODUCTS GRID */
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => {

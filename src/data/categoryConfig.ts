@@ -1,6 +1,7 @@
+// src/data/categoryConfig.ts
 // ─── Category Config ──────────────────────────────────────────────────────────
-// Defines the two-level hierarchy: Group → Category (material) → Type (form).
-// "category" and "product_type" values here must match the scraped JSON exactly.
+// Two-level hierarchy: Group → Category (material) → Type (form).
+// "category" and "product_type" values MUST match the scraped JSON exactly.
 
 // ── Top-level group buckets ───────────────────────────────────────────────────
 export const CATEGORY_GROUPS: Record<string, string[]> = {
@@ -18,6 +19,7 @@ export const CATEGORY_GROUPS: Record<string, string[]> = {
     "Cold Rolled",
     "Hot Rolled IS 2062 Plates",
     "Abrasion Resistant",
+    "Spring Steel",
   ],
   "Non-Ferrous": [
     "Aluminium",
@@ -51,7 +53,6 @@ for (const [group, cats] of Object.entries(CATEGORY_GROUPS)) {
 }
 
 // ── Category display names ────────────────────────────────────────────────────
-// Override scraped names for display where needed. Falls back to raw value.
 export const CATEGORY_LABELS: Record<string, string> = {
   "Stainless Steel": "Stainless Steel",
   "Alloy Steel": "Alloy Steel",
@@ -66,6 +67,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   "Cold Rolled": "Cold Rolled",
   "Hot Rolled IS 2062 Plates": "IS 2062 Hot Rolled",
   "Abrasion Resistant": "Abrasion Resistant",
+  "Spring Steel": "Spring Steel",
   Aluminium: "Aluminium",
   "Copper & Brass": "Copper & Brass",
   "Cupro Nickel": "Cupro Nickel",
@@ -81,17 +83,56 @@ export const CATEGORY_LABELS: Record<string, string> = {
 };
 
 // ── Product type display names ────────────────────────────────────────────────
-// src/data/categoryConfig.ts
+// ⚠️ IMPORTANT: Keys MUST match scraped JSON "product_type" values exactly.
+// Scraped values seen: "Bar", "Plate", "Welding Wire"
 export const TYPE_LABELS: Record<string, string> = {
   Bar: "Bars & Rods",
-  Plates: "Plates & Sheets",
-  Fitting: "Fittings",
-  Pipe: "Pipes & Tubes",
+  Plate: "Plates & Sheets",
+  Sheet: "Sheets",
   "Welding Wire": "Welding Wire",
-  "Structural Profile": "Structural Profiles",
+  Pipe: "Pipes & Tubes",
+  Tube: "Tubes",
+  Fitting: "Fittings",
   Flange: "Flanges",
   Forging: "Forgings",
+  "Structural Profile": "Structural Profiles",
+  Fastener: "Fasteners",
+  Pin: "Pins",
 };
+
+// ── Product type fallback images ──────────────────────────────────────────────
+// ⚠️ Keys MUST match scraped JSON "product_type" values exactly.
+export const PRODUCT_TYPE_FALLBACK_IMAGES: Record<string, string> = {
+  Bar: "/images/bar.jpg",
+  Plate: "/images/sheet.jpg",
+  Sheet: "/images/sheet.jpg",
+  "Welding Wire": "/images/Welding-Electrodes.jpg",
+  Pipe: "/images/pipe.jpg",
+  Tube: "/images/pipe.jpg",
+  Fitting: "/images/fitting.jpg",
+  Flange: "/images/flange.jpg",
+  Fastener: "/images/fasteners.jpg",
+  Pin: "/images/Pins.jpg",
+  Forging: "/images/bar.jpg",
+  "Structural Profile": "/images/hollow.jpg",
+};
+
+// ── Category fallback images ──────────────────────────────────────────────────
+export const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+  "Pipes & Tubes": "/images/pipe.jpg",
+  "Plates & Sheets": "/images/sheet.jpg",
+  "Round Bars": "/images/bar.jpg",
+  "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
+  Flanges: "/images/flange.jpg",
+  Fasteners: "/images/fasteners.jpg",
+  Fittings: "/images/fitting.jpg",
+  "Welding Electrodes": "/images/Welding-Electrodes.jpg",
+  Galvanized: "/images/Galvanized.jpg",
+  Pins: "/images/Pins.jpg",
+};
+
+export const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 export function getCategoryDisplayLabel(raw: string): string {
@@ -104,4 +145,17 @@ export function getTypeDisplayLabel(raw: string): string {
 
 export function getGroupForCategory(cat: string): string {
   return CATEGORY_TO_GROUP[cat] ?? "Other";
+}
+
+/** Get fallback image for a product based on its product_type or category */
+export function getFallbackImage(
+  productType?: string,
+  category?: string,
+): string {
+  return (
+    PRODUCT_TYPE_FALLBACK_IMAGES[productType || ""] ||
+    CATEGORY_FALLBACK_IMAGES[productType || ""] ||
+    CATEGORY_FALLBACK_IMAGES[category || ""] ||
+    PRODUCT_HERO_FALLBACK
+  );
 }
