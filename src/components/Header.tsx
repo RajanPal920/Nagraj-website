@@ -15,46 +15,195 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Products", href: "/products" },
+  { label: "Specialized Products", href: "/products?specialized=true" },
   { label: "Why Us", href: "/why-us" },
   { label: "Certificates", href: "/certificates" },
   { label: "Technical Info", href: "/technical-info" },
   { label: "Contact", href: "/contact" },
 ];
 
-// ─── Group icons ──────────────────────────────────────────────────────────────
-const groupIcons: Record<string, React.ElementType> = {
-  "Steel Alloys": Cog,
-  "Non-Ferrous": Diamond,
-  Specialty: Star,
-  Other: Package,
-};
-
-// ─── Specialized Product Names ──────────────────────────────────────────────
+// ─── SPECIALIZED PRODUCTS (with subItems) ──────────────────────────────────
 const SPECIALIZED_PRODUCT_NAMES = [
-  "High Tensile Strength",
-  "Cold Rolled",
-  "Hot Rolled IS 2062 Plates",
-  "Abrasion Resistant Plates",
-  "16MO3-15MO3 & SA 204 Plates",
-  "Manganese Steel Plates",
-  "Quenched & Tempered Plates",
-  "Boiler Quality Steel Plates",
-  "Chrome Moly Plates",
-  "Chequered Plate",
-  "Tata Structura 355",
-  "Corten Steel Plates",
-  "DSQ Plates",
+  {
+    name: "High Tensile Strength",
+    subItems: ["EVONITH HARD (EVSL AS07)", "UTTAMHARD", "SAILHARD"],
+  },
+  {
+    name: "Cold Rolled",
+    subItems: ["CRCA Coils"],
+  },
+  {
+    name: "Hot Rolled IS 2062 Plates",
+    subItems: [
+      "IS 2062 PLates",
+      "IS 2062 E250BR",
+      "IS 2062 E350",
+      "IS 2062 E350BR Plates",
+      "IS 2062 E350C",
+      "S355J2+N Plates",
+      "IS 2062 E450BR",
+    ],
+  },
+  {
+    name: "Abrasion Resistant Plates",
+    subItems: [
+      "Abrex 450 Plates",
+      "Abrex 500 Plates",
+      "NM400 Plates",
+      "NM500 Plates",
+      "Rockstar 400 Plates",
+      "Rockstar 450 Plates",
+      "Rockstar 500 Plates",
+      "Industries We Serve",
+    ],
+  },
+  {
+    name: "16MO3-15MO3 & SA 204 Plates",
+    subItems: ["16Mo3 Plate"],
+  },
+  {
+    name: "Manganese Steel Plates",
+    subItems: ["X120MN12 /SIDUR 3401", "High Manganese Plate/Steels"],
+  },
+  {
+    name: "Quenched & Tempered Plates",
+    subItems: [
+      "S690QL Plate",
+      "EN10025-6 S690QL",
+      "Welten 780E Plates",
+    ],
+  },
+  {
+    name: "Boiler Quality Steel Plates",
+    subItems: ["IS2041 R260 Plate", "SA 516 Grade 70 Plate"],
+  },
+  {
+    name: "Chrome Moly Plates",
+    subItems: [
+      "A387 GRADE 5 CLASS 2",
+      "A387 GRADE 22 CLASS 2",
+      "A387/SA387 Chrome Moly Plates",
+    ],
+  },
+  {
+    name: "Chequered Plate",
+    subItems: ["IS 3502 Chequered Plates"],
+  },
+  {
+    name: "Tata Structura 355",
+  },
+  {
+    name: "Corten Steel Plates",
+  },
+  {
+    name: "DSQ Plates",
+  },
 ];
 
-// ─── Categories to normalize ──────────────────────────────────────────────
+// ─── PRODUCTS MENU DATA ─────────────────────────────────────────────────────
+const PRODUCTS_MENU_DATA = [
+  {
+    name: "Pipes & Tubes",
+    subItems: [
+      "Stainless Steel Pipes & Tubes",
+      "Carbon Steel",
+      "Alloy Steel Pipe",
+      "Nickel Alloy",
+      "Inconel",
+      "Monel",
+      "Hastelloy",
+      "Incoloy",
+      "Titanium",
+      "Cupro Nickel",
+      "Tantalum",
+      "Duplex and Super Duplex Pipes",
+      "Corten Steel",
+      "EFSW/SAW/HSAW/LSAW Pipes",
+      "Welded Wear Resistant",
+      "Pipe/AR400 Pipe",
+      "Plate Welded Pipes",
+      "Large OD Seamless Pipes",
+    ],
+  },
+  {
+    name: "Plates & Sheets",
+    subItems: [
+      "Stainless Steel Plates",
+      "Alloy Steel Plates",
+      "Aluminium Alloy",
+      "Carbon Steel",
+      "Copper Nickel",
+      "Duplex and Super Duplex",
+    ],
+  },
+  {
+    name: "Round Bars",
+    subItems: [
+      "Alloy Steel Round",
+      {
+        name: "Alloy Steel F Series",
+        subItems: ["F11 Round Bars", "F22 Round Bars", "F91 Round Bars"],
+      },
+      "Aluminium Alloy",
+      "Carbon Steel",
+      "Hot Work Steel",
+      "Copper Nickel",
+      "EN Series",
+      "Hastelloy",
+      "Stainless Steel Round Bars",
+      "Precipitation Hardening Steel",
+    ],
+  },
+  {
+    name: "Cold Work Tool Steels",
+    subItems: [
+      "AISI O1 Round Bars",
+      "HCHCR-D2 Round Bars",
+      "Toolox 33 Round Bars",
+      "Toolox 44 Round Bars",
+    ],
+  },
+  {
+    name: "Flanges",
+    subItems: [
+      "Stainless Steel",
+      "Carbon Steel",
+      "Alloy Steel",
+      "Nickel Alloy",
+      "Inconel",
+      "Incoloy",
+    ],
+  },
+  { name: "Fasteners", subItems: ["High Tensile"] },
+  { name: "Fittings", subItems: ["Buttweld Fittings", "Forged Fittings"] },
+  {
+    name: "Welding Electrodes",
+    subItems: [
+      "Stainless Steel Electrode",
+      "Copper Wires",
+      {
+        name: "Copper Wires",
+        subItems: ["ERcuNi Wire"],
+      },
+      "Cobalt base Electrode",
+      "Aluminium Wires",
+    ],
+  },
+  {
+    name: "Galvanized",
+    subItems: ["Hot Dip Galvanized Angles", "Hot Dip Galvanized Channels"],
+  },
+  { name: "Pins", subItems: ["PTO Pins", "Pipe Linch Pin"] },
+];
+
 const NORMALIZE_MAP: Record<string, string> = {
-  Plate: "Plate & Sheets", // Merged
-  Plates: "Plate & Sheets", // Merged
-  Sheet: "Plate & Sheets", // Merged
-  Sheets: "Plate & Sheets", // Merged
+  Plate: "Plate & Sheets",
+  Plates: "Plate & Sheets",
+  Sheet: "Plate & Sheets",
+  Sheets: "Plate & Sheets",
   Bar: "Bars",
-  Rod: "Bars", // Merged into Bars
-  Rods: "Bars", // Merged into Bars
+  Rod: "Bars",
+  Rods: "Bars",
   Pipe: "Pipes",
   Strip: "Strips",
   Flange: "Flanges",
@@ -65,37 +214,21 @@ const NORMALIZE_MAP: Record<string, string> = {
 
 const normalizeCategory = (category: string): string => {
   if (!category) return category;
-  // Merge Plate, Plates, Sheet, Sheets into Plate & Sheets
-  if (
-    category === "Plate" ||
-    category === "Plates" ||
-    category === "Sheet" ||
-    category === "Sheets"
-  ) {
+  if (["Plate", "Plates", "Sheet", "Sheets"].includes(category))
     return "Plate & Sheets";
-  }
-  // Merge Rod, Rods into Bars
-  if (category === "Rod" || category === "Rods") return "Bars";
+  if (["Rod", "Rods"].includes(category)) return "Bars";
   return NORMALIZE_MAP[category] || category;
 };
 
 const filterProductTypes = (types: string[]): string[] => {
-  return (
-    types
-      // Remove Plate, Sheets, Rod, Rods from the raw list (they will be merged)
-      .filter(
-        (type) =>
-          type !== "Plate" &&
-          type !== "Plates" &&
-          type !== "Sheet" &&
-          type !== "Sheets" &&
-          type !== "Rod" &&
-          type !== "Rods",
-      )
-      .map((type) => NORMALIZE_MAP[type] || type)
-      .filter((type, index, self) => self.indexOf(type) === index)
-      .sort()
-  );
+  return types
+    .filter(
+      (type) =>
+        !["Plate", "Plates", "Sheet", "Sheets", "Rod", "Rods"].includes(type),
+    )
+    .map((type) => NORMALIZE_MAP[type] || type)
+    .filter((type, index, self) => self.indexOf(type) === index)
+    .sort();
 };
 
 export function Header() {
@@ -115,6 +248,10 @@ export function Header() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
+  const [activeSpecialized, setActiveSpecialized] = useState<string | null>(
+    null,
+  );
   const [allProducts, setAllProducts] = useState<any[]>([]);
 
   const isSolid = location.pathname !== "/" || scrolled;
@@ -129,7 +266,6 @@ export function Header() {
     const loadCategories = () => {
       try {
         setLoading(true);
-
         const products = getProducts();
 
         const normalizedProducts = products.map((product) => ({
@@ -153,13 +289,8 @@ export function Header() {
 
         const categoryMap = new Map<
           string,
-          {
-            products: any[];
-            group: string;
-            count: number;
-          }
+          { products: any[]; group: string; count: number }
         >();
-
         const categoryGroupMap = new Map<string, string>();
         for (const [group, cats] of Object.entries(CATEGORY_GROUPS)) {
           for (const cat of cats) {
@@ -169,23 +300,19 @@ export function Header() {
 
         normalizedProducts.forEach((product) => {
           if (!product || !product.category) return;
-
           let categoryName = product.category.trim();
           if (categoryName === "Plate" || categoryName === "Sheet") {
             categoryName = "Plate & Sheets";
           }
-
           const group = categoryGroupMap.get(categoryName) || "Other";
-
           const existing = categoryMap.get(categoryName);
-
           if (existing) {
             existing.products.push(product);
             existing.count += 1;
           } else {
             categoryMap.set(categoryName, {
               products: [product],
-              group: group,
+              group,
               count: 1,
             });
           }
@@ -202,10 +329,7 @@ export function Header() {
         );
 
         setCategories(categoryList);
-
-        if (categoryList.length > 0) {
-          setActiveCategory(categoryList[0].name);
-        }
+        if (categoryList.length > 0) setActiveCategory(categoryList[0].name);
       } catch (error) {
         console.error("Error loading categories:", error);
       } finally {
@@ -216,145 +340,16 @@ export function Header() {
     loadCategories();
   }, []);
 
-  const getCategoriesByGroup = (group: string) => {
-    return categories.filter((cat) => cat.group === group);
-  };
-
-  const getSpecializedProducts = () => {
-    if (!allProducts.length) return [];
-
-    return allProducts.filter((product) => {
-      const productName = (product.name || product.title || "").toLowerCase();
-      return SPECIALIZED_PRODUCT_NAMES.some((specialName) => {
-        const searchTerm = specialName.toLowerCase();
-        return (
-          productName.includes(searchTerm) || searchTerm.includes(productName)
-        );
-      });
-    });
-  };
-
-  // Get unique product types - DO NOT include "Specialized Products" here
-  const getUniqueProductTypes = () => {
-    const products = getProducts();
-    const types = new Set<string>();
-    products.forEach((product) => {
-      if (product.product_type) {
-        let type = product.product_type;
-        if (
-          type === "Plate" ||
-          type === "Plates" ||
-          type === "Sheet" ||
-          type === "Sheets"
-        ) {
-          type = "Plate & Sheets";
-        }
-        type = normalizeCategory(type);
-        types.add(type);
-      }
-    });
-
-    types.delete("Plate");
-    types.delete("Plates");
-    types.delete("Sheet");
-    types.delete("Sheets");
-    types.delete("Rod");
-    types.delete("Rods");
-    return filterProductTypes(Array.from(types));
-  };
-
-  // Get products for a specific type
-  const getProductsByType = (type: string) => {
-    const products = getProducts();
-    return products.filter((product) => {
-      let productType = product.product_type;
-      if (
-        productType === "Plate" ||
-        productType === "Plates" ||
-        productType === "Sheet" ||
-        productType === "Sheets"
-      ) {
-        productType = "Plate & Sheets";
-      }
-      productType = normalizeCategory(productType);
-      return productType === type;
-    });
-  };
-
-  const productTypes = getUniqueProductTypes();
-  const [selectedType, setSelectedType] = useState<string | null>(
-    productTypes.length > 0 ? productTypes[0] : null,
-  );
-  const [selectedSpecialized, setSelectedSpecialized] = useState(false);
-
-  const isSpecializedProduct = (product: any) => {
-    const productName = (product.name || product.title || "").toLowerCase();
-    return SPECIALIZED_PRODUCT_NAMES.some((specialName) => {
-      const searchTerm = specialName.toLowerCase();
-      return (
-        productName.includes(searchTerm) || searchTerm.includes(productName)
-      );
-    });
-  };
-
-  const getSpecializedCategories = () => {
-    const specialized = getSpecializedProducts();
-    const cats = new Set<string>();
-    specialized.forEach((p) => {
-      if (p.category) {
-        let cat = p.category;
-        if (cat === "Plate" || cat === "Sheet") {
-          cat = "Plate & Sheets";
-        }
-        cats.add(cat);
-      }
-    });
-    return Array.from(cats).sort();
-  };
-
-  const getSpecializedProductsByCategory = (category: string) => {
-    const specialized = getSpecializedProducts();
-    return specialized.filter((p) => {
-      let cat = p.category;
-      if (cat === "Plate" || cat === "Sheet") {
-        cat = "Plate & Sheets";
-      }
-      return cat === category;
-    });
-  };
-
-  // ─── Handle clicks ────────────────────────────────────────────────────────
   const handleProductTypeClick = (type: string | null) => {
-    setSelectedType(type);
-    setSelectedSpecialized(false);
-    if (type) {
-      navigate(`/products?type=${encodeURIComponent(type)}`);
-    } else {
-      navigate("/products");
-    }
+    if (type) navigate(`/products?type=${encodeURIComponent(type)}`);
+    else navigate("/products");
   };
 
-  const handleSpecializedClick = () => {
-    setSelectedSpecialized(true);
-    setSelectedType(null);
-    navigate("/products?specialized=true");
-  };
-
-  // Get products to show in the right column
-  const getProductsToShow = () => {
-    if (selectedSpecialized) {
-      return getSpecializedProducts();
-    }
-    if (selectedType === null) {
-      return getProducts();
-    }
-    return getProductsByType(selectedType);
-  };
-
-  const getTitle = () => {
-    if (selectedSpecialized) return "Specialized Products";
-    if (selectedType === null) return "All Products";
-    return selectedType;
+  // ─── UPDATED: Specialized → /products?specialized=true&category=... ───
+  const handleSpecializedClick = (category: string) => {
+    navigate(
+      `/products?specialized=true&category=${encodeURIComponent(category)}`,
+    );
   };
 
   return (
@@ -366,275 +361,266 @@ export function Header() {
     >
       <div className="container h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center flex-shrink-0 w-[35%] lg:w-[32%]"
-          aria-label="Nagraj Metal Industries Home"
-        >
-          <div className="rounded-lg w-full">
-            <img
-              src="/images/logo.png"
-              alt="Nagraj Metal Industries Logo"
-              className="w-full h-auto max-h-14 sm:max-h-16 md:max-h-18 lg:max-h-20 xl:max-h-24 object-contain"
-            />
-          </div>
+        <Link to="/" className="flex items-center flex-shrink-0 w-[20%]">
+          <img
+            src="/images/logo.png"
+            alt="Nagraj Metal Industries Logo"
+            className="w-full h-auto max-h-14 sm:max-h-16 md:max-h-18 lg:max-h-20 xl:max-h-24 object-contain"
+          />
         </Link>
 
         {/* Desktop Nav */}
-        <nav
-          className="hidden lg:flex items-center justify-around gap-6 xl:gap-8 w-[40%] font-extrabold"
-          aria-label="Main navigation"
-        >
-          {navLinks.map((link) =>
-            link.label === "Products" ? (
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-6 xl:gap-8 font-extrabold">
+          {navLinks.map((link) => {
+            const isProductsLink = link.label === "Products";
+            const isSpecializedLink = link.label === "Specialized Products";
+
+            return (
               <div key={link.href} className="group relative whitespace-nowrap">
-                <button
-                  className={`nav-link text-black hover:text-brand-red flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base cursor-default ${
+                <Link
+                  to={link.href}
+                  onClick={(e) => {
+                    if (location.pathname === link.href) {
+                      e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  className={`nav-link flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base ${
                     location.pathname === link.href
-                      ? "text-brand-red after:w-full"
-                      : "text-black/90 hover:text-brand-red"
+                      ? "text-[#8B1A1A]"
+                      : "text-black/90 hover:text-[#8B1A1A]"
                   }`}
-                  onClick={(e) => e.preventDefault()}
                 >
                   {link.label}
-                  <ChevronDown
-                    size={14}
-                    className="group-hover:rotate-180 transition-transform duration-200"
-                  />
-                </button>
+                  {(isProductsLink || isSpecializedLink) && (
+                    <ChevronDown
+                      size={14}
+                      className="group-hover:rotate-180 transition-transform duration-200"
+                    />
+                  )}
+                </Link>
 
-                {/* PROFESSIONAL MEGA MENU */}
-                <div
-                  className="
-                    absolute top-full
-                    left-1/2 -translate-x-1/2
-                    w-[900px]
-                    mt-1
-                    opacity-0 invisible
-                    group-hover:opacity-100
-                    group-hover:visible
-                    transition-all duration-300
-                    pointer-events-none
-                    group-hover:pointer-events-auto
-                    z-50
-                  "
-                >
-                  <div className="bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-100">
-                    <div className="flex max-h-[480px]">
-                      {/* LEFT COLUMN - Product Types */}
-                      <div className="w-[35%] bg-gray-50 border-r border-gray-200 py-2 max-h-[480px] overflow-y-auto">
-                        <div className="px-5 py-3 border-b border-gray-200">
-                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                            Products
-                          </span>
-                        </div>
-                        {loading ? (
-                          <div className="px-5 py-4 text-sm text-gray-400">
-                            Loading...
-                          </div>
-                        ) : productTypes.length === 0 ? (
-                          <div className="px-5 py-4 text-sm text-gray-400">
-                            No products found
-                          </div>
-                        ) : (
-                          <>
-                            <button
-                              onMouseEnter={() => {
-                                setSelectedType(null);
-                                setSelectedSpecialized(false);
-                              }}
-                              onClick={() => handleProductTypeClick(null)}
-                              className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 ${
-                                selectedType === null && !selectedSpecialized
-                                  ? "bg-[#c41e24] text-white"
-                                  : "text-gray-700 hover:bg-gray-200/50"
+                {/* ─── PRODUCTS DROPDOWN (WHITE BG + RED HIGHLIGHT) ─── */}
+                {isProductsLink && (
+                  <div
+                    className="
+                      absolute top-full left-1/2 -translate-x-1/2
+                      w-[260px] mt-1
+                      opacity-0 invisible
+                      group-hover:opacity-100 group-hover:visible
+                      transition-all duration-200
+                      pointer-events-none group-hover:pointer-events-auto
+                      z-50
+                    "
+                  >
+                    <div className="bg-white shadow-2xl rounded-md overflow-visible relative border border-gray-200">
+                      <div className="py-1">
+                        {PRODUCTS_MENU_DATA.map((item) => (
+                          <div
+                            key={item.name}
+                            className="relative"
+                            onMouseEnter={() => {
+                              setActiveCategory(item.name);
+                              setActiveSubItem(null);
+                            }}
+                          >
+                            <Link
+                              to={`/products?type=${encodeURIComponent(item.name)}`}
+                              className={`flex items-center justify-between px-4 py-3 text-sm transition-colors ${
+                                activeCategory === item.name
+                                  ? "bg-[#8B1A1A] text-white"
+                                  : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
                               }`}
                             >
-                              <span className="text-sm font-medium">
-                                All Products
-                              </span>
-                              {selectedType === null &&
-                                !selectedSpecialized && (
-                                  <ChevronRight
-                                    size={14}
-                                    className="text-white"
-                                  />
-                                )}
-                            </button>
-                            {productTypes.map((type) => (
-                              <button
-                                key={type}
-                                onMouseEnter={() => {
-                                  setSelectedType(type);
-                                  setSelectedSpecialized(false);
-                                }}
-                                onClick={() => handleProductTypeClick(type)}
-                                className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 ${
-                                  selectedType === type
-                                    ? "bg-[#c41e24] text-white"
-                                    : "text-gray-700 hover:bg-gray-200/50"
-                                }`}
+                              <span className="font-medium">{item.name}</span>
+                              <ChevronRight
+                                size={14}
+                                className={
+                                  activeCategory === item.name
+                                    ? "text-white"
+                                    : "text-gray-400"
+                                }
+                              />
+                            </Link>
+
+                            {/* RIGHT SIDE PANEL - WHITE BG */}
+                            {activeCategory === item.name && (
+                              <div
+                                className="
+                                  absolute left-full top-0
+                                  w-[420px] ml-0
+                                  bg-white shadow-2xl border border-l-0 border-gray-200
+                                  z-50
+                                "
                               >
-                                <span className="text-sm font-medium">
-                                  {type}
-                                </span>
-                                {selectedType === type && (
-                                  <ChevronRight
-                                    size={14}
-                                    className="text-white"
-                                  />
-                                )}
-                              </button>
-                            ))}
-                            {/* Specialized Products - Separate button */}
-                            <button
-                              onMouseEnter={() => {
-                                setSelectedSpecialized(true);
-                                setSelectedType(null);
-                              }}
-                              onClick={handleSpecializedClick}
-                              className={`w-full text-left px-5 py-2.5 flex items-center justify-between transition-all duration-200 mt-2 border-t border-gray-200 pt-2 ${
-                                selectedSpecialized
-                                  ? "bg-[#c41e24] text-white"
-                                  : "text-gray-700 hover:bg-gray-200/50"
-                              }`}
-                            >
-                              <span className="text-sm font-medium flex items-center gap-2">
-                                <Star
-                                  size={14}
-                                  className={
-                                    selectedSpecialized
-                                      ? "text-white"
-                                      : "text-[#c41e24]"
-                                  }
-                                />
-                                Specialized Products
-                              </span>
-                              {selectedSpecialized && (
-                                <ChevronRight
-                                  size={14}
-                                  className="text-white"
-                                />
-                              )}
-                            </button>
-                          </>
-                        )}
-                      </div>
+                                <div className="py-1">
+                                  {item.subItems.map((subItem) => {
+                                    if (
+                                      typeof subItem === "object" &&
+                                      subItem !== null &&
+                                      "subItems" in subItem
+                                    ) {
+                                      return (
+                                        <div
+                                          key={subItem.name}
+                                          className="relative"
+                                          onMouseEnter={() =>
+                                            setActiveSubItem(subItem.name)
+                                          }
+                                        >
+                                          {/* ─── FIX: Parent category + subitem dono URL me ─── */}
+                                          <Link
+                                            to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem.name)}`}
+                                            className={`flex items-center justify-between px-5 py-3 text-sm transition-colors ${
+                                              activeSubItem === subItem.name
+                                                ? "bg-[#8B1A1A] text-white"
+                                                : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
+                                            }`}
+                                          >
+                                            <span>{subItem.name}</span>
+                                            <ChevronRight
+                                              size={14}
+                                              className={
+                                                activeSubItem === subItem.name
+                                                  ? "text-white"
+                                                  : "text-gray-400"
+                                              }
+                                            />
+                                          </Link>
 
-                      {/* RIGHT COLUMN - Products preview */}
-                      <div className="w-[65%] bg-white py-2 max-h-[480px] overflow-y-auto">
-                        {(() => {
-                          const productsToShow = getProductsToShow();
-                          const title = getTitle();
-                          const isSpecializedView = selectedSpecialized;
-
-                          if (productsToShow.length === 0) {
-                            return (
-                              <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                                <div className="text-center">
-                                  <Package
-                                    size={32}
-                                    className="mx-auto mb-2 text-gray-300"
-                                    strokeWidth={1}
-                                  />
-                                  No products found
+                                          {/* SMALL CARD FOR ALLOY STEEL F SERIES - JUST SIDE MEIN */}
+                                          {activeSubItem === subItem.name && (
+                                            <div
+                                              className="
+                                                absolute left-full top-0
+                                                w-[220px] ml-0
+                                                bg-white shadow-2xl border border-l-0 border-gray-200
+                                                z-50
+                                              "
+                                            >
+                                              <div className="py-1">
+                                                {subItem.subItems.map(
+                                                  (nestedItem) => (
+                                                    /* ─── FIX: Parent category + nested subitem dono URL me ─── */
+                                                    <Link
+                                                      key={nestedItem}
+                                                      to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(nestedItem)}`}
+                                                      className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors"
+                                                    >
+                                                      {nestedItem}
+                                                    </Link>
+                                                  ),
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    }
+                                    /* ─── FIX: Simple subItem pe bhi parent + subitem dono URL me ─── */
+                                    return (
+                                      <Link
+                                        key={subItem}
+                                        to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem)}`}
+                                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors border-b border-gray-100 last:border-b-0"
+                                      >
+                                        {subItem}
+                                      </Link>
+                                    );
+                                  })}
                                 </div>
                               </div>
-                            );
-                          }
-
-                          return (
-                            <div className="p-3">
-                              <div className="flex items-center justify-between px-3 py-2.5 mb-2 border-b border-gray-100">
-                                <span className="text-sm font-semibold text-gray-800">
-                                  {title}
-                                </span>
-                                <span className="text-[10px] font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
-                                  {productsToShow.length} products
-                                </span>
-                              </div>
-                              <div className="space-y-1">
-                                {productsToShow.slice(0, 10).map((product) => {
-                                  const isSpecial =
-                                    isSpecializedProduct(product);
-                                  return (
-                                    <Link
-                                      key={product.slug || product.id}
-                                      to={`/product/${product.slug}`}
-                                      className="
-                                        block
-                                        px-3 py-2
-                                        text-sm
-                                        text-gray-700
-                                        hover:text-[#c41e24]
-                                        hover:bg-[#c41e24]/5
-                                        transition-all
-                                        duration-200
-                                        rounded-lg
-                                        border-l-2 border-transparent
-                                        hover:border-[#c41e24]
-                                      "
-                                    >
-                                      <div className="flex items-center justify-between">
-                                        <span>
-                                          {product.name || product.title}
-                                        </span>
-                                        <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                                          {product.category}
-                                        </span>
-                                      </div>
-                                      {isSpecializedView && isSpecial && (
-                                        <span className="text-[10px] text-[#c41e24] bg-[#c41e24]/10 px-1.5 py-0.5 rounded-full mt-1 inline-block">
-                                          Special
-                                        </span>
-                                      )}
-                                    </Link>
-                                  );
-                                })}
-                                {productsToShow.length > 10 && (
-                                  <div className="text-center text-xs text-gray-400 py-2">
-                                    + {productsToShow.length - 10} more
-                                    products. Click to view all.
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })()}
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {/* ─── SPECIALIZED PRODUCTS DROPDOWN (WHITE BG + RED HIGHLIGHT) ─── */}
+                {isSpecializedLink && (
+                  <div
+                    className="
+                      absolute top-full left-1/2 -translate-x-1/2
+                      w-[260px] mt-1
+                      opacity-0 invisible
+                      group-hover:opacity-100 group-hover:visible
+                      transition-all duration-200
+                      pointer-events-none group-hover:pointer-events-auto
+                      z-50
+                    "
+                  >
+                    <div className="bg-white shadow-2xl rounded-md overflow-visible relative border border-gray-200">
+                      <div className="py-1">
+                        {SPECIALIZED_PRODUCT_NAMES.map((item) => (
+                          <div
+                            key={item.name}
+                            className="relative"
+                            onMouseEnter={() => setActiveSpecialized(item.name)}
+                          >
+                            <Link
+                              to={`/products?specialized=true&category=${encodeURIComponent(item.name)}`}
+                              className={`flex items-center justify-between px-4 py-3 text-sm transition-colors ${
+                                activeSpecialized === item.name
+                                  ? "bg-[#8B1A1A] text-white"
+                                  : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
+                              }`}
+                            >
+                              <span className="font-medium">{item.name}</span>
+                              {item.subItems && item.subItems.length > 0 && (
+                                <ChevronRight
+                                  size={14}
+                                  className={
+                                    activeSpecialized === item.name
+                                      ? "text-white"
+                                      : "text-gray-400"
+                                  }
+                                />
+                              )}
+                            </Link>
+
+                            {/* RIGHT SIDE PANEL - SIRF TAB JAB subItems HO */}
+                            {activeSpecialized === item.name &&
+                              item.subItems &&
+                              item.subItems.length > 0 && (
+                                <div
+                                  className="
+                                    absolute left-full top-0
+                                    w-[420px] ml-0
+                                    bg-white shadow-2xl border border-l-0 border-gray-200
+                                    z-50
+                                  "
+                                >
+                                  <div className="py-1">
+                                    {item.subItems.map((subItem) => (
+                                      <Link
+                                        key={subItem}
+                                        to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
+                                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors border-b border-gray-100 last:border-b-0"
+                                      >
+                                        {subItem}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : (
-              <Link
-                key={link.href}
-                to={link.href}
-                onClick={(e) => {
-                  if (location.pathname === link.href) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }
-                }}
-                className={`nav-link text-black hover:text-brand-red transition-colors duration-200 font-bold text-sm lg:text-base whitespace-nowrap ${
-                  location.pathname === link.href
-                    ? "text-brand-red after:w-full"
-                    : "text-black/90 hover:text-brand-red"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
 
         {/* Phone CTA */}
-        <div className="hidden lg:flex items-center justify-end w-[25%]">
+        <div className="hidden lg:flex items-center justify-end w-[20%]">
           <a
             href="tel:+917073875529"
-            id="header-phone-cta"
-            className="flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-5 py-2.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
-            aria-label="Call Nagraj Metal Industries"
+            className="flex items-center gap-2 bg-[#1a1a1a] hover:bg-black text-white font-display font-bold text-sm px-5 py-2.5 rounded-lg transition-all duration-200 shadow-lg"
           >
             <Phone size={14} strokeWidth={2.5} />
             7073875529
@@ -643,11 +629,8 @@ export function Header() {
 
         {/* Mobile hamburger */}
         <button
-          id="mobile-menu-toggle"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="lg:hidden text-black hover:text-black/70 p-2 rounded-lg hover:bg-black/10 transition-colors"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -664,69 +647,19 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              onClick={(e) => {
-                if (location.pathname === link.href) {
-                  e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }
-                setMobileOpen(false);
-              }}
+              onClick={() => setMobileOpen(false)}
               className={`font-body font-bold text-base py-3 px-6 rounded-lg transition-all duration-200 ${
                 location.pathname === link.href
-                  ? "bg-brand-red/10 text-brand-red border-l-4 border-brand-red"
-                  : "text-black/90 hover:text-brand-red hover:bg-brand-red/5 border-l-4 border-transparent hover:border-brand-red/30"
+                  ? "bg-[#8B1A1A]/10 text-[#8B1A1A] border-l-4 border-[#8B1A1A]"
+                  : "text-black/90 hover:text-[#8B1A1A]"
               }`}
             >
               {link.label}
             </Link>
           ))}
-
-          {/* Mobile Product Types */}
-          <div className="mt-2 pt-2 border-t border-gray-100">
-            <p className="text-xs font-body text-gray-400 uppercase tracking-wider px-6 py-2">
-              Product Types
-            </p>
-            <button
-              onClick={() => {
-                handleProductTypeClick(null);
-                setMobileOpen(false);
-              }}
-              className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <span className="font-body text-sm text-gray-700">
-                All Products
-              </span>
-            </button>
-            {productTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => {
-                  handleProductTypeClick(type);
-                  setMobileOpen(false);
-                }}
-                className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <span className="font-body text-sm text-gray-700">{type}</span>
-              </button>
-            ))}
-            {/* Specialized Products in mobile */}
-            <button
-              onClick={() => {
-                handleSpecializedClick();
-                setMobileOpen(false);
-              }}
-              className="block w-full text-left py-2.5 px-6 rounded-lg hover:bg-gray-50 transition-colors mt-2 border-t border-gray-200 pt-2"
-            >
-              <span className="font-body text-sm text-gray-700 flex items-center gap-2">
-                <Star size={14} className="text-[#c41e24]" />
-                Specialized Products
-              </span>
-            </button>
-          </div>
-
           <a
             href="tel:+917073875529"
-            className="mt-2 flex items-center gap-2 bg-black hover:bg-black/80 text-white font-display font-bold text-sm px-4 py-3 rounded-sm shadow-lg hover:shadow-xl transition-all"
+            className="mt-2 flex items-center gap-2 bg-[#1a1a1a] text-white font-bold text-sm px-4 py-3 rounded-sm"
           >
             <Phone size={14} strokeWidth={2.5} />
             Call: 7073875529

@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { ProductsPage } from "./pages/ProductsPage";
-import { ProductPage } from "./pages/ProductPage";
+import { ProductPage } from "./pages/ProductPage"; // named import
 import { WhyUsPage } from "./pages/WhyUsPage";
 import { ContactPage } from "./pages/ContactPage";
 import { CertificatesPage } from "./pages/CertificatesPage";
@@ -21,6 +21,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/products" element={<ProductsPage />} />
+        {/* Added the new specialized products route */}
+        <Route path="/specialized-products" element={<ProductsPage />} />
         <Route path="/product/:slug" element={<ProductPage />} />
         <Route path="/why-us" element={<WhyUsPage />} />
         <Route path="/certificates" element={<CertificatesPage />} />

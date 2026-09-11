@@ -1,829 +1,1248 @@
 // src/pages/ProductsPage.tsx
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import {
-  Grid3X3,
-  List,
-  Package,
-  Truck,
-  ArrowRight,
-  X,
-  TrendingUp,
-  Shield,
-  Eye,
-  Award,
-  Factory,
-  CheckCircle,
-  Clock,
-  ChevronDown,
-  Layers,
-  Filter,
-} from "lucide-react";
-import {
-  getProducts,
-  getAllCategories,
-  getAllProductTypes,
-  type ScrapedProduct,
-} from "../data/products";
-import {
-  getCategoryDisplayLabel,
-  getTypeDisplayLabel,
-  TYPE_LABELS,
-} from "../data/categoryConfig";
-import { getProductImage } from "../data/productImages";
-import ProductHero from "../../public/images/productHero.png";
+import { getProducts } from "../data/products";
+import type { ScrapedProduct } from "../data/products";
 
-// ─── Normalization Helpers (Matches Header) ──────────────────────────────
+// ─── NORMALIZE MAP ─────────────────────────────────────────────────────────
 const NORMALIZE_MAP: Record<string, string> = {
-  Plate: "Plate & Sheets",
-  Plates: "Plate & Sheets",
-  Sheet: "Plate & Sheets",
-  Sheets: "Plate & Sheets",
-  Bar: "Bars",
-  Rod: "Bars",
-  Rods: "Bars",
+  Plate: "Plates & Sheets",
+  Plates: "Plates & Sheets",
+  Sheet: "Plates & Sheets",
+  Sheets: "Plates & Sheets",
+  Bar: "Round Bars",
+  Bars: "Round Bars",
+  Rod: "Round Bars",
+  Rods: "Round Bars",
+  Pipe: "Pipes & Tubes",
+  Pipes: "Pipes & Tubes",
+  Tube: "Pipes & Tubes",
+  Tubes: "Pipes & Tubes",
   Strip: "Strips",
-  Pipe: "Pipes",
   Flange: "Flanges",
   Fitting: "Fittings",
   Forging: "Forgings",
   Fastener: "Fasteners",
+  Pin: "Pins",
+  "Welding Wire": "Welding Electrodes",
+  "Welding Wire ": "Welding Electrodes",
+  "Welding Electrode": "Welding Electrodes",
+  "Welding Electrodes": "Welding Electrodes",
+  "Hollow Section": "Hollow Sections",
+  "Structural Profile": "Structural Profiles",
+  Coil: "Coils",
+  "Cold Work Tool Steel": "Cold Work Tool Steels",
+  "Cold Work Tool Steels": "Cold Work Tool Steels",
+  "Tool Steel": "Cold Work Tool Steels",
+  "Galvanized Steel": "Galvanized",
+  Galvanised: "Galvanized",
+  Galvanized: "Galvanized",
 };
 
 const normalizeCategory = (category: string): string => {
   if (!category) return category;
-  if (
-    category === "Plate" ||
-    category === "Plates" ||
-    category === "Sheet" ||
-    category === "Sheets"
-  ) {
-    return "Plate & Sheets";
+  const trimmed = category.trim();
+
+  if (NORMALIZE_MAP[trimmed]) return NORMALIZE_MAP[trimmed];
+
+  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
+    if (trimmed.toLowerCase() === key.toLowerCase()) return value;
   }
-  if (category === "Rod" || category === "Rods") return "Bars";
-  return NORMALIZE_MAP[category] || category;
+
+  for (const [key, value] of Object.entries(NORMALIZE_MAP)) {
+    if (trimmed.toLowerCase().includes(key.toLowerCase())) return value;
+  }
+
+  return trimmed;
 };
 
-/* ─── Helper: Get Product Image ───────────────────────────────────────────── */
-function getProductImageUrl(product: ScrapedProduct): {
-  url: string;
-  alt: string;
-} {
-  if (product.images && product.images.length > 0) {
-    return {
-      url: product.images[0].url,
-      alt: product.images[0].alt || product.title,
-    };
-  }
-  return {
-    url: getProductImage(product.product_type, product.category, product.title),
-    alt: product.title,
+// ─── CATEGORY FALLBACK IMAGES ─────────────────────────────────────────────
+const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+  "Pipes & Tubes": "/images/pipe.jpg",
+  "Plates & Sheets": "/images/sheet.jpg",
+  "Round Bars": "/images/bar.jpg",
+  "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
+  Flanges: "/images/flange.jpg",
+  Fasteners: "/images/fasteners.jpg",
+  Fittings: "/images/fitting.jpg",
+  "Welding Electrodes": "/images/Welding-Electrodes.jpg",
+  Galvanized: "/images/Galvanized.jpg",
+  Pins: "/images/Pins.jpg",
+};
+
+const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
+
+// ─── Main Category Cards ───────────────────────────────────────────────────
+const CATEGORY_CARDS = [
+  {
+    name: "Pipes & Tubes",
+    slug: "Pipes & Tubes",
+    image: "/images/pipe.jpg",
+    description: "Seamless, welded & ERW pipes in SS, CS, Alloy",
+  },
+  {
+    name: "Plates & Sheets",
+    slug: "Plates & Sheets",
+    image: "/images/sheet.jpg",
+    description: "HR, CR, Boiler Quality & Abrasion Resistant",
+  },
+  {
+    name: "Round Bars",
+    slug: "Round Bars",
+    image: "/images/bar.jpg",
+    description: "Bright, Black & Alloy Steel Round Bars",
+  },
+  {
+    name: "Cold Work Tool Steels",
+    slug: "Cold Work Tool Steels",
+    image: "/images/Cold-Work-Tool-Steels.jpg",
+    description: "D2, D3, HCHCr & OHNS grades",
+  },
+  {
+    name: "Flanges",
+    slug: "Flanges",
+    image: "/images/flange.jpg",
+    description: "Weld Neck, Slip-On, Blind & Socket Weld",
+  },
+  {
+    name: "Fasteners",
+    slug: "Fasteners",
+    image: "/images/fasteners.jpg",
+    description: "High Tensile Bolts, Nuts, Washers & Studs",
+  },
+  {
+    name: "Fittings",
+    slug: "Fittings",
+    image: "/images/fitting.jpg",
+    description: "Buttweld & Forged Pipe Fittings",
+  },
+  {
+    name: "Welding Electrodes",
+    slug: "Welding Electrodes",
+    image: "/images/Welding-Electrodes.jpg",
+    description: "SS, Copper & Aluminium Welding Wires",
+  },
+  {
+    name: "Galvanized",
+    slug: "Galvanized",
+    image: "/images/Galvanized.jpg",
+    description: "Hot Dip Galvanized Angles & Channels",
+  },
+  {
+    name: "Pins",
+    slug: "Pins",
+    image: "/images/Pins.jpg",
+    description: "PTO Pins & Pipe Linch Pins",
+  },
+];
+
+// ─── SPECIALIZED MENU DATA ────────────────────────────────────────────────
+const SPECIALIZED_MENU_DATA: Record<
+  string,
+  { name: string; subItems?: string[]; image: string }
+> = {
+  "High Tensile Strength": {
+    name: "High Tensile Strength",
+    subItems: ["EVONITH HARD (EVSLAS07)", "UTTAMHARD", "SAILHARD"],
+    image: "/images/sheet.jpg",
+  },
+  "Cold Rolled": {
+    name: "Cold Rolled",
+    subItems: ["CRCA Coils"],
+    image: "/images/sheet.jpg",
+  },
+  "Hot Rolled IS 2062 Plates": {
+    name: "Hot Rolled IS 2062 Plates",
+    subItems: [
+      "IS 2062 PLates",
+      "IS 2062 E250BR",
+      "IS 2062 E350",
+      "IS 2062 E350BR Plates",
+      "IS 2062 E350C",
+      "S355J2+N Plates",
+      "IS 2062 E450BR",
+    ],
+    image: "/images/sheet.jpg",
+  },
+  "Abrasion Resistant Plates": {
+    name: "Abrasion Resistant Plates",
+    subItems: [
+      "Abrex 450 Plates",
+      "Abrex 500 Plates",
+      "NM400 Plates",
+      "NM500 Plates",
+      "Rockstar 400 Plates",
+      "Rockstar 450 Plates",
+      "Rockstar 500 Plates",
+      "Industries We Serve",
+    ],
+    image: "/images/sheet.jpg",
+  },
+  "16MO3-15MO3 & SA 204 Plates": {
+    name: "16MO3-15MO3 & SA 204 Plates",
+    subItems: ["16Mo3 Plate"],
+    image: "/images/sheet.jpg",
+  },
+  "Manganese Steel Plates": {
+    name: "Manganese Steel Plates",
+    subItems: ["X120MN12 /SIDUR 3401", "High Manganese Plate/Steels"],
+    image: "/images/sheet.jpg",
+  },
+  "Quenched & Tempered Plates": {
+    name: "Quenched & Tempered Plates",
+    subItems: [
+      "S690QL Plate",
+      "EN10023-6 S690QL",
+      "Welten 780E Plates /Sheets",
+    ],
+    image: "/images/sheet.jpg",
+  },
+  "Boiler Quality Steel Plates": {
+    name: "Boiler Quality Steel Plates",
+    subItems: ["IS2041 R260 Plate", "SA 516 Grade 70 Plate"],
+    image: "/images/sheet.jpg",
+  },
+  "Chrome Moly Plates": {
+    name: "Chrome Moly Plates",
+    subItems: [
+      "A387 GRADE 5 CLASS 2",
+      "A387 GRADE 22 CLASS 2",
+      "A387/SA387 Chrome Moly Plates",
+    ],
+    image: "/images/sheet.jpg",
+  },
+  "Chequered Plate": {
+    name: "Chequered Plate",
+    subItems: ["IS 3502 Chequered Plates"],
+    image: "/images/sheet.jpg",
+  },
+  "Tata Structura 355": {
+    name: "Tata Structura 355",
+    image: "/images/hollow.jpg",
+  },
+  "Corten Steel Plates": {
+    name: "Corten Steel Plates",
+    image: "/images/sheet.jpg",
+  },
+  "DSQ Plates": {
+    name: "DSQ Plates",
+    image: "/images/sheet.jpg",
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STRICT MATCH — Title + Type + Category + Material sab check karega
+// ═══════════════════════════════════════════════════════════════════════════
+function strictMatch(product: ScrapedProduct, query: string): boolean {
+  const q = query.toLowerCase().trim();
+
+  const pType = (product.product_type || "").toLowerCase().trim();
+  const pCat = (product.category || "").toLowerCase().trim();
+  const pTitle = (product.title || "").toLowerCase().trim();
+
+  // ─── ✅ MATERIAL / SUB-CATEGORY FILTERS ────────────────────────────
+  // Ye product_type nahi hain, ye material/category level filters hain
+  const MATERIAL_FILTERS: Record<string, string[]> = {
+    "carbon steel": ["carbon steel", "carbon", "cs ", "cs-"],
+    "stainless steel": [
+      "stainless",
+      "ss ",
+      "ss-",
+      "304",
+      "316",
+      "321",
+      "347",
+      "410",
+      "416",
+      "420",
+      "904l",
+    ],
+    "alloy steel": [
+      "alloy steel",
+      "alloy",
+      "chrome moly",
+      "crmo",
+      "4140",
+      "4340",
+      "8620",
+      "en19",
+      "en24",
+    ],
+    aluminium: ["aluminium", "aluminum", "al "],
+    "aluminium alloy": [
+      "aluminium",
+      "aluminum",
+      "7075",
+      "6061",
+      "5083",
+      "5052",
+      "2024",
+      "2014",
+    ],
+    "nickel alloy": [
+      "nickel alloy",
+      "nickel",
+      "inconel",
+      "monel",
+      "hastelloy",
+      "incoloy",
+    ],
+    inconel: ["inconel"],
+    monel: ["monel"],
+    hastelloy: ["hastelloy"],
+    incoloy: ["incoloy"],
+    "copper alloy": ["copper alloy", "copper", "brass", "bronze"],
+    "copper nickel": ["copper nickel", "cupro nickel", "cu-ni", "cu ni"],
+    "cupro nickel": ["cupro nickel", "copper nickel", "cu-ni"],
+    duplex: [
+      "duplex",
+      "s31803",
+      "s32205",
+      "s32750",
+      "s32760",
+      "s32550",
+      "2205",
+      "2507",
+    ],
+    "duplex and super duplex": ["duplex", "super duplex"],
+    "duplex and super duplex pipes": ["duplex", "super duplex"],
+    titanium: ["titanium", "ti grade", "grade 2", "grade 5"],
+    "tool steel": [
+      "tool steel",
+      "d2",
+      "d3",
+      "hchcr",
+      "ohns",
+      "ohms",
+      "o1",
+      "p20",
+    ],
+    "hot work steel": ["hot work", "h11", "h13", "h21"],
+    "high tensile": ["high tensile", "ht bolt"],
+    tantalum: ["tantalum"],
+    "corten steel": ["corten", "weathering"],
+    "en series": [
+      "en8",
+      "en9",
+      "en19",
+      "en24",
+      "en25",
+      "en26",
+      "en30",
+      "en31",
+      "en36",
+      "en39",
+      "en40",
+      "en41",
+      "en47",
+      "en57",
+      "en58",
+    ],
+    "precipitation hardening steel": [
+      "17-4",
+      "15-5",
+      "13-8",
+      "custom 455",
+      "ph ",
+    ],
+    "f series": ["f11", "f22", "f91", "f5", "f9"],
+    "alloy steel round": ["alloy steel"],
+    "alloy steel plates": ["alloy steel"],
+    "alloy steel pipe": ["alloy steel"],
+    "alloy steel f series": ["f11", "f22", "f91", "f5", "f9"],
+    "stainless steel plates": [
+      "stainless",
+      "ss ",
+      "304",
+      "316",
+      "321",
+      "347",
+      "904",
+    ],
+    "stainless steel pipes & tubes": [
+      "stainless",
+      "ss ",
+      "304",
+      "316",
+      "321",
+      "347",
+      "904",
+    ],
+    "stainless steel round bars": [
+      "stainless",
+      "ss ",
+      "303",
+      "304",
+      "316",
+      "321",
+      "347",
+      "410",
+      "416",
+      "420",
+      "431",
+      "440c",
+    ],
+    "stainless steel": ["stainless", "ss ", "ss-", "304", "316", "321", "347"],
+    "stainless steel electrode": [
+      "er308",
+      "er316",
+      "er347",
+      "er321",
+      "er410",
+      "ss welding",
+    ],
+    carbon: ["carbon steel", "carbon"],
+    "buttweld fittings": ["buttweld"],
+    "forged fittings": ["forged fitting"],
+    "copper wires": ["copper wire", "ercuni", "ercu"],
+    "cobalt base electrode": ["cobalt", "ecocr", "stellite"],
+    "aluminium wires": ["aluminium welding", "er4043", "er5356", "er1100"],
+    "hot dip galvanized angles": ["galvanized angle"],
+    "hot dip galvanized channels": ["galvanized channel"],
+    "pto pins": ["pto"],
+    "pipe linch pin": ["linch pin", "pipe pin"],
+    "high tensile strength": ["high tensile", "ht bolt"],
   };
+
+  if (MATERIAL_FILTERS[q]) {
+    const searchText = [
+      pTitle,
+      pCat,
+      pType,
+      ...(product.material_grades || []),
+      ...(product.equivalent_grades || []),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return MATERIAL_FILTERS[q].some((kw) => searchText.includes(kw));
+  }
+
+  // ─── MAIN CATEGORY DEFINITIONS with their keywords ─────────────────
+  const CATEGORY_KEYWORDS: Record<string, string[]> = {
+    "pipes & tubes": [
+      "pipe",
+      "pipes",
+      "tube",
+      "tubes",
+      "seamless",
+      "erw",
+      "welded",
+      "a106",
+      "a333",
+      "a335",
+      "api 5l",
+      "astm a312",
+      "sa312",
+      "inconel",
+      "monel",
+      "hastelloy",
+      "incoloy",
+    ],
+    "plates & sheets": [
+      "plate",
+      "plates",
+      "sheet",
+      "sheets",
+      "coil",
+      "coils",
+      "astm a36",
+      "is 2062",
+      "sa 516",
+      "a387",
+      "sa387",
+      "chrome moly",
+      "boiler quality",
+      "bq plate",
+      "abrex",
+      "hardox",
+      "nm400",
+      "nm450",
+      "nm500",
+      "rockstar",
+      "rockhard",
+      "evonith",
+      "uttamhard",
+      "sailhard",
+      "s690ql",
+      "welten",
+      "manganese",
+      "x120mn12",
+      "sidur",
+      "dsq",
+      "chequered",
+      "is 3502",
+      "16mo3",
+      "15mo3",
+      "sa 204",
+      "17-4ph",
+      "17-4 ph",
+      "904l plate",
+      "310s plate",
+      "317l plate",
+      "316l plate",
+      "304l plate",
+      "corten",
+      "355j2",
+      "s355j2",
+      "sa 387",
+      "a283",
+      "is2041",
+      "r260",
+      "ss 409m",
+      "ss 441",
+      "253ma",
+      "1.4410",
+      "1.4501",
+      "s32750",
+      "s32760",
+      "s32550",
+      "en19 plate",
+      "en24 plate",
+      "c45 plate",
+      "c40 plate",
+      "7075 plate",
+      "5083 plate",
+      "6061 plate",
+      "7050 plate",
+      "5754 sheet",
+    ],
+    "round bars": [
+      "round bar",
+      "round bars",
+      "bar",
+      "bars",
+      "rod",
+      "rods",
+      "bright bar",
+      "black bar",
+      "forged bar",
+      "hex bar",
+      "square bar",
+      "astm a276",
+      "astm a479",
+      "astm a182",
+      "en8",
+      "en9",
+      "en19",
+      "en24",
+      "en25",
+      "en26",
+      "en30",
+      "en31",
+      "en36",
+      "en39",
+      "en40",
+      "en41",
+      "en47",
+      "en57",
+      "en58",
+      "sae 4140",
+      "sae 4340",
+      "sae 8620",
+      "sae 52100",
+      "sae 1018",
+      "sae 4130",
+      "100cr6",
+      "suj2",
+      "aisi 1144",
+      "ss 303",
+      "ss 410",
+      "ss 416",
+      "ss 420",
+      "ss 431",
+      "ss 440c",
+      "ss 446",
+      "904l bar",
+      "17-4 ph bar",
+      "15-5 ph",
+      "13-8 mo",
+      "custom 455",
+      "a286",
+      "alloy 20 bar",
+      "alloy 188",
+      "c932",
+      "c145",
+      "c175",
+      "c150",
+      "c182",
+      "c70600",
+      "c63000",
+      "c86300",
+      "stellite",
+      "kovar",
+      "hymu 80",
+      "maraging",
+      "nitronic",
+    ],
+    "cold work tool steels": [
+      "tool steel",
+      "d2",
+      "d3",
+      "hchcr",
+      "ohns",
+      "ohms",
+      "aisi o1",
+      "d2 tool",
+      "d3 tool",
+      "1.2379",
+      "1.2085",
+      "1.2365",
+      "1.2436",
+      "1.2714",
+      "1.2738",
+      "1.2316",
+      "s7",
+      "h13",
+      "h11",
+      "h21",
+      "m2",
+      "m35",
+      "m42",
+      "p20",
+      "toolox",
+    ],
+    flanges: [
+      "flange",
+      "flanges",
+      "weld neck",
+      "slip on",
+      "blind flange",
+      "socket weld",
+    ],
+    fasteners: [
+      "fastener",
+      "bolt",
+      "nut",
+      "washer",
+      "stud",
+      "screw",
+      "a193",
+      "b7",
+      "b16",
+    ],
+    fittings: [
+      "fitting",
+      "elbow",
+      "tee",
+      "reducer",
+      "buttweld",
+      "forged fitting",
+      "astm a234",
+    ],
+    "welding electrodes": [
+      "welding",
+      "electrode",
+      "wire",
+      "filler",
+      "er4043",
+      "er5356",
+      "er1100",
+      "er307",
+      "er308",
+      "er316",
+      "er321",
+      "er347",
+      "er410",
+      "er2209",
+      "er2594",
+      "er630",
+      "ecocr",
+      "e307-16",
+      "ercuni",
+    ],
+    galvanized: [
+      "galvanized",
+      "galvanised",
+      "gi pipe",
+      "gp coil",
+      "hdg",
+      "hot dip",
+    ],
+    pins: ["pin", "pins", "linch pin", "pto pin"],
+  };
+
+  const categoryKeywords = CATEGORY_KEYWORDS[q];
+  if (categoryKeywords) {
+    if (pType === q) return true;
+    return categoryKeywords.some((kw) => pTitle.includes(kw));
+  }
+
+  // ─── SPECIALIZED CATEGORIES ────────────────────────────────────────
+  const specializedKeywords: Record<string, string[]> = {
+    "high tensile strength": [
+      "sailhard",
+      "uttamhard",
+      "evonith",
+      "high tensile",
+    ],
+    "cold rolled": ["crca", "cold rolled"],
+    "hot rolled is 2062 plates": [
+      "is 2062",
+      "is2062",
+      "e250",
+      "e350",
+      "e450",
+      "s355j2",
+    ],
+    "abrasion resistant plates": [
+      "abrex",
+      "hardox",
+      "nm400",
+      "nm450",
+      "nm500",
+      "rockstar",
+      "rockhard",
+      "abrasion",
+    ],
+    "16mo3-15mo3 & sa 204 plates": ["16mo3", "15mo3", "sa 204"],
+    "manganese steel plates": ["manganese", "x120mn12", "sidur"],
+    "quenched & tempered plates": ["s690ql", "welten", "quenched", "tempered"],
+    "boiler quality steel plates": ["is2041", "sa 516", "boiler"],
+    "chrome moly plates": ["a387", "sa387", "chrome moly"],
+    "chequered plate": ["chequered", "is 3502"],
+    "tata structura 355": ["tata structura"],
+    "corten steel plates": ["corten", "weathering"],
+    "dsq plates": ["dsq"],
+    "evonith hard (evslas07)": ["evonith", "evslas"],
+    uttamhard: ["uttamhard"],
+    sailhard: ["sailhard"],
+    "crca coils": ["crca"],
+    "is 2062 plates": ["is 2062"],
+    "is 2062 e250br": ["e250"],
+    "is 2062 e350": ["e350"],
+    "is 2062 e350br plates": ["e350br"],
+    "is 2062 e350c": ["e350c"],
+    "s355j2+n plates": ["s355j2"],
+    "is 2062 e450br": ["e450br"],
+    "abrex 450 plates": ["abrex 450"],
+    "abrex 500 plates": ["abrex 500"],
+    "nm400 plates": ["nm400"],
+    "nm500 plates": ["nm500"],
+    "rockstar 400 plates": ["rockstar 400"],
+    "rockstar 450 plates": ["rockstar 450"],
+    "rockstar 500 plates": ["rockstar 500"],
+    "industries we serve": ["industries we serve"],
+    "16mo3 plate": ["16mo3"],
+    "x120mn12 /sidur 3401": ["x120mn12", "sidur"],
+    "high manganese plate/steels": ["manganese"],
+    "s690ql plate": ["s690ql"],
+    "en10023-6 s690ql": ["en10023"],
+    "welten 780e plates /sheets": ["welten", "780e"],
+    "is2041 r260 plate": ["is2041"],
+    "sa 516 grade 70 plate": ["sa 516"],
+    "a387 grade 5 class 2": ["a387 grade 5"],
+    "a387 grade 22 class 2": ["a387 grade 22"],
+    "a387/sa387 chrome moly plates": ["a387/sa387"],
+    "is 3502 chequered plates": ["is 3502"],
+  };
+
+  const keywords = specializedKeywords[q];
+  if (keywords) {
+    const searchText = [
+      pTitle,
+      pCat,
+      pType,
+      ...(product.material_grades || []),
+      ...(product.equivalent_grades || []),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return keywords.some((kw) => searchText.includes(kw));
+  }
+
+  // Fallback
+  const searchText = [pTitle, pCat, pType, ...(product.material_grades || [])]
+    .join(" ")
+    .toLowerCase();
+  return searchText.includes(q);
 }
 
-/* ─── Hero Stats Badge ────────────────────────────────────────────────────── */
-function HeroStat({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/20 transition-all duration-300 group cursor-default">
-      <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-        <Icon size={16} className="text-white" />
-      </div>
-      <div>
-        <p className="text-white/60 text-[10px] font-medium uppercase tracking-wider">
-          {label}
-        </p>
-        <p className="text-white font-bold text-sm">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Product Card Component ──────────────────────────────────────────────── */
-function ProductCard({ product }: { product: ScrapedProduct }) {
-  const categoryLabel = getCategoryDisplayLabel(product.category);
-  const typeLabel = getTypeDisplayLabel(product.product_type);
-  const { url: imageUrl, alt: imageAlt } = getProductImageUrl(product);
-
-  const hasGrades = product.material_grades?.length > 0;
-  const hasSpecs = product.specifications?.length > 0;
-
-  const hasStock = (() => {
-    if (!product.current_stock) return false;
-    if (Array.isArray(product.current_stock))
-      return product.current_stock.length > 0;
-    if (typeof product.current_stock === "string")
-      return product.current_stock.trim().length > 0;
-    if (typeof product.current_stock === "object")
-      return Object.keys(product.current_stock).length > 0;
-    return false;
-  })();
-
-  const shortDescription =
-    product.meta_description ||
-    product.description_text?.slice(0, 110) +
-      (product.description_text?.length > 110 ? "..." : "") ||
-    `Premium ${typeLabel} available in various grades and specifications.`;
-
-  return (
-    <Link
-      to={`/product/${product.slug}`}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-400 border border-gray-100 hover:border-[#c41e24]/40 hover:-translate-y-2 flex flex-col h-full"
-    >
-      {/* Image Section */}
-      <div className="relative h-52 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={imageAlt}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-          <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#c41e24] text-white shadow-lg backdrop-blur-sm border border-white/10">
-            {categoryLabel}
-          </span>
-          {hasStock && (
-            <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-emerald-500 text-white shadow-lg backdrop-blur-sm flex items-center gap-1.5 border border-white/10">
-              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-              In Stock
-            </span>
-          )}
-        </div>
-
-        <div className="absolute bottom-3 right-3 opacity-90 group-hover:opacity-100 transition-opacity">
-          <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm text-gray-800 shadow-lg border border-white/20">
-            {typeLabel}
-          </span>
-        </div>
-
-        {/* View overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-          <div className="bg-white text-gray-900 font-semibold text-sm px-8 py-3.5 rounded-full shadow-2xl hover:bg-[#c41e24] hover:text-white transition-all duration-300 flex items-center gap-2 transform hover:scale-105">
-            <Eye size={16} />
-            View Details
-          </div>
-        </div>
-      </div>
-
-      <div className="p-5 flex-1 flex flex-col">
-        <h3 className="font-bold text-gray-900 text-base leading-tight group-hover:text-[#c41e24] transition-colors duration-200 line-clamp-2 min-h-[3rem]">
-          {product.title}
-        </h3>
-
-        {hasGrades && (
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {product.material_grades.slice(0, 3).map((grade, i) => (
-              <span
-                key={i}
-                className="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#c41e24]/10 border border-[#c41e24]/15 text-[#c41e24]"
-              >
-                {grade}
-              </span>
-            ))}
-            {product.material_grades.length > 3 && (
-              <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-500">
-                +{product.material_grades.length - 3}
-              </span>
-            )}
-          </div>
-        )}
-
-        <p className="mt-2.5 text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 min-h-[3rem]">
-          {shortDescription}
-        </p>
-
-        {hasSpecs && (
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {product.specifications.slice(0, 2).map((spec, i) => (
-              <span
-                key={i}
-                className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-500"
-              >
-                {spec.length > 15 ? spec.slice(0, 15) + "..." : spec}
-              </span>
-            ))}
-            {product.specifications.length > 2 && (
-              <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-gray-50 text-gray-400">
-                +{product.specifications.length - 2}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#c41e24]/10 flex items-center justify-center">
-              <Truck size={13} className="text-[#c41e24]" />
-            </div>
-            <span className="text-[10px] font-medium text-gray-500">
-              Pan-India Supply
-            </span>
-          </div>
-          <span className="inline-flex items-center gap-2 text-xs font-bold text-[#c41e24] group-hover:gap-3 transition-all duration-300 group-hover:text-[#c41e24]/80">
-            View Details
-            <ArrowRight
-              size={14}
-              className="group-hover:translate-x-1 transition-transform duration-300"
-            />
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/* ─── Loading Skeleton ────────────────────────────────────────────────────── */
-function ProductCardSkeleton() {
-  return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
-      <div className="h-52 bg-gradient-to-br from-gray-200 to-gray-300" />
-      <div className="p-5 space-y-3.5">
-        <div className="h-5 bg-gray-200 rounded w-3/4" />
-        <div className="flex gap-1.5">
-          <div className="h-6 bg-gray-100 rounded-full w-16" />
-          <div className="h-6 bg-gray-100 rounded-full w-16" />
-          <div className="h-6 bg-gray-100 rounded-full w-12" />
-        </div>
-        <div className="space-y-2">
-          <div className="h-3 bg-gray-100 rounded w-full" />
-          <div className="h-3 bg-gray-100 rounded w-5/6" />
-        </div>
-        <div className="flex gap-1.5">
-          <div className="h-5 bg-gray-100 rounded-full w-20" />
-          <div className="h-5 bg-gray-100 rounded-full w-20" />
-        </div>
-        <div className="pt-4 border-t border-gray-100 flex justify-between">
-          <div className="h-4 bg-gray-100 rounded w-24" />
-          <div className="h-4 bg-gray-100 rounded w-28" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Main Products Page ──────────────────────────────────────────────────── */
 export function ProductsPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState<ScrapedProduct[]>([]);
+  const [searchParams] = useSearchParams();
+  const typeFilter = searchParams.get("type");
+  const categoryFilter = searchParams.get("category");
+  const isSpecialized = searchParams.get("specialized") === "true";
+
+  const [allProducts, setAllProducts] = useState<ScrapedProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [typeMenuOpen, setTypeMenuOpen] = useState(false);
-
-  const urlCategory = searchParams.get("category") || "";
-  const urlType = searchParams.get("type") || "";
-
-  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
-  const [selectedType, setSelectedType] = useState(urlType);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"default" | "az" | "za">("default");
 
   useEffect(() => {
-    const loadProductsData = () => {
-      try {
-        setLoading(true);
-        const allProducts = getProducts();
-
-        const normalizedProducts = allProducts.map((product) => ({
-          ...product,
-          category: normalizeCategory(product.category),
-          product_type: normalizeCategory(product.product_type),
-        }));
-
-        setProducts(normalizedProducts);
-
-        const allCategories = getAllCategories();
-        const normalizedCategories = allCategories.map((cat) =>
-          normalizeCategory(cat),
-        );
-        setCategories([...new Set(normalizedCategories)]);
-      } catch (error) {
-        console.error("Error loading products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProductsData();
+    setLoading(true);
+    const data = getProducts();
+    setAllProducts(data);
+    setLoading(false);
   }, []);
 
-  useEffect(() => {
-    const category = searchParams.get("category") || "";
-    setSelectedCategory(category ? normalizeCategory(category) : "");
-
-    const type = searchParams.get("type") || "";
-    setSelectedType(type ? normalizeCategory(type) : "");
-
-    setCurrentPage(1);
-  }, [searchParams]);
-
-  const handleCategoryClick = (category: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (category) {
-      params.set("category", category);
-    } else {
-      params.delete("category");
-    }
-    params.delete("page");
-    setSearchParams(params);
-    setCurrentPage(1);
-  };
-
-  const handleTypeClick = (type: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (type) {
-      params.set("type", type);
-    } else {
-      params.delete("type");
-    }
-    params.delete("page");
-    setSearchParams(params);
-    setCurrentPage(1);
-    setTypeMenuOpen(false);
-  };
-
-  const clearFilters = () => {
-    setSearchParams({});
-    setCurrentPage(1);
-  };
-
-  // Get unique types for the dropdown
-  const availableTypes = useMemo(() => {
-    const uniqueTypes = new Set(products.map((p) => p.product_type));
-    return [...uniqueTypes];
-  }, [products]);
-
-  // ─── Filtering Logic ────────────────────────────────────────────
+  // ─── Strict Filtering (with AND condition) ────────────────────────────
   const filteredProducts = useMemo(() => {
-    let filtered = [...products];
+    let result = allProducts.filter((p) => {
+      // ✅ NEW: Agar type aur category DONO hain, toh AND karo
+      if (typeFilter && categoryFilter) {
+        return strictMatch(p, typeFilter) && strictMatch(p, categoryFilter);
+      }
+      if (typeFilter) return strictMatch(p, typeFilter);
+      if (categoryFilter) return strictMatch(p, categoryFilter);
 
-    if (selectedType) {
-      filtered = filtered.filter((p) => p.product_type === selectedType);
+      if (isSpecialized) {
+        const allKeys = [
+          "high tensile",
+          "sailhard",
+          "uttamhard",
+          "evonith",
+          "abrex",
+          "hardox",
+          "nm400",
+          "nm450",
+          "nm500",
+          "rockstar",
+          "rockhard",
+          "is 2062",
+          "e250",
+          "e350",
+          "e450",
+          "s355j2",
+          "16mo3",
+          "15mo3",
+          "sa 204",
+          "manganese",
+          "x120mn12",
+          "sidur",
+          "s690ql",
+          "welten",
+          "en10023",
+          "boiler",
+          "is2041",
+          "sa 516",
+          "a387",
+          "sa387",
+          "chrome moly",
+          "chequered",
+          "is 3502",
+          "tata structura",
+          "corten",
+          "weathering",
+          "dsq",
+        ];
+        const searchText = [
+          p.title || "",
+          p.category || "",
+          p.product_type || "",
+          ...(p.material_grades || []),
+          ...(p.equivalent_grades || []),
+        ]
+          .join(" ")
+          .toLowerCase();
+        return allKeys.some((k) => searchText.includes(k));
+      }
+      return true;
+    });
+
+    if (searchQuery.trim()) {
+      const sq = searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title?.toLowerCase().includes(sq) ||
+          p.category?.toLowerCase().includes(sq) ||
+          p.product_type?.toLowerCase().includes(sq) ||
+          p.material_grades?.some((g) => g.toLowerCase().includes(sq)),
+      );
     }
 
-    if (selectedCategory) {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
+    if (sortBy === "az") {
+      result = [...result].sort((a, b) =>
+        (a.title || "").localeCompare(b.title || ""),
+      );
+    } else if (sortBy === "za") {
+      result = [...result].sort((a, b) =>
+        (b.title || "").localeCompare(a.title || ""),
+      );
     }
 
-    return filtered;
-  }, [products, selectedType, selectedCategory]);
+    return result;
+  }, [
+    allProducts,
+    typeFilter,
+    categoryFilter,
+    isSpecialized,
+    searchQuery,
+    sortBy,
+  ]);
 
-  // ─── Get Unique Categories ONLY for the selected Type ───
-  const availableCategories = useMemo(() => {
-    if (!selectedType) return categories;
-    const typeProducts = products.filter(
-      (p) => p.product_type === selectedType,
-    );
-    const uniqueCats = new Set(typeProducts.map((p) => p.category));
-    return [...uniqueCats];
-  }, [products, selectedType, categories]);
-
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const currentProducts = useMemo(() => {
-    const start = (currentPage - 1) * productsPerPage;
-    const end = start + productsPerPage;
-    return filteredProducts.slice(start, end);
-  }, [filteredProducts, currentPage, productsPerPage]);
-
-  // Get clean page title
-  const getPageTitle = () => {
-    if (selectedCategory) {
-      return `${getCategoryDisplayLabel(selectedCategory)} ${getTypeDisplayLabel(selectedType || "")}`;
-    }
-    if (selectedType) {
-      return getTypeDisplayLabel(selectedType);
-    }
-    return "Premium Industrial Products";
-  };
-
-  // Get page description
-  const getPageDescription = () => {
-    if (selectedCategory && selectedType) {
-      return `Explore our premium collection of ${getCategoryDisplayLabel(selectedCategory)} ${getTypeDisplayLabel(selectedType)}. High-quality materials tested and certified for industrial applications.`;
-    }
-    if (selectedType) {
-      return `Discover our premium ${getTypeDisplayLabel(selectedType)} collection. Quality tested materials available with pan-India supply.`;
-    }
-    return "Explore our extensive range of premium quality industrial metals, alloys, and specialized materials for demanding applications across multiple industries.";
-  };
-
-  if (loading) {
+  // ═══════════════════════════════════════════════════════════════════════
+  // VIEW 1: CATEGORY CARDS
+  // ═══════════════════════════════════════════════════════════════════════
+  if (!typeFilter && !categoryFilter && !isSpecialized) {
     return (
-      <div className="pt-20 bg-gray-50 min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse">
-            <div className="bg-gradient-to-r from-gray-200 to-gray-300 h-48 mb-8" />
-            <div className="h-12 bg-gray-200 rounded-2xl w-72 mb-3" />
-            <div className="h-6 bg-gray-100 rounded-2xl w-96 mb-8" />
+      <div className="min-h-screen bg-gray-50">
+        <section className="relative pt-32 pb-20 bg-gradient-to-br from-gray-900 via-[#2a0a0a] to-[#8B1A1A] overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.3),transparent_50%)]"></div>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center max-w-3xl mx-auto">
+              <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[#ffb3b3] mb-4 px-4 py-1.5 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+                Premium Industrial Metals
+              </span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
+                Our <span className="text-[#ff5757]">Product</span> Range
+              </h1>
+              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+                Discover our comprehensive portfolio of high-quality industrial
+                metals.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 -mt-12 relative z-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
+              {CATEGORY_CARDS.map((cat) => (
+                <Link
+                  key={cat.name}
+                  to={`/products?type=${encodeURIComponent(cat.slug)}`}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.includes("productHero")) {
+                          target.src = PRODUCT_HERO_FALLBACK;
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors mb-1.5">
+                      {cat.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-snug">
+                      {cat.description}
+                    </p>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
-        </div>
+        </section>
       </div>
     );
   }
 
-  const pageTitle = getPageTitle();
-  const pageDescription = getPageDescription();
+  // ═══════════════════════════════════════════════════════════════════════
+  // VIEW 2: FILTERED PRODUCTS LISTING
+  // ═══════════════════════════════════════════════════════════════════════
+  // Page title: agar dono filters hain toh "Type — Category" dikhao
+  const pageTitle =
+    typeFilter && categoryFilter
+      ? `${typeFilter} — ${categoryFilter}`
+      : categoryFilter || typeFilter || "Specialized Products";
+
+  const heroImage =
+    CATEGORY_FALLBACK_IMAGES[typeFilter || ""] ||
+    CATEGORY_FALLBACK_IMAGES[categoryFilter || ""] ||
+    PRODUCT_HERO_FALLBACK;
+
+  const parentCategoryKey = categoryFilter
+    ? Object.keys(SPECIALIZED_MENU_DATA).find(
+        (key) =>
+          key === categoryFilter ||
+          SPECIALIZED_MENU_DATA[key].subItems?.includes(categoryFilter),
+      )
+    : null;
+
+  const specializedData = parentCategoryKey
+    ? SPECIALIZED_MENU_DATA[parentCategoryKey]
+    : null;
+
+  const isSubItem =
+    parentCategoryKey !== null && parentCategoryKey !== categoryFilter;
+
+  // showSubItems: sirf tab jab koi product na mile AUR subItems hon AUR AND filter NA ho
+  const showSubItems =
+    !typeFilter &&
+    filteredProducts.length === 0 &&
+    specializedData?.subItems &&
+    specializedData.subItems.length > 0 &&
+    !isSubItem;
 
   return (
-    <div className="pt-20 bg-gray-50 min-h-screen">
-      {/* ─── PREMIUM HERO SECTION ─── */}
-      <div className="relative overflow-hidden w-full">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src={ProductHero}
-            alt="Products Collection"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#c41e24]/15 rounded-full blur-3xl -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#c41e24]/10 rounded-full blur-2xl -ml-32 -mb-32" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c41e24]/8 rounded-full blur-3xl" />
-
-        {/* Content */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-            {/* Left Section */}
-            <div className="flex-1 max-w-3xl">
-              {/* Breadcrumb / Tag */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-[#c41e24] rounded-full" />
-                  <span className="text-white/80 font-bold text-xs uppercase tracking-[0.15em] bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
-                    {selectedType || selectedCategory
-                      ? "Collection"
-                      : "Premium Collection"}
-                  </span>
-                </div>
-                <span className="text-white/40 text-xs font-medium">•</span>
-                <span className="text-white/60 text-xs font-medium bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/5">
-                  {filteredProducts.length} Products Available
-                </span>
-              </div>
-
-              {/* Title - Clean and simple */}
-              <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.1] tracking-tight">
-                {pageTitle}
-              </h1>
-
-              {/* Description */}
-              <p className="mt-4 text-white/70 text-base sm:text-lg max-w-2xl leading-relaxed">
-                {pageDescription}
-              </p>
-
-              {/* Trust Badges */}
-              <div className="flex flex-wrap items-center gap-4 mt-6">
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Shield size={16} className="text-emerald-400" />
-                  <span>Quality Tested</span>
-                </div>
-                <div className="w-px h-4 bg-white/10" />
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Truck size={16} className="text-blue-400" />
-                  <span>Pan-India Supply</span>
-                </div>
-                <div className="w-px h-4 bg-white/10" />
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Award size={16} className="text-amber-400" />
-                  <span>Industry Certified</span>
-                </div>
-                <div className="w-px h-4 bg-white/10" />
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <CheckCircle size={16} className="text-[#c41e24]" />
-                  <span>Premium Quality</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Section - Stats */}
-            <div className="flex flex-wrap gap-3 flex-shrink-0">
-              <HeroStat
-                icon={Package}
-                label="Products"
-                value={filteredProducts.length}
-              />
-              <HeroStat
-                icon={Factory}
-                label="Categories"
-                value={availableCategories.length}
-              />
-              <HeroStat
-                icon={Clock}
-                label="Ready Stock"
-                value={products.filter((p) => p.current_stock).length}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Premium Filter Container */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
-          {/* Horizontal Category Buttons */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            <button
-              onClick={() => handleCategoryClick("")}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
-                !selectedCategory
-                  ? "bg-[#c41e24] text-white border-[#c41e24] shadow-md"
-                  : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-[#c41e24]/10 hover:border-[#c41e24]/30 hover:text-[#c41e24]"
-              }`}
-            >
-              All {getTypeDisplayLabel(selectedType || "")}
-            </button>
-            {availableCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
-                  selectedCategory === cat
-                    ? "bg-[#c41e24] text-white border-[#c41e24] shadow-md"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-[#c41e24]/10 hover:border-[#c41e24]/30 hover:text-[#c41e24]"
-                }`}
-              >
-                {getCategoryDisplayLabel(cat)}
-              </button>
-            ))}
-          </div>
-
-          {/* Bottom Controls Area (Fill the empty space) */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between border-t border-gray-100 pt-4">
-            {/* Left Side: Type Selector & Active Filters */}
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Type Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setTypeMenuOpen(!typeMenuOpen)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all text-sm font-semibold text-gray-700"
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero */}
+      <section className="relative h-[500px] lg:h-[600px] overflow-hidden">
+        <img
+          src={heroImage}
+          alt={pageTitle}
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (!target.src.includes("productHero")) {
+              target.src = PRODUCT_HERO_FALLBACK;
+            }
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40"></div>
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-20">
+          <nav className="flex items-center gap-2 text-sm text-white/70 mb-6 flex-wrap">
+            <Link to="/" className="hover:text-white">
+              Home
+            </Link>
+            <span>/</span>
+            <Link to="/products" className="hover:text-white">
+              Products
+            </Link>
+            {typeFilter && (
+              <>
+                <span>/</span>
+                <Link
+                  to={`/products?type=${encodeURIComponent(typeFilter)}`}
+                  className="hover:text-white"
                 >
-                  <Layers size={16} className="text-[#c41e24]" />
-                  {selectedType
-                    ? getTypeDisplayLabel(selectedType)
-                    : "All Types"}
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform ${typeMenuOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {typeMenuOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
-                    <button
-                      onClick={() => handleTypeClick("")}
-                      className={`w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 ${!selectedType ? "text-[#c41e24] bg-[#c41e24]/5" : "text-gray-700"}`}
-                    >
-                      All Types
-                    </button>
-                    {availableTypes.map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => handleTypeClick(type)}
-                        className={`w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-gray-50 ${selectedType === type ? "text-[#c41e24] bg-[#c41e24]/5" : "text-gray-700"}`}
-                      >
-                        {getTypeDisplayLabel(type)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Active Filter Chips */}
-              {(selectedCategory || selectedType) && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-gray-400 flex items-center gap-1">
-                    <Filter size={12} /> Active:
-                  </span>
-                  {selectedCategory && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#c41e24]/10 text-[#c41e24]">
-                      {getCategoryDisplayLabel(selectedCategory)}
-                      <button
-                        onClick={() => {
-                          setSelectedCategory("");
-                          const params = new URLSearchParams(searchParams);
-                          params.delete("category");
-                          setSearchParams(params);
-                        }}
-                        className="hover:text-[#c41e24]/80"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  )}
-                  {selectedType && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                      {getTypeDisplayLabel(selectedType)}
-                      <button
-                        onClick={() => {
-                          setSelectedType("");
-                          const params = new URLSearchParams(searchParams);
-                          params.delete("type");
-                          setSearchParams(params);
-                        }}
-                        className="hover:text-blue-800"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  )}
-                  <button
-                    onClick={clearFilters}
-                    className="text-xs font-medium text-gray-400 hover:text-[#c41e24] underline underline-offset-2"
-                  >
-                    Clear all
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Right Side: View Mode Toggle */}
-            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 flex-shrink-0">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all duration-200 ${viewMode === "grid" ? "bg-white shadow-sm text-[#c41e24]" : "text-gray-400 hover:text-gray-600"}`}
-                aria-label="Grid view"
-              >
-                <Grid3X3 size={18} />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all duration-200 ${viewMode === "list" ? "bg-white shadow-sm text-[#c41e24]" : "text-gray-400 hover:text-gray-600"}`}
-                aria-label="List view"
-              >
-                <List size={18} />
-              </button>
-            </div>
+                  {typeFilter}
+                </Link>
+              </>
+            )}
+            {categoryFilter && (
+              <>
+                <span>/</span>
+                <span className="text-white font-semibold">
+                  {categoryFilter}
+                </span>
+              </>
+            )}
+          </nav>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight max-w-3xl">
+            {pageTitle}
+          </h1>
+          <p className="text-lg lg:text-xl text-white/80 max-w-2xl mb-6">
+            {showSubItems
+              ? `Browse our ${specializedData?.subItems?.length || 0} sub-categories.`
+              : `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} available.`}
+          </p>
+          <div>
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-3 px-6 rounded-xl transition-all"
+            >
+              ← Back to All Categories
+            </Link>
           </div>
         </div>
+      </section>
 
-        {/* Results Count */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#c41e24]/10 flex items-center justify-center">
-              <TrendingUp size={16} className="text-[#c41e24]" />
+      {/* Filters Bar */}
+      {!showSubItems && (
+        <section className="bg-white shadow-sm border-b border-gray-100 sticky top-20 z-30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
+              <div className="relative flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B1A1A]/30 focus:border-[#8B1A1A] text-sm"
+                />
+                <svg
+                  className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-semibold text-gray-600 whitespace-nowrap">
+                  Sort:
+                </label>
+                <select
+                  value={sortBy}
+                  onChange={(e) =>
+                    setSortBy(e.target.value as "default" | "az" | "za")
+                  }
+                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium cursor-pointer"
+                >
+                  <option value="default">Featured</option>
+                  <option value="az">Name: A → Z</option>
+                  <option value="za">Name: Z → A</option>
+                </select>
+              </div>
             </div>
-            <p className="text-gray-500 text-sm">
-              Showing{" "}
-              <span className="font-bold text-gray-900">
-                {filteredProducts.length}
-              </span>{" "}
-              products
-              {filteredProducts.length > 0 && (
-                <span className="text-gray-400 text-xs ml-2">
-                  (
-                  {filteredProducts.length === 1
-                    ? "1 product available"
-                    : `${filteredProducts.length} products available`}
-                  )
-                </span>
-              )}
-            </p>
           </div>
-          {filteredProducts.length > productsPerPage && (
-            <span className="text-gray-400 text-xs bg-gray-100 px-3 py-1 rounded-full">
-              Page {currentPage} of {totalPages}
-            </span>
+        </section>
+      )}
+
+      {/* Content */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B1A1A]"></div>
+            </div>
+          ) : showSubItems ? (
+            /* SHOW SUB-CATEGORY CARDS */
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+                  Available Grades
+                </h2>
+                <p className="text-gray-600">
+                  Click on any grade to view details.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {specializedData?.subItems?.map((subItem) => (
+                  <Link
+                    key={subItem}
+                    to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
+                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1 flex flex-col"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative flex items-center justify-center p-6">
+                      <img
+                        src={specializedData.image || PRODUCT_HERO_FALLBACK}
+                        alt={subItem}
+                        className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.includes("productHero")) {
+                            target.src = PRODUCT_HERO_FALLBACK;
+                          }
+                        }}
+                      />
+                      <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                        {specializedData.name}
+                      </div>
+                    </div>
+                    <div className="p-5 flex flex-col flex-1">
+                      <h3 className="text-base font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[3rem] mb-3">
+                        {subItem}
+                      </h3>
+                      <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
+                        <span className="text-xs text-gray-500 font-medium">
+                          Enquire Now
+                        </span>
+                        <span className="text-[#8B1A1A] text-xs font-bold group-hover:translate-x-1 transition-transform">
+                          View →
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          ) : filteredProducts.length === 0 ? (
+            /* EMPTY STATE */
+            <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-500 mb-6">
+                {searchQuery
+                  ? `No results matching "${searchQuery}"`
+                  : `No products in "${pageTitle}" category yet.`}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  to="/products"
+                  className="inline-block bg-[#8B1A1A] hover:bg-[#6f1414] text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                >
+                  Browse All Categories
+                </Link>
+                <a
+                  href="tel:+917073875529"
+                  className="inline-block bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                >
+                  📞 Ask for Availability
+                </a>
+              </div>
+            </div>
+          ) : (
+            /* PRODUCTS GRID */
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => {
+                  const title = product.title || product.slug;
+                  const productImg = product.images?.[0]?.url;
+                  const categoryImg =
+                    CATEGORY_FALLBACK_IMAGES[product.product_type] ||
+                    CATEGORY_FALLBACK_IMAGES[product.category] ||
+                    PRODUCT_HERO_FALLBACK;
+                  const img = productImg || categoryImg;
+
+                  return (
+                    <Link
+                      key={product.slug}
+                      to={`/product/${product.slug}`}
+                      className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1 flex flex-col"
+                    >
+                      <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                        <img
+                          src={img}
+                          alt={title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            const currentFile = target.src.split("/").pop();
+                            const catFile = categoryImg.split("/").pop();
+                            if (currentFile !== catFile) {
+                              target.src = categoryImg;
+                            } else if (!target.src.includes("productHero")) {
+                              target.src = PRODUCT_HERO_FALLBACK;
+                            }
+                          }}
+                        />
+                        {product.category && (
+                          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                            {product.category}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-2">
+                          {title}
+                        </h3>
+                        {product.material_grades &&
+                          product.material_grades.length > 0 && (
+                            <p className="text-xs text-gray-500 mb-3 line-clamp-1">
+                              Grade:{" "}
+                              {product.material_grades.slice(0, 2).join(", ")}
+                              {product.material_grades.length > 2 ? "..." : ""}
+                            </p>
+                          )}
+                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
+                          <span className="text-xs text-gray-500 font-medium">
+                            {product.product_type}
+                          </span>
+                          <span className="text-[#8B1A1A] text-xs font-bold group-hover:translate-x-1 transition-transform">
+                            View →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+              <p className="text-center text-sm text-gray-500 mt-10">
+                Showing {filteredProducts.length} of {allProducts.length}{" "}
+                products
+              </p>
+            </>
           )}
         </div>
-
-        {/* Products Grid */}
-        {currentProducts.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
-            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-5">
-              <Package size={40} className="text-gray-300" />
-            </div>
-            <h3 className="font-bold text-2xl text-gray-900 mb-3">
-              No products found
-            </h3>
-            <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-              Try selecting a different category to find what you're looking
-              for.
-            </p>
-            <button
-              onClick={clearFilters}
-              className="mt-6 text-sm font-bold text-[#c41e24] hover:text-[#c41e24]/80 transition-colors inline-flex items-center gap-2 bg-[#c41e24]/10 px-6 py-3 rounded-xl hover:bg-[#c41e24]/20"
-            >
-              Clear all filters
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        ) : viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {currentProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {currentProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            <button
-              onClick={() => {
-                const newPage = Math.max(currentPage - 1, 1);
-                setCurrentPage(newPage);
-                const params = new URLSearchParams(searchParams);
-                if (newPage > 1) {
-                  params.set("page", String(newPage));
-                } else {
-                  params.delete("page");
-                }
-                setSearchParams(params);
-              }}
-              disabled={currentPage === 1}
-              className={`px-5 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all ${
-                currentPage === 1
-                  ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-[#c41e24] hover:text-[#c41e24] hover:bg-[#c41e24]/5"
-              }`}
-            >
-              Previous
-            </button>
-            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-              let pageNum;
-              if (totalPages <= 5) {
-                pageNum = i + 1;
-              } else if (currentPage <= 3) {
-                pageNum = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNum = totalPages - 4 + i;
-              } else {
-                pageNum = currentPage - 2 + i;
-              }
-              return (
-                <button
-                  key={pageNum}
-                  onClick={() => {
-                    setCurrentPage(pageNum);
-                    const params = new URLSearchParams(searchParams);
-                    if (pageNum > 1) {
-                      params.set("page", String(pageNum));
-                    } else {
-                      params.delete("page");
-                    }
-                    setSearchParams(params);
-                  }}
-                  className={`w-11 h-11 rounded-xl text-sm font-bold transition-all ${
-                    currentPage === pageNum
-                      ? "bg-[#c41e24] text-white shadow-lg shadow-[#c41e24]/20"
-                      : "border-2 border-gray-200 text-gray-600 hover:border-[#c41e24] hover:text-[#c41e24] hover:bg-[#c41e24]/5"
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
-            <button
-              onClick={() => {
-                const newPage = Math.min(currentPage + 1, totalPages);
-                setCurrentPage(newPage);
-                const params = new URLSearchParams(searchParams);
-                if (newPage > 1) {
-                  params.set("page", String(newPage));
-                } else {
-                  params.delete("page");
-                }
-                setSearchParams(params);
-              }}
-              disabled={currentPage === totalPages}
-              className={`px-5 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all ${
-                currentPage === totalPages
-                  ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-[#c41e24] hover:text-[#c41e24] hover:bg-[#c41e24]/5"
-              }`}
-            >
-              Next
-            </button>
-          </div>
-        )}
-      </div>
+      </section>
     </div>
   );
 }
