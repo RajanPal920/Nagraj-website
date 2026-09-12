@@ -98,7 +98,56 @@ export function ProductGrid() {
   const actualProductTypes = getActualProductTypes();
   const productTypes =
     actualProductTypes.length > 0 ? actualProductTypes : types;
-  const limitedProductTypes = productTypes.slice(0, 8);
+
+  // ✅ Priority order — Round Bars pehle, Cold Work Tool Steels hataya
+  const PRIORITY_ORDER = [
+    "Round Bars",
+    "Bar",
+    "Pipes & Tubes",
+    "Pipe",
+    "Plates & Sheets",
+    "Plate",
+    "Flanges",
+    "Flange",
+    "Fasteners",
+    "Fastener",
+    "Fittings",
+    "Fitting",
+    "Forgings",
+    "Forging",
+    "Welding Electrodes",
+    "Welding Wire",
+    "Galvanized",
+    "Pins",
+    "Pin",
+    "Hollow Sections",
+    "Hollow Section",
+    "Structural Profiles",
+    "Structural Profile",
+  ];
+
+  // ✅ Cold Work Tool Steels aur duplicates hataye
+  const EXCLUDED_TYPES = ["Cold Work Tool Steels", "Tool Steel"];
+
+  // Step 1: Priority order ke hisaab se sort karo
+  const prioritized = [...productTypes]
+    .filter((t) => !EXCLUDED_TYPES.includes(t))
+    .sort((a, b) => {
+      const aIdx = PRIORITY_ORDER.findIndex(
+        (p) => p.toLowerCase() === a.toLowerCase(),
+      );
+      const bIdx = PRIORITY_ORDER.findIndex(
+        (p) => p.toLowerCase() === b.toLowerCase(),
+      );
+      // Jo priority list me hai, woh pehle
+      if (aIdx !== -1 && bIdx === -1) return -1;
+      if (aIdx === -1 && bIdx !== -1) return 1;
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      // Dono priority me nahi — alphabetical
+      return a.localeCompare(b);
+    });
+
+  const limitedProductTypes = prioritized.slice(0, 8);
 
   const getProductCountForType = (type: string) => {
     return allProducts.filter((p) => p.product_type === type).length;

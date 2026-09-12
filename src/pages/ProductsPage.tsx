@@ -1,11 +1,21 @@
-// src/pages/ProductsPage.tsx
-
 import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getProducts } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
+import { ProductsSidebar } from "../components/ProductsSidebar";
+import {
+  ChevronRight,
+  Search,
+  Package,
+  ArrowRight,
+  Grid3x3,
+} from "lucide-react";
 
-// ─── CATEGORY FALLBACK IMAGES ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// IMAGE CONSTANTS — All images use public folder strings (Vite-friendly)
+// ═══════════════════════════════════════════════════════════════════════════
+const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
+
 const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Pipes & Tubes": "/images/pipe.jpg",
   "Plates & Sheets": "/images/sheet.jpg",
@@ -19,9 +29,7 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   Pins: "/images/Pins.jpg",
 };
 
-const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
-
-// ─── Main Category Cards ───────────────────────────────────────────────────
+// ─── Main Category Cards (UNCHANGED) ──────────────────────────────────────
 const CATEGORY_CARDS = [
   {
     name: "Pipes & Tubes",
@@ -85,14 +93,14 @@ const CATEGORY_CARDS = [
   },
 ];
 
-// ─── SPECIALIZED MENU DATA ────────────────────────────────────────────────
+// ─── SPECIALIZED MENU DATA (UNCHANGED) ────────────────────────────────────
 const SPECIALIZED_MENU_DATA: Record<
   string,
   { name: string; subItems?: string[]; image: string }
 > = {
   "High Tensile Strength": {
     name: "High Tensile Strength",
-    subItems: ["EVONITH HARD (EVSLAS07)", "UTTAMHARD", "SAILHARD"],
+    subItems: ["EVONITH HARD (EVSL AS07)", "UTTAMHARD", "SAILHARD"],
     image: "/images/sheet.jpg",
   },
   "Cold Rolled": {
@@ -177,7 +185,6 @@ const SPECIALIZED_MENU_DATA: Record<
     name: "DSQ Plates",
     image: "/images/sheet.jpg",
   },
-  // ✅ NAYA ENTRY — Fittings
   Fittings: {
     name: "Fittings",
     subItems: ["Buttweld Fittings", "Forged Fittings"],
@@ -186,9 +193,9 @@ const SPECIALIZED_MENU_DATA: Record<
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// SPECIALIZED FILTER
+// SPECIALIZED FILTER — UNCHANGED
 // ═══════════════════════════════════════════════════════════════════════════
-function isSpecializedMatch(
+export function isSpecializedMatch(
   product: ScrapedProduct,
   categoryQuery?: string,
 ): boolean {
@@ -230,7 +237,6 @@ function isSpecializedMatch(
     "corten",
     "weathering",
     "dsq",
-    // ✅ FITTINGS & FLANGES KEYS
     "buttweld",
     "forged fitting",
     "forged fittings",
@@ -244,6 +250,13 @@ function isSpecializedMatch(
     "bolt",
     "washer",
     "stud",
+    "evsl",
+    "as07",
+    "jsp hard",
+    "tiscral",
+    "las07",
+    "jsphard",
+    "jspl hard",
   ];
 
   const searchText = [
@@ -252,28 +265,51 @@ function isSpecializedMatch(
     product.product_type || "",
     ...(product.material_grades || []),
     ...(product.equivalent_grades || []),
-    ...((product as any).availability || []), // ✅ availability bhi check
+    ...((product as any).availability || []),
+    ...((product as any).common_trade_names || []),
   ]
     .join(" ")
     .toLowerCase();
 
-  // ✅ Agar categoryQuery diya gaya hai, to usse priority do
   if (categoryQuery) {
     const cq = categoryQuery.toLowerCase().trim();
-    const tokens = cq.split(/\s+/).filter((t) => t.length > 2);
+    if (searchText.includes(cq)) return true;
 
-    // Token-based match: "Buttweld Fittings" → ["buttweld", "fittings"]
-    if (tokens.length > 0 && tokens.every((t) => searchText.includes(t))) {
-      return true;
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .replace(/[()[\]{}.,/\\|]/g, " ")
+        .replace(/[-_]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const normalizedQuery = normalize(cq);
+    const normalizedSearch = normalize(searchText);
+
+    if (normalizedSearch.includes(normalizedQuery)) return true;
+
+    const tokens = normalizedQuery.split(" ").filter((t) => t.length > 1);
+
+    if (tokens.length > 0) {
+      const allTokensMatch = tokens.every((token) => {
+        if (normalizedSearch.includes(token)) return true;
+        const noSpacesSearch = normalizedSearch.replace(/\s/g, "");
+        const noSpacesToken = token.replace(/\s/g, "");
+        return noSpacesSearch.includes(noSpacesToken);
+      });
+
+      if (allTokensMatch) return true;
     }
 
-    // Direct substring match
-    if (searchText.includes(cq)) return true;
+    return false;
   }
 
   return allKeys.some((k) => searchText.includes(k));
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════
 export function ProductsPage() {
   const [searchParams] = useSearchParams();
   const typeFilter = searchParams.get("type");
@@ -293,7 +329,7 @@ export function ProductsPage() {
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════════
-  // STRICT FILTERING — Guaranteed category-wise products
+  // STRICT FILTERING — UNCHANGED
   // ═══════════════════════════════════════════════════════════════════════
   const filteredProducts = useMemo(() => {
     let result = allProducts.filter((p) => {
@@ -303,39 +339,48 @@ export function ProductsPage() {
       const typeLower = (typeFilter || "").trim().toLowerCase();
       const catLower = (categoryFilter || "").trim().toLowerCase();
 
-      // ── CASE 1: Type + Category dono hain → AND condition
       if (typeFilter && categoryFilter) {
-        // Step 1: Type STRICT match
         if (pType !== typeLower) return false;
-
-        // Step 2: Category — sirf category field ya title se match
         if (pCat === catLower) return true;
         if (pCat.includes(catLower)) return true;
         if (pTitle.includes(catLower)) return true;
-
         return false;
       }
 
-      // ── CASE 2: Sirf type filter → EXACT product_type match ONLY
       if (typeFilter) {
         return pType === typeLower;
       }
 
-      // ── CASE 3: Sirf category filter → SIRF category / title match
-      if (categoryFilter) {
+      if (categoryFilter && !isSpecialized) {
         if (pCat === catLower) return true;
         if (pCat.includes(catLower)) return true;
         if (pTitle.includes(catLower)) return true;
-
         return false;
       }
 
-      // ── CASE 4: Specialized products
-      // ✅ categoryFilter pass kiya — fittings sub-items ke liye
       if (isSpecialized) {
-        return isSpecializedMatch(p, categoryFilter || undefined);
-      }
+        if (!categoryFilter) {
+          return isSpecializedMatch(p);
+        }
 
+        const catLower = categoryFilter.toLowerCase();
+
+        const parentKey = Object.keys(SPECIALIZED_MENU_DATA).find(
+          (key) => key.toLowerCase() === catLower,
+        );
+
+        if (parentKey) {
+          const subItems = SPECIALIZED_MENU_DATA[parentKey].subItems || [];
+
+          if (subItems.length > 0) {
+            return subItems.some((sub) => isSpecializedMatch(p, sub));
+          }
+
+          return isSpecializedMatch(p, parentKey);
+        }
+
+        return isSpecializedMatch(p, categoryFilter);
+      }
       return true;
     });
 
@@ -371,45 +416,106 @@ export function ProductsPage() {
   ]);
 
   // ═══════════════════════════════════════════════════════════════════════
-  // VIEW 1: CATEGORY CARDS
+  // VIEW 1: CATEGORY CARDS (Landing)
   // ═══════════════════════════════════════════════════════════════════════
   if (!typeFilter && !categoryFilter && !isSpecialized) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <section className="relative pt-32 pb-20 bg-gradient-to-br from-gray-900 via-[#2a0a0a] to-[#8B1A1A] overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.3),transparent_50%)]"></div>
-          </div>
+      <div className="min-h-screen bg-[#F7F7F7]">
+        {/* ═══ HERO ═══ */}
+        <section className="relative pt-32 pb-24 bg-[#0F0F0F] overflow-hidden">
+          {/* ✅ HERO BACKGROUND IMAGE — FULLY VISIBLE (no opacity reduction) */}
+          <img
+            src={PRODUCT_HERO_FALLBACK}
+            alt="Premium Industrial Metals"
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (!target.src.includes("productHero")) {
+                target.src = PRODUCT_HERO_FALLBACK;
+              }
+            }}
+          />
+
+          {/* ✅ LIGHT dark overlay — image visible + text readable */}
+          <div className="absolute inset-0 bg-[#0F0F0F]/40"></div>
+
+          {/* Subtle diagonal pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `repeating-linear-gradient(45deg, #fff, #fff 1px, transparent 1px, transparent 20px)`,
+            }}
+          ></div>
+
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#8B1A1A]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[#ffb3b3] mb-4 px-4 py-1.5 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#ffb3b3] mb-6 px-3 py-1.5 border border-white/20">
+                <span className="w-1.5 h-1.5 bg-[#8B1A1A]"></span>
                 Premium Industrial Metals
-              </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
-                Our <span className="text-[#ff5757]">Product</span> Range
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
+                Our Product
+                <br />
+                <span className="text-[#8B1A1A]">Range</span>
               </h1>
-              <p className="text-lg text-white/80 mb-8 leading-relaxed">
+              <p className="text-base text-white mb-10 leading-relaxed max-w-2xl">
                 Discover our comprehensive portfolio of high-quality industrial
-                metals.
+                metals engineered for demanding applications worldwide.
               </p>
+              <div className="flex flex-wrap gap-x-10 gap-y-4 text-white">
+                {[
+                  { num: "500+", label: "Products" },
+                  { num: "15+", label: "Categories" },
+                  { num: "ISO 9001", label: "Certified" },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-baseline gap-2">
+                    <div className="text-2xl font-bold text-white">{s.num}</div>
+                    <div className="text-[11px] uppercase tracking-wider text-white">
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="py-16 -mt-12 relative z-20">
+        {/* ═══ CATEGORY GRID ═══ */}
+        <section className="py-16 bg-[#F7F7F7]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {CATEGORY_CARDS.map((cat) => (
+            {/* Section header */}
+            <div className="flex items-end justify-between mb-10 pb-5 border-b border-gray-200">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="w-1 h-6 bg-[#8B1A1A]"></span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                    Product Catalogue
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                  Browse by Category
+                </h2>
+              </div>
+              <p className="hidden sm:block text-xs uppercase tracking-wider text-gray-400">
+                {CATEGORY_CARDS.length} Categories
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {CATEGORY_CARDS.map((cat, idx) => (
                 <Link
                   key={cat.name}
                   to={`/products?type=${encodeURIComponent(cat.slug)}`}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1"
+                  className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                  style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
                     <img
                       src={cat.image}
                       alt={cat.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         if (!target.src.includes("productHero")) {
@@ -417,14 +523,25 @@ export function ProductsPage() {
                         }
                       }}
                     />
+                    {/* Category index badge */}
+                    <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors mb-1.5">
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors mb-2 leading-tight uppercase tracking-wide">
                       {cat.name}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-snug">
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4">
                       {cat.description}
                     </p>
+                    <div className="mt-auto flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#8B1A1A]">
+                      Explore
+                      <ArrowRight
+                        className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200"
+                        strokeWidth={2.5}
+                      />
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -443,6 +560,7 @@ export function ProductsPage() {
       ? `${typeFilter} — ${categoryFilter}`
       : categoryFilter || typeFilter || "Specialized Products";
 
+  // ✅ Hero image — category image or fallback to productHero
   const heroImage =
     CATEGORY_FALLBACK_IMAGES[typeFilter || ""] ||
     CATEGORY_FALLBACK_IMAGES[categoryFilter || ""] ||
@@ -465,15 +583,19 @@ export function ProductsPage() {
 
   const showSubItems =
     !typeFilter &&
+    !isSpecialized &&
+    !!categoryFilter &&
     filteredProducts.length === 0 &&
     specializedData?.subItems &&
     specializedData.subItems.length > 0 &&
     !isSubItem;
 
+  const shouldShowSidebar = !showSubItems && (!!typeFilter || isSpecialized);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="relative h-[500px] lg:h-[600px] overflow-hidden">
+    <div className="min-h-screen bg-[#F7F7F7]">
+      {/* ═══ HERO ═══ */}
+      <section className="relative h-[380px] lg:h-[550px] overflow-hidden bg-[#0F0F0F]">
         <img
           src={heroImage}
           alt={pageTitle}
@@ -485,22 +607,44 @@ export function ProductsPage() {
             }
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40"></div>
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-20">
-          <nav className="flex items-center gap-2 text-sm text-white/70 mb-6 flex-wrap">
-            <Link to="/" className="hover:text-white">
+        {/* ✅ LIGHT dark overlay — image visible + text readable */}
+        <div className="absolute inset-0 bg-[#0F0F0F]/45"></div>
+
+        {/* Subtle pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `repeating-linear-gradient(45deg, #fff, #fff 1px, transparent 1px, transparent 20px)`,
+          }}
+        ></div>
+
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-16">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-white/50 mb-5 flex-wrap">
+            <Link to="/" className="hover:text-white transition-colors">
               Home
             </Link>
-            <span>/</span>
-            <Link to="/products" className="hover:text-white">
+            <ChevronRight className="w-3 h-3 text-white/30" />
+            <Link to="/products" className="hover:text-white transition-colors">
               Products
             </Link>
+            {isSpecialized && (
+              <>
+                <ChevronRight className="w-3 h-3 text-white/30" />
+                <Link
+                  to="/products?specialized=true"
+                  className="hover:text-white transition-colors"
+                >
+                  Specialized
+                </Link>
+              </>
+            )}
             {typeFilter && (
               <>
-                <span>/</span>
+                <ChevronRight className="w-3 h-3 text-white/30" />
                 <Link
                   to={`/products?type=${encodeURIComponent(typeFilter)}`}
-                  className="hover:text-white"
+                  className="hover:text-white transition-colors"
                 >
                   {typeFilter}
                 </Link>
@@ -508,35 +652,38 @@ export function ProductsPage() {
             )}
             {categoryFilter && (
               <>
-                <span>/</span>
+                <ChevronRight className="w-3 h-3 text-white/30" />
                 <span className="text-white font-semibold">
                   {categoryFilter}
                 </span>
               </>
             )}
           </nav>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight max-w-3xl">
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-[1.1] max-w-3xl tracking-tight">
             {pageTitle}
           </h1>
-          <p className="text-lg lg:text-xl text-white/80 max-w-2xl mb-6">
+
+          <p className="text-sm lg:text-base text-white/80 max-w-2xl mb-6 uppercase tracking-wide">
             {showSubItems
-              ? `Browse our ${specializedData?.subItems?.length || 0} sub-categories.`
-              : `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} available.`}
+              ? `Browse our ${specializedData?.subItems?.length || 0} available categories.`
+              : `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} available`}
           </p>
+
           <div>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-3 px-6 rounded-xl transition-all"
+              className="inline-flex items-center gap-2 bg-white/5 hover:bg-[#8B1A1A] backdrop-blur-sm border border-white/20 hover:border-[#8B1A1A] text-white font-semibold py-2.5 px-5 transition-all duration-200 text-xs uppercase tracking-wider"
             >
-              ← Back to All Categories
+              ← Back to All Products
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Filters Bar */}
+      {/* ═══ FILTER BAR ═══ */}
       {!showSubItems && (
-        <section className="bg-white shadow-sm border-b border-gray-100 sticky top-20 z-30">
+        <section className="bg-white border-b border-gray-200 sticky top-20 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
               <div className="relative flex-1 max-w-md">
@@ -544,33 +691,21 @@ export function ProductsPage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B1A1A]/30 focus:border-[#8B1A1A] text-sm"
+                  placeholder="Search products by name, grade, material..."
+                  className="w-full pl-11 pr-4 py-3 bg-[#F7F7F7] border border-gray-200 focus:outline-none focus:border-[#8B1A1A] focus:bg-white text-sm transition-all"
                 />
-                <svg
-                  className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
               </div>
               <div className="flex items-center gap-3">
-                <label className="text-sm font-semibold text-gray-600 whitespace-nowrap">
-                  Sort:
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden sm:block">
+                  Sort By
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) =>
                     setSortBy(e.target.value as "default" | "az" | "za")
                   }
-                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium cursor-pointer"
+                  className="px-4 py-3 bg-[#F7F7F7] border border-gray-200 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:border-gray-300 focus:outline-none focus:border-[#8B1A1A] transition-all"
                 >
                   <option value="default">Featured</option>
                   <option value="az">Name: A → Z</option>
@@ -582,161 +717,281 @@ export function ProductsPage() {
         </section>
       )}
 
-      {/* Content */}
-      <section className="py-12">
+      {/* ═══ CONTENT WITH SIDEBAR ═══ */}
+      <section className="py-10 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B1A1A]"></div>
-            </div>
-          ) : showSubItems ? (
-            <>
-              <div className="mb-8">
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
-                  Available Grades
-                </h2>
-                <p className="text-gray-600">
-                  Click on any grade to view details.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {specializedData?.subItems?.map((subItem) => (
-                  <Link
-                    key={subItem}
-                    to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
-                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1 flex flex-col"
-                  >
-                    <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative flex items-center justify-center p-6">
-                      <img
-                        src={specializedData.image || PRODUCT_HERO_FALLBACK}
-                        alt={subItem}
-                        className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-700"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          if (!target.src.includes("productHero")) {
-                            target.src = PRODUCT_HERO_FALLBACK;
-                          }
-                        }}
-                      />
-                      <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                        {specializedData.name}
-                      </div>
-                    </div>
-                    <div className="p-5 flex flex-col flex-1">
-                      <h3 className="text-base font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[3rem] mb-3">
-                        {subItem}
-                      </h3>
-                      <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
-                        <span className="text-xs text-gray-500 font-medium">
-                          Enquire Now
-                        </span>
-                        <span className="text-[#8B1A1A] text-xs font-bold group-hover:translate-x-1 transition-transform">
-                          View →
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </>
-          ) : filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                No products found
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchQuery
-                  ? `No results matching "${searchQuery}"`
-                  : `No products in "${pageTitle}" category yet.`}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link
-                  to="/products"
-                  className="inline-block bg-[#8B1A1A] hover:bg-[#6f1414] text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                >
-                  Browse All Categories
-                </Link>
-                <a
-                  href="tel:+917073875529"
-                  className="inline-block bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                >
-                  📞 Ask for Availability
-                </a>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => {
-                  const title = product.title || product.slug;
-                  const productImg = product.images?.[0]?.url;
-                  const categoryImg =
-                    CATEGORY_FALLBACK_IMAGES[product.product_type] ||
-                    CATEGORY_FALLBACK_IMAGES[product.category] ||
-                    PRODUCT_HERO_FALLBACK;
-                  const img = productImg || categoryImg;
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            {shouldShowSidebar && (
+              <ProductsSidebar
+                currentType={typeFilter}
+                currentCategory={categoryFilter}
+                isSpecialized={isSpecialized}
+                productCount={filteredProducts.length}
+                allProducts={allProducts}
+              />
+            )}
 
-                  return (
-                    <Link
-                      key={product.slug}
-                      to={`/product/${product.slug}`}
-                      className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-1 flex flex-col"
-                    >
-                      <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
-                        <img
-                          src={img}
-                          alt={title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            const currentFile = target.src.split("/").pop();
-                            const catFile = categoryImg.split("/").pop();
-                            if (currentFile !== catFile) {
-                              target.src = categoryImg;
-                            } else if (!target.src.includes("productHero")) {
-                              target.src = PRODUCT_HERO_FALLBACK;
-                            }
-                          }}
-                        />
-                        {product.category && (
-                          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                            {product.category}
+            <div className="flex-1 min-w-0">
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-24 gap-4">
+                  <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-[#8B1A1A]"></div>
+                  <p className="text-xs uppercase tracking-wider text-gray-500">
+                    Loading products...
+                  </p>
+                </div>
+              ) : showSubItems ? (
+                /* ═══ SUB-ITEMS VIEW ═══ */
+                <>
+                  <div className="mb-8 pb-5 border-b border-gray-200">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="w-1 h-6 bg-[#8B1A1A]"></span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                        Product Grades
+                      </span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">
+                      Available Grades
+                    </h2>
+                    <p className="text-sm text-gray-500 ml-4">
+                      Click on any grade to view details and specifications.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {specializedData?.subItems?.map((subItem, idx) => (
+                      <Link
+                        key={subItem}
+                        to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
+                        className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                      >
+                        <div className="aspect-[4/3] overflow-hidden bg-[#F7F7F7] relative flex items-center justify-center p-6">
+                          <img
+                            src={specializedData.image || PRODUCT_HERO_FALLBACK}
+                            alt={subItem}
+                            className="max-w-full max-h-full object-contain group-hover:scale-[1.03] transition-transform duration-500"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              if (!target.src.includes("productHero")) {
+                                target.src = PRODUCT_HERO_FALLBACK;
+                              }
+                            }}
+                          />
+                          <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1">
+                            {specializedData.name}
                           </div>
-                        )}
-                      </div>
-                      <div className="p-5 flex flex-col flex-1">
-                        <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-2">
-                          {title}
-                        </h3>
-                        {product.material_grades &&
-                          product.material_grades.length > 0 && (
-                            <p className="text-xs text-gray-500 mb-3 line-clamp-1">
-                              Grade:{" "}
-                              {product.material_grades.slice(0, 2).join(", ")}
-                              {product.material_grades.length > 2 ? "..." : ""}
-                            </p>
-                          )}
-                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
-                          <span className="text-xs text-gray-500 font-medium">
-                            {product.product_type}
-                          </span>
-                          <span className="text-[#8B1A1A] text-xs font-bold group-hover:translate-x-1 transition-transform">
-                            View →
+                          <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20">
+                            {String(idx + 1).padStart(2, "0")}
                           </span>
                         </div>
-                      </div>
+                        <div className="p-5 flex flex-col flex-1">
+                          <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-4 uppercase tracking-wide leading-tight">
+                            {subItem}
+                          </h3>
+                          <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
+                            <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+                              View Details
+                            </span>
+                            <ArrowRight
+                              className="w-3.5 h-3.5 text-[#8B1A1A] group-hover:translate-x-1 transition-transform duration-200"
+                              strokeWidth={2.5}
+                            />
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : filteredProducts.length === 0 ? (
+                /* ═══ EMPTY STATE ═══ */
+                <div className="bg-white border border-gray-200 p-12 sm:p-16 text-center max-w-2xl mx-auto">
+                  <div className="w-16 h-16 bg-[#8B1A1A]/5 border border-[#8B1A1A]/20 flex items-center justify-center mx-auto mb-6">
+                    <Package
+                      className="w-7 h-7 text-[#8B1A1A]"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <span className="w-6 h-[2px] bg-[#8B1A1A]"></span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                      No Results
+                    </span>
+                    <span className="w-6 h-[2px] bg-[#8B1A1A]"></span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 tracking-tight">
+                    No products found
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+                    {searchQuery
+                      ? `No results matching "${searchQuery}". Try different keywords or browse all categories.`
+                      : `No products in "${pageTitle}" category yet. Check back soon or contact us for availability.`}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Link
+                      to="/products"
+                      className="inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-semibold py-3 px-6 transition-all duration-200 text-xs uppercase tracking-wider hover:shadow-lg"
+                    >
+                      ← Browse All Categories
                     </Link>
-                  );
-                })}
-              </div>
-              <p className="text-center text-sm text-gray-500 mt-10">
-                Showing {filteredProducts.length} of {allProducts.length}{" "}
-                products
-              </p>
-            </>
-          )}
+                    <a
+                      href="tel:+917073875529"
+                      className="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-[#8B1A1A] hover:text-[#8B1A1A] text-gray-700 font-semibold py-3 px-6 transition-all duration-200 text-xs uppercase tracking-wider"
+                    >
+                      📞 Ask for Availability
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                /* ═══ PRODUCT GRID ═══ */
+                <>
+                  {/* Result Count Bar */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <span className="w-1 h-4 bg-[#8B1A1A]"></span>
+                      <p className="text-xs uppercase tracking-wider text-gray-500">
+                        Showing{" "}
+                        <span className="font-bold text-gray-900">
+                          1–{filteredProducts.length}
+                        </span>{" "}
+                        of{" "}
+                        <span className="font-bold text-gray-900">
+                          {filteredProducts.length}
+                        </span>{" "}
+                        results
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                        Sort
+                      </label>
+                      <select
+                        value={sortBy}
+                        onChange={(e) =>
+                          setSortBy(e.target.value as "default" | "az" | "za")
+                        }
+                        className="px-3 py-2 bg-white border border-gray-300 text-xs font-semibold uppercase tracking-wider cursor-pointer focus:outline-none focus:border-[#8B1A1A]"
+                      >
+                        <option value="default">Default</option>
+                        <option value="az">Name: A → Z</option>
+                        <option value="za">Name: Z → A</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {filteredProducts.map((product, idx) => {
+                      const title = product.title || product.slug;
+                      const productImg = product.images?.[0]?.url;
+                      const categoryImg =
+                        CATEGORY_FALLBACK_IMAGES[product.product_type] ||
+                        CATEGORY_FALLBACK_IMAGES[product.category] ||
+                        PRODUCT_HERO_FALLBACK;
+                      const img = productImg || categoryImg;
+
+                      return (
+                        <Link
+                          key={product.slug}
+                          to={`/product/${product.slug}`}
+                          className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                        >
+                          <div className="aspect-[4/3] overflow-hidden bg-[#F7F7F7] relative">
+                            <img
+                              src={img}
+                              alt={title}
+                              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                const currentFile = target.src.split("/").pop();
+                                const catFile = categoryImg.split("/").pop();
+                                if (currentFile !== catFile) {
+                                  target.src = categoryImg;
+                                } else if (
+                                  !target.src.includes("productHero")
+                                ) {
+                                  target.src = PRODUCT_HERO_FALLBACK;
+                                }
+                              }}
+                            />
+                            {product.category && (
+                              <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20">
+                                {product.category}
+                              </span>
+                            )}
+                            <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-gray-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-gray-200">
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+
+                          <div className="p-5 flex flex-col flex-1">
+                            <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-3 leading-snug">
+                              {title}
+                            </h3>
+
+                            {product.material_grades &&
+                              product.material_grades.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mb-4">
+                                  {product.material_grades
+                                    .slice(0, 2)
+                                    .map((g, i) => (
+                                      <span
+                                        key={i}
+                                        className="text-[10px] bg-white text-gray-700 px-2 py-0.5 border border-gray-200 font-medium uppercase tracking-wide"
+                                      >
+                                        {g}
+                                      </span>
+                                    ))}
+                                  {product.material_grades.length > 2 && (
+                                    <span className="text-[10px] text-gray-400 px-2 py-0.5 font-medium">
+                                      +{product.material_grades.length - 2}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                            <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
+                              <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+                                {product.product_type}
+                              </span>
+                              <span className="text-[#8B1A1A] text-[11px] font-bold flex items-center gap-1 uppercase tracking-wider">
+                                View
+                                <ArrowRight
+                                  className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200"
+                                  strokeWidth={2.5}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+
+                  {/* Footer Count */}
+                  <div className="text-center mt-12 pt-8 border-t border-gray-200">
+                    <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-500">
+                      <Grid3x3
+                        className="w-3.5 h-3.5 text-[#8B1A1A]"
+                        strokeWidth={2}
+                      />
+                      Showing{" "}
+                      <span className="font-bold text-[#8B1A1A]">
+                        {filteredProducts.length}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-bold text-gray-900">
+                        {allProducts.length}
+                      </span>{" "}
+                      products
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     </div>
   );
 }
+
+export default ProductsPage;

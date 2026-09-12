@@ -1,12 +1,10 @@
 // src/components/Header.tsx
 
 import { useState, useEffect } from "react";
-import { Phone, Menu, X, ChevronDown } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Cog, Diamond, Star, Package, ChevronRight } from "lucide-react";
+import { Phone, Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import {
   CATEGORY_GROUPS,
-  GROUP_ORDER,
   getCategoryDisplayLabel,
 } from "../data/categoryConfig";
 import { getProducts } from "../data/products";
@@ -67,11 +65,7 @@ const SPECIALIZED_PRODUCT_NAMES = [
   },
   {
     name: "Quenched & Tempered Plates",
-    subItems: [
-      "S690QL Plate",
-      "EN10025-6 S690QL",
-      "Welten 780E Plates",
-    ],
+    subItems: ["S690QL Plate", "EN10025-6 S690QL", "Welten 780E Plates"],
   },
   {
     name: "Boiler Quality Steel Plates",
@@ -100,8 +94,14 @@ const SPECIALIZED_PRODUCT_NAMES = [
   },
 ];
 
+// ─── TYPES ─────────────────────────────────────────────────────────────────
+export interface ProductMenuItem {
+  name: string;
+  subItems?: (string | { name: string; subItems: string[] })[];
+}
+
 // ─── PRODUCTS MENU DATA ─────────────────────────────────────────────────────
-const PRODUCTS_MENU_DATA = [
+export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
   {
     name: "Pipes & Tubes",
     subItems: [
@@ -176,7 +176,10 @@ const PRODUCTS_MENU_DATA = [
     ],
   },
   { name: "Fasteners", subItems: ["High Tensile"] },
-  { name: "Fittings", subItems: ["Hastelloy Buttweld Fittings", "Forged Fittings"] },
+  {
+    name: "Fittings",
+    subItems: ["Hastelloy Buttweld Fittings", "Forged Fittings"],
+  },
   {
     name: "Welding Electrodes",
     subItems: [
@@ -221,41 +224,21 @@ const normalizeCategory = (category: string): string => {
   return NORMALIZE_MAP[category] || category;
 };
 
-const filterProductTypes = (types: string[]): string[] => {
-  return types
-    .filter(
-      (type) =>
-        !["Plate", "Plates", "Sheet", "Sheets", "Rod", "Rods"].includes(type),
-    )
-    .map((type) => NORMALIZE_MAP[type] || type)
-    .filter((type, index, self) => self.indexOf(type) === index)
-    .sort();
-};
-
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
-  const [categories, setCategories] = useState<
-    Array<{
-      name: string;
-      displayName: string;
-      group: string;
-      count: number;
-      products: any[];
-    }>
-  >([]);
-  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
   const [activeSpecialized, setActiveSpecialized] = useState<string | null>(
     null,
   );
-  const [allProducts, setAllProducts] = useState<any[]>([]);
 
   const isSolid = location.pathname !== "/" || scrolled;
+
+  // ✅ Full current URL (path + search)
+  const currentFullPath = location.pathname + location.search;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -266,9 +249,7 @@ export function Header() {
   useEffect(() => {
     const loadCategories = () => {
       try {
-        setLoading(true);
         const products = getProducts();
-
         const normalizedProducts = products.map((product) => ({
           ...product,
           category:
@@ -281,10 +262,7 @@ export function Header() {
               : normalizeCategory(product.product_type),
         }));
 
-        setAllProducts(normalizedProducts || []);
-
         if (!normalizedProducts || !Array.isArray(normalizedProducts)) {
-          setCategories([]);
           return;
         }
 
@@ -329,29 +307,14 @@ export function Header() {
           }),
         );
 
-        setCategories(categoryList);
         if (categoryList.length > 0) setActiveCategory(categoryList[0].name);
       } catch (error) {
         console.error("Error loading categories:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     loadCategories();
   }, []);
-
-  const handleProductTypeClick = (type: string | null) => {
-    if (type) navigate(`/products?type=${encodeURIComponent(type)}`);
-    else navigate("/products");
-  };
-
-  // ─── UPDATED: Specialized → /products?specialized=true&category=... ───
-  const handleSpecializedClick = (category: string) => {
-    navigate(
-      `/products?specialized=true&category=${encodeURIComponent(category)}`,
-    );
-  };
 
   return (
     <header
@@ -371,23 +334,34 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-6 xl:gap-8 font-extrabold">
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-6 xl:gap-8 pl-6 xl:pl-10 font-extrabold">
           {navLinks.map((link) => {
             const isProductsLink = link.label === "Products";
             const isSpecializedLink = link.label === "Specialized Products";
+
+            // ✅ Active detection (path + search)
+            const isActive =
+              currentFullPath === link.href ||
+              (link.href === "/products" &&
+                location.pathname === "/products" &&
+                location.search === "") ||
+              (link.href === "/products?specialized=true" &&
+                location.search === "?specialized=true");
 
             return (
               <div key={link.href} className="group relative whitespace-nowrap">
                 <Link
                   to={link.href}
                   onClick={(e) => {
-                    if (location.pathname === link.href) {
+                    // ✅ Only prevent if EXACT same URL
+                    const currentFull = location.pathname + location.search;
+                    if (currentFull === link.href) {
                       e.preventDefault();
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
                   className={`nav-link flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base ${
-                    location.pathname === link.href
+                    isActive
                       ? "text-[#8B1A1A]"
                       : "text-black/90 hover:text-[#8B1A1A]"
                   }`}
@@ -401,7 +375,7 @@ export function Header() {
                   )}
                 </Link>
 
-                {/* ─── PRODUCTS DROPDOWN (WHITE BG + RED HIGHLIGHT) ─── */}
+                {/* ─── PRODUCTS DROPDOWN ─── */}
                 {isProductsLink && (
                   <div
                     className="
@@ -444,7 +418,7 @@ export function Header() {
                               />
                             </Link>
 
-                            {/* RIGHT SIDE PANEL - WHITE BG */}
+                            {/* RIGHT SIDE PANEL */}
                             {activeCategory === item.name && (
                               <div
                                 className="
@@ -455,7 +429,7 @@ export function Header() {
                                 "
                               >
                                 <div className="py-1">
-                                  {item.subItems.map((subItem) => {
+                                  {item.subItems?.map((subItem) => {
                                     if (
                                       typeof subItem === "object" &&
                                       subItem !== null &&
@@ -469,7 +443,6 @@ export function Header() {
                                             setActiveSubItem(subItem.name)
                                           }
                                         >
-                                          {/* ─── FIX: Parent category + subitem dono URL me ─── */}
                                           <Link
                                             to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem.name)}`}
                                             className={`flex items-center justify-between px-5 py-3 text-sm transition-colors ${
@@ -489,7 +462,7 @@ export function Header() {
                                             />
                                           </Link>
 
-                                          {/* SMALL CARD FOR ALLOY STEEL F SERIES - JUST SIDE MEIN */}
+                                          {/* NESTED SUB-ITEMS */}
                                           {activeSubItem === subItem.name && (
                                             <div
                                               className="
@@ -502,7 +475,6 @@ export function Header() {
                                               <div className="py-1">
                                                 {subItem.subItems.map(
                                                   (nestedItem) => (
-                                                    /* ─── FIX: Parent category + nested subitem dono URL me ─── */
                                                     <Link
                                                       key={nestedItem}
                                                       to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(nestedItem)}`}
@@ -518,14 +490,13 @@ export function Header() {
                                         </div>
                                       );
                                     }
-                                    /* ─── FIX: Simple subItem pe bhi parent + subitem dono URL me ─── */
                                     return (
                                       <Link
-                                        key={subItem}
-                                        to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem)}`}
+                                        key={subItem as string}
+                                        to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem as string)}`}
                                         className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors border-b border-gray-100 last:border-b-0"
                                       >
-                                        {subItem}
+                                        {subItem as string}
                                       </Link>
                                     );
                                   })}
@@ -539,7 +510,7 @@ export function Header() {
                   </div>
                 )}
 
-                {/* ─── SPECIALIZED PRODUCTS DROPDOWN (WHITE BG + RED HIGHLIGHT) ─── */}
+                {/* ─── SPECIALIZED PRODUCTS DROPDOWN ─── */}
                 {isSpecializedLink && (
                   <div
                     className="
@@ -581,7 +552,6 @@ export function Header() {
                               )}
                             </Link>
 
-                            {/* RIGHT SIDE PANEL - SIRF TAB JAB subItems HO */}
                             {activeSpecialized === item.name &&
                               item.subItems &&
                               item.subItems.length > 0 && (
