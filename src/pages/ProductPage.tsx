@@ -6,6 +6,7 @@ import { findProductBySlug, getProducts } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { IoIosCall } from "react-icons/io";
+import { WatermarkedImage } from "../components/WatermarkedImage";
 import {
   Award,
   FileCheck,
@@ -129,7 +130,7 @@ function TechnicalTable({
   );
 }
 
-/** Related product card — premium industrial catalogue */
+/** Related product card — premium industrial catalogue with watermark */
 function RelatedCard({
   product,
   fallbackImage,
@@ -145,21 +146,16 @@ function RelatedCard({
       to={`/product/${product.slug}`}
       className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-200 flex flex-col overflow-hidden"
     >
-      {/* Image */}
-      <div className="aspect-[4/3] overflow-hidden bg-gray-50 relative">
-        <img
+      {/* Image with watermark */}
+      <div className="aspect-[4/3] bg-gray-50 relative">
+        <WatermarkedImage
           src={img}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            if (!target.src.includes("productHero")) {
-              target.src = PRODUCT_HERO_FALLBACK;
-            }
-          }}
+          className="w-full h-full"
+          imgClassName="group-hover:scale-[1.03] transition-transform duration-300"
         />
         {product.category && (
-          <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 border border-[#8B1A1A]/20">
+          <span className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 border border-[#8B1A1A]/20">
             {product.category}
           </span>
         )}
@@ -319,29 +315,21 @@ export function ProductPage() {
         {/* ═══ MAIN PRODUCT HERO ═══ */}
         <div className="bg-white border border-gray-200 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* LEFT: Image Panel */}
+            {/* LEFT: Image Panel with Watermark */}
             <div className="lg:sticky lg:top-28 lg:self-start border-b lg:border-b-0 lg:border-r border-gray-200">
-              <div className="relative w-full aspect-square bg-white overflow-hidden">
+              <div className="relative w-full aspect-[3/4] bg-white overflow-hidden">
                 {/* Premium Quality Badge */}
-                <span className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5">
+                <span className="absolute top-4 left-4 z-20 inline-flex items-center gap-1.5 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5">
                   <Check className="w-3 h-3" strokeWidth={3} />
                   Premium Quality
                 </span>
 
-                <img
+                {/* ✅ Watermarked Image */}
+                <WatermarkedImage
                   src={mainImage}
                   alt={title}
-                  className="absolute inset-0 w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    const currentFile = target.src.split("/").pop();
-                    const catFile = categoryImg.split("/").pop();
-                    if (currentFile !== catFile) {
-                      target.src = categoryImg;
-                    } else if (!target.src.includes("productHero")) {
-                      target.src = PRODUCT_HERO_FALLBACK;
-                    }
-                  }}
+                  className="absolute inset-0 w-full h-full"
+                  imgClassName="object-cover object-center"
                 />
               </div>
             </div>
