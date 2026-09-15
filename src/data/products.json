@@ -12576,6 +12576,166 @@
     "status": "scraped"
   },
   {
+  "url": "https://www.textronsteelalloys.com/ht-10-9-grade-bolts/",
+  "title": "HT 10.9 Grade Bolts, Hex Bolts",
+  "slug": "ht-10-9-grade-bolts",
+  "description_text": "HT 10.9 Grade Bolts are Hardened Class 10.9 Metric Hex Bolts are a high strength, high tensile fastening solution available in coarse, fine and extra fine thread. One of the most commonly used fasteners, our Class 10.9 hexagonal bolts include DIN 933/961 Full and DIN 931/960 Partial thread options. Coarse and Fine Thread Diameter sizes are specified / written differently. Coarse thread bolt sizes are commonly noted without the pitch.",
+  "product_type": "Fastener",
+  "category": "High Tensile Steel",
+  "subcategory": "HT 10.9 Grade Bolts",
+  "breadcrumbs": "Home » Fasteners » HT 10.9 Grade Bolts",
+  "meta_title": "HT 10.9 Grade Bolts, Hex Bolts",
+  "meta_description": "HT 10.9 Grade Bolts are Hardened Class 10.9 Metric Hex Bolts - high strength, high tensile fastening solution available in coarse, fine and extra fine thread.",
+  "publish_date": "2024-07-11",
+  "modified_date": "",
+  "material_grades": [
+    "HT 10.9 Grade",
+    "Class 10.9",
+    "Grade 10.9"
+  ],
+  "equivalent_grades": [
+    "DIN 933",
+    "DIN 931",
+    "DIN 960",
+    "DIN 961",
+    "ISO 4014",
+    "ISO 4017",
+    "ASTM A325",
+    "ASTM A490",
+    "EN 14399"
+  ],
+  "specifications": [
+    "Standard: DIN 933/961 (Full Thread), DIN 931/960 (Partial Thread)",
+    "Grade: HT 10.9 / Class 10.9",
+    "Product Form: Bolts, Hex Bolts, Studs",
+    "Thread Type: Coarse, Fine & Extra Fine",
+    "Thread Options: Full Thread (DIN 933/961), Partial Thread (DIN 931/960)",
+    "Material: High Tensile Steel",
+    "Condition: Hardened"
+  ],
+  "applications": [
+    "Structural Steel Connections",
+    "Heavy Engineering",
+    "Bridges & Infrastructure",
+    "Power Plants",
+    "Oil & Gas Industry",
+    "Petrochemical Plants",
+    "Construction Industry",
+    "Automotive Industry",
+    "Industrial Machinery",
+    "Wind Energy",
+    "Shipbuilding",
+    "Railway Applications"
+  ],
+  "features": [
+    "High Strength & High Tensile",
+    "Hardened Class 10.9",
+    "Available in coarse, fine and extra fine thread",
+    "DIN 933/961 Full Thread options",
+    "DIN 931/960 Partial Thread options",
+    "Metric Hex Bolts",
+    "Superior load-bearing capacity",
+    "Excellent fatigue resistance",
+    "Corrosion resistance (with suitable coating)",
+    "Precise dimensional accuracy",
+    "Long service life",
+    "Reliable performance in demanding applications"
+  ],
+  "tests": [
+    "Tensile Test",
+    "Hardness Test",
+    "Proof Load Test",
+    "Dimensional Inspection",
+    "Thread Gauge Test",
+    "Chemical Analysis",
+    "Coating Thickness Test"
+  ],
+  "packing": "Standard export packing - wooden pallets / steel strips / plastic wrapping. Custom packing available on request.",
+  "chemical_composition": [],
+  "mechanical_properties": [
+    {
+      "property_name": "Grade",
+      "value": "Class 10.9",
+      "condition": "Hardened"
+    },
+    {
+      "property_name": "Tensile Strength",
+      "value": "1040 MPa min",
+      "min_value": "1040",
+      "condition": "Hardened"
+    },
+    {
+      "property_name": "Yield Strength (0.2% Proof)",
+      "value": "940 MPa min",
+      "min_value": "940",
+      "condition": "Hardened"
+    },
+    {
+      "property_name": "Hardness",
+      "value": "32-39 HRC",
+      "min_value": "32",
+      "max_value": "39",
+      "condition": "Hardened"
+    },
+    {
+      "property_name": "Elongation",
+      "value": "9% min",
+      "min_value": "9",
+      "condition": "Hardened"
+    }
+  ],
+  "stock_sizes": [],
+  "current_stock": [],
+  "heat_treatment": [
+    "Quenched and Tempered",
+    "Hardened to Class 10.9"
+  ],
+  "availability": [
+    "HT 10.9 Grade Bolts",
+    "HT 10.9 Grade Hex Bolts",
+    "HT 10.9 Grade Studs",
+    "DIN 933 Full Thread Bolts",
+    "DIN 931 Partial Thread Bolts",
+    "DIN 960 Partial Thread Bolts",
+    "DIN 961 Full Thread Bolts"
+  ],
+  "common_trade_names": [
+    "HT 10.9 Grade Bolts",
+    "Class 10.9 Bolts",
+    "Grade 10.9 Hex Bolts",
+    "HT Bolts",
+    "High Tensile Bolts",
+    "Metric Hex Bolts"
+  ],
+  "people_also_search": [
+    "HT 10.9 Grade Bolts",
+    "Class 10.9 Bolts Supplier",
+    "HT 10.9 Hex Bolts",
+    "HT 10.9 Grade Studs",
+    "DIN 933 Bolts",
+    "DIN 931 Bolts",
+    "High Tensile Bolts",
+    "Metric Hex Bolts",
+    "HT 10.9 Bolts Exporter",
+    "HT 10.9 Bolts Stockist",
+    "Hardened Class 10.9 Bolts",
+    "HT 10.9 Fasteners"
+  ],
+  "images": [
+    {
+      "url": "/images/products/ht-10-9-grade-bolts.jpg",
+      "alt": "HT 10.9 Grade Bolts, Hex Bolts"
+    },
+    {
+      "url": "/images/products/ht-10-9-grade-hex-bolts.jpg",
+      "alt": "HT 10.9 Grade Hex Bolts"
+    }
+  ],
+  "attachments": [],
+  "scraped_at": "",
+  "status": "pending"
+},
+  {
     "url": "",
     "title": "A286 Round Bars AMS 5731, 5732, 5734, 5737, 5525, 5858",
     "slug": "a286-round-bars-ams-5731-5732-5734-5737-5525-5858",
