@@ -37,12 +37,12 @@ export function WatermarkedImage({
         <img
           src="/images/logo.png"
           alt=""
-          className="w-[60%] h-auto object-contain opacity-40 transform -rotate-12"
+          className="w-[60%] h-auto object-contain opacity-42 transform -rotate-12"
         />
       </div>
 
       {/* ✅ Watermark 2 — Top-Left Small Logo */}
-      {/* <div className="absolute top-12 left-3 pointer-events-none select-none z-10">
+      <div className="absolute bottom-2 right-3 pointer-events-none select-none z-10">
         <div className="bg-white/90 backdrop-blur-md px-3 py-2 rounded-sm shadow-md border border-gray-200">
           <img
             src="/images/logo.png"
@@ -50,7 +50,7 @@ export function WatermarkedImage({
             className="w-16 h-10 object-contain"
           />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

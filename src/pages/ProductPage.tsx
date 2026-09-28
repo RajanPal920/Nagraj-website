@@ -40,28 +40,17 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
 
 const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
 
-// ─── Strict Related Products ──────────────────────────────────────────────
+// ─── Strict Related Products — ONLY same product_type ────────────────────
 function getRelatedProducts(
   current: ScrapedProduct,
   all: ScrapedProduct[],
-  limit = 6,
+  limit = 8,
 ): ScrapedProduct[] {
-  const sameType = all.filter(
-    (p) => p.slug !== current.slug && p.product_type === current.product_type,
-  );
-
-  if (sameType.length < limit) {
-    const sameCategory = all.filter(
-      (p) =>
-        p.slug !== current.slug &&
-        p.product_type !== current.product_type &&
-        p.category === current.category &&
-        !sameType.find((r) => r.slug === p.slug),
-    );
-    return [...sameType, ...sameCategory].slice(0, limit);
-  }
-
-  return sameType.slice(0, limit);
+  return all
+    .filter(
+      (p) => p.slug !== current.slug && p.product_type === current.product_type,
+    )
+    .slice(0, limit);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

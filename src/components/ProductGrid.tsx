@@ -63,6 +63,66 @@ const TYPE_ICONS: Record<string, React.ElementType> = {
   Coil: Package,
 };
 
+// ─── Card image mapping by product card name (from /public/images/) ─────────
+const CARD_IMAGE_BY_NAME: Record<string, string> = {
+  "Round Bars": "/images/bar.jpg",
+  Bar: "/images/bar.jpg",
+  Bars: "/images/bar.jpg",
+  "Pipes & Tubes": "/images/pipe.jpg",
+  Pipe: "/images/pipe.jpg",
+  Pipes: "/images/pipe.jpg",
+  "Plates & Sheets": "/images/sheet.jpg",
+  Plate: "/images/sheet.jpg",
+  Plates: "/images/sheet.jpg",
+  Sheet: "/images/sheet.jpg",
+  Sheets: "/images/sheet.jpg",
+  Flanges: "/images/flange.jpg",
+  Flange: "/images/flange.jpg",
+  Fasteners: "/images/fasteners.jpg",
+  Fastener: "/images/fasteners.jpg",
+  Fittings: "/images/fitting.jpg",
+  Fitting: "/images/fitting.jpg",
+  Forgings: "/images/forging.jpg",
+  Forging: "/images/forging.jpg",
+  "Welding Electrodes": "/images/Welding-Electrodes.jpg",
+  "Welding Wire": "/images/Welding-Electrodes.jpg",
+  "Welding Wires": "/images/Welding-Electrodes.jpg",
+  Galvanized: "/images/Galvanized.jpg",
+  Pins: "/images/Pins.jpg",
+  Pin: "/images/Pins.jpg",
+  "Hollow Sections": "/images/hollow.jpg",
+  "Hollow Section": "/images/hollow.jpg",
+  "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
+};
+
+const getProductCardImage = (
+  cardName: string,
+  type: string,
+  fallback?: string,
+): string => {
+  if (CARD_IMAGE_BY_NAME[cardName]) return CARD_IMAGE_BY_NAME[cardName];
+  if (CARD_IMAGE_BY_NAME[type]) return CARD_IMAGE_BY_NAME[type];
+
+  const lower = (cardName || type || "").toLowerCase().trim();
+  if (lower.includes("round bar") || lower.includes("bar"))
+    return "/images/bar.jpg";
+  if (lower.includes("pipe") || lower.includes("tube"))
+    return "/images/pipe.jpg";
+  if (lower.includes("plate") || lower.includes("sheet"))
+    return "/images/sheet.jpg";
+  if (lower.includes("flange")) return "/images/flange.jpg";
+  if (lower.includes("fastener")) return "/images/fasteners.jpg";
+  if (lower.includes("fitting")) return "/images/fitting.jpg";
+  if (lower.includes("forging")) return "/images/forging.jpg";
+  if (lower.includes("weld")) return "/images/Welding-Electrodes.jpg";
+  if (lower.includes("pin")) return "/images/Pins.jpg";
+  if (lower.includes("galvaniz")) return "/images/Galvanized.jpg";
+  if (lower.includes("hollow")) return "/images/hollow.jpg";
+  if (lower.includes("tool steel")) return "/images/Cold-Work-Tool-Steels.jpg";
+
+  return fallback || "/images/bar.jpg";
+};
+
 const getDisplayLabel = (type: string): string => {
   return TYPE_TO_DISPLAY[type] || type;
 };
@@ -215,13 +275,17 @@ export function ProductGrid() {
                 const Icon = getIcon(type);
                 const count = getProductCountForType(type);
                 const sampleProduct = getSampleProductForType(type);
-                const image = sampleProduct
-                  ? getProductImage(
-                      sampleProduct.product_type,
-                      sampleProduct.category,
-                      sampleProduct.title,
-                    )
-                  : getProductImage(type, undefined, type);
+                const image = getProductCardImage(
+                  displayLabel,
+                  type,
+                  sampleProduct
+                    ? getProductImage(
+                        sampleProduct.product_type,
+                        sampleProduct.category,
+                        sampleProduct.title,
+                      )
+                    : getProductImage(type, undefined, type),
+                );
                 const navType = displayLabel;
                 const groups = typeTree[type] || [];
                 const topGroups = groups.map((g) => g.group).slice(0, 3);
