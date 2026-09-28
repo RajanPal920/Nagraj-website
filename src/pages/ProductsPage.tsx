@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getProducts } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 import { ProductsSidebar } from "../components/ProductsSidebar";
-import { WatermarkedImage } from "../components/WatermarkedImage";
+// import { WatermarkedImage } from "../components/WatermarkedImage";
 import {
   ChevronRight,
   Search,
@@ -513,12 +513,12 @@ export function ProductsPage() {
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <div className="aspect-[4/3] bg-gray-100 relative">
-                    <WatermarkedImage
+                    {/* <WatermarkedImage
                       src={cat.image}
                       alt={cat.name}
                       className="w-full h-full"
                       imgClassName="group-hover:scale-[1.03] transition-transform duration-500"
-                    />
+                    /> */}
                     {/* Category index badge */}
                     <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20 z-20">
                       {String(idx + 1).padStart(2, "0")}
@@ -761,12 +761,12 @@ export function ProductsPage() {
                         className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
                       >
                         <div className="aspect-[4/3] bg-[#F7F7F7] relative">
-                          <WatermarkedImage
+                          {/* <WatermarkedImage
                             src={specializedData.image || PRODUCT_HERO_FALLBACK}
                             alt={subItem}
                             className="w-full h-full"
                             imgClassName="object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500"
-                          />
+                          /> */}
                           <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 z-20">
                             {specializedData.name}
                           </div>
@@ -886,12 +886,12 @@ export function ProductsPage() {
                           className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
                         >
                           <div className="aspect-[4/3] bg-[#F7F7F7] relative">
-                            <WatermarkedImage
+                            {/* <WatermarkedImage
                               src={img}
                               alt={title}
                               className="w-full h-full"
                               imgClassName="group-hover:scale-[1.03] transition-transform duration-500"
-                            />
+                            /> */}
                             {product.category && (
                               <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20 z-20">
                                 {product.category}
