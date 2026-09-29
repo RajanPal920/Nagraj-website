@@ -1,0 +1,357 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body text-brand-charcoal bg-white antialiased;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
+
+  /* --- MOBILE OVERFLOW FIX --- */
+  /* Prevent all elements from overflowing on mobile */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 sm:py-20 px-4 sm:px-8 lg:px-16 xl:px-24;
+  }
+
+  .container-xl {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-brand-red text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
+           hover:bg-brand-red-dark hover:text-white transition-all duration-300 shadow-lg
+           focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border-2 border-white text-white font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
+           hover:bg-white hover:text-brand-red transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2;
+  }
+
+  .btn-outline-red {
+    @apply inline-flex items-center gap-2 border-2 border-brand-red text-brand-red font-display font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-lg
+           hover:bg-brand-red hover:text-white transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
+  }
+
+  .section-label {
+    @apply text-brand-red font-display font-bold text-xs sm:text-sm uppercase tracking-[0.2em] mb-2 sm:mb-3;
+  }
+
+  .section-title {
+    @apply font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-brand-charcoal leading-tight;
+  }
+
+  .section-divider {
+    @apply w-12 sm:w-16 h-1 bg-brand-red mt-3 sm:mt-4 mb-4 sm:mb-6;
+  }
+
+  .card-base {
+    @apply bg-white rounded-lg border border-gray-100 shadow-card hover:shadow-card-hover
+           hover:-translate-y-1 hover:border-brand-red/30 transition-all duration-300;
+  }
+
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg rounded-lg;
+  }
+
+  /* --- GRADE NAMES CONTAINER (FIX) --- */
+  .grade-bar {
+    @apply flex flex-wrap items-center gap-1 sm:gap-2 max-w-full overflow-hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .grade-bar .grade-item {
+    @apply inline-block px-1.5 sm:px-2 py-0.5 text-xs sm:text-sm font-medium;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+
+  /* --- PRODUCT HEADER FIX --- */
+  .product-header {
+    @apply w-full overflow-hidden;
+  }
+
+  .product-header .product-title {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* --- STEEL TEXTURE OVERLAY - REMOVED --- */
+
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-red rounded-full;
+}
+
+/* --- NAV UNDERLINE EFFECT --- */
+.nav-link {
+  @apply relative text-sm font-body font-semibold tracking-wide transition-colors duration-200;
+}
+.nav-link::after {
+  content: "";
+  @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-red transition-all duration-300;
+}
+.nav-link:hover::after {
+  @apply w-full;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revealLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bgPan {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes chevronBounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  /* --- DYNAMIC VIEWPORT HEIGHT --- */
+  .h-dvh {
+    height: 100dvh;
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+
+  @supports not (height: 100dvh) {
+    .h-dvh {
+      height: 100vh;
+    }
+    .min-h-dvh {
+      min-height: 100vh;
+    }
+  }
+
+  /* --- ANIMATION UTILITIES --- */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  .animate-reveal-left {
+    animation: revealLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  .animate-bg-pan {
+    animation: bgPan 20s ease-in-out infinite alternate;
+  }
+
+  .animate-chevron {
+    animation: chevronBounce 2s infinite;
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  /* --- STAGGER DELAYS --- */
+  .stagger-1 {
+    animation-delay: 100ms;
+  }
+  .stagger-2 {
+    animation-delay: 200ms;
+  }
+  .stagger-3 {
+    animation-delay: 300ms;
+  }
+  .stagger-4 {
+    animation-delay: 400ms;
+  }
+  .stagger-5 {
+    animation-delay: 500ms;
+  }
+  .stagger-6 {
+    animation-delay: 600ms;
+  }
+
+  /* --- MOBILE TEXT UTILITIES --- */
+  .text-mobile-sm {
+    @apply text-xs sm:text-sm;
+  }
+  .text-mobile-base {
+    @apply text-sm sm:text-base;
+  }
+  .text-mobile-lg {
+    @apply text-base sm:text-lg;
+  }
+
+  /* --- MOBILE SPACING UTILITIES --- */
+  .gap-mobile-sm {
+    @apply gap-1.5 sm:gap-2;
+  }
+  .gap-mobile-base {
+    @apply gap-2 sm:gap-3;
+  }
+  .gap-mobile-lg {
+    @apply gap-3 sm:gap-4;
+  }
+
+  .p-mobile-sm {
+    @apply p-2 sm:p-3;
+  }
+  .p-mobile-base {
+    @apply p-3 sm:p-4;
+  }
+  .p-mobile-lg {
+    @apply p-4 sm:p-6;
+  }
+
+  /* --- MOBILE OVERFLOW FIX UTILITIES --- */
+  .overflow-fix {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .break-safe {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+
+  .no-overflow {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .wrap-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  /* --- GRADE NAME SPECIFIC --- */
+  .grade-name {
+    display: inline-block;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    padding: 0.125rem 0.25rem;
+  }
+
+  .grade-name-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* --- MOBILE MEDIA QUERY OVERRIDES --- */
+  @media (max-width: 640px) {
+    .grade-name {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.25rem;
+    }
+
+    .grade-name-container {
+      gap: 0.15rem 0.3rem;
+    }
+
+    .grade-bar .grade-item {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.3rem;
+    }
+  }
+}

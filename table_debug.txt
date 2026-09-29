@@ -1,0 +1,27 @@
+
+=== Table 0 ===
+  Row 0: ['Stainless Steel :', 'Grade: 304, 304L, 304H, 309, 309S, 316, 316L, 316H, 310, 310S, 317, 317L, 321, 347, 904L']
+  Class: table table-bordered
+
+=== Table 1 ===
+  Row 0: ['STANDARD', 'UNS', 'WNR.', 'AFNOR', 'EN', 'JIS', 'BS', 'GOST']
+  Row 1: ['SS 304', 'S30400', '1.4301', 'Z7CN18‐09', 'X5CrNi18-10', 'SUS 304', '304S31', '08Х18Н10']
+  Row 2: ['SS 304L', 'S30403', '1.4306/1.4307', 'Z3CN18‐10', 'X2CrNi18-9 / X2CrNi19-11', 'SUS 304L', '304S11', '03Х18Н11']
+  Row 3: ['SS 304H', 'S30409', '1.4301', '–', '–', '–', '–', '–']
+  Class: table table-bordered
+
+=== Table 2 ===
+  Row 0: ['Grade', 'C', 'Mn', 'Si', 'P', 'S', 'Cr', 'Ni', 'N']
+  Row 1: ['SS 304', '0.08 max', '2 max', '0.75 max', '0.045 max', '0.030 max', '18 – 20', '8 – 11', '–']
+  Row 2: ['SS 304L', '0.035 max', '2.0 max', '1.0 max', '0.045 max', '0.03 max', '18 – 20', '8 – 13', '–']
+  Row 3: ['SS 304H', '0.10 max', '2.0 max', '0.75 max', '0.045 max', '0.03 max', '18 – 20', '8 – 10.5', '–']
+  Class: table table-bordered
+
+=== Table 3 ===
+  Row 0: ['Grade', 'Density', 'Melting Point', 'Tensile Strength', 'Yield Strength (0.2%Offset)', 'Elongation']
+  Row 1: ['SS 304/304L/304H', '8.0 g/cm3', '1400 °C (2550 °F)', 'Psi – 75000, MPa – 515', 'Psi – 30000, MPa – 205', '40 %']
+  Class: table table-bordered
+
+=== Table 4 ===
+  Row 0: ['Monel :', 'Grade: Monel 400, Monel K500, Monel R-405', 'Nickel :', 'Grade: Nickel 200, Nickel 201', 'Inconel :', 'Grade: Inconel 600, Inconel 601, Inconel 625, Inconel 718', 'Incoloy :', 'Grade: Incoloy 800, Incoloy 800H, INCOLOY 800HT', 'Hastalloy :', 'Grade: Hastalloy B2, Hastalloy B3, Hastalloy C22, Hastalloy C276, Hastalloy X', 'Titanium :', 'Grade: Gr1, Gr2, Gr3, Gr5, Gr7, Gr11', 'Carbon Steel :', 'Grade: WPB , WPBW, WPHY 42, WPHY 46, WPHY 52, WPH 60, WPHY 65 & WPHY 70', 'Duplex Steel:']
+  Class: table table-bordered
