@@ -4,11 +4,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ChevronDown, Filter, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { PRODUCTS_MENU_DATA } from "./Header";
+<<<<<<< HEAD
 import {
   getFilteredProducts,
   canonicalType,
   canonicalCategory,
 } from "../data/products";
+=======
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
 // ─── SPECIALIZED MENU DATA ────────────────────────────────────────────────
 const SPECIALIZED_MENU_DATA: Record<
@@ -170,7 +173,11 @@ export function ProductsSidebar({
   currentType,
   currentCategory,
   isSpecialized = false,
+<<<<<<< HEAD
   productCount: _productCount = 0,
+=======
+  productCount = 0,
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   allProducts = [],
 }: ProductsSidebarProps) {
   const [searchParams] = useSearchParams();
@@ -180,7 +187,11 @@ export function ProductsSidebar({
   const currentMenu = isSpecialized
     ? null
     : PRODUCTS_MENU_DATA.find(
+<<<<<<< HEAD
         (item) => canonicalType(item.name) === canonicalType(currentType || ""),
+=======
+        (item) => item.name.toLowerCase() === (currentType || "").toLowerCase(),
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
       );
 
   // ─── Sub-items build karo ────────────────────────────────────────
@@ -224,8 +235,33 @@ export function ProductsSidebar({
       return allProducts.filter((p) => isSpecializedMatch(p, categoryName));
     }
 
+<<<<<<< HEAD
     // Regular mode — generic, strict, normalized matching
     return getFilteredProducts(allProducts, currentType, categoryName);
+=======
+    // Regular mode
+    return allProducts.filter((p) => {
+      const pType = (p.product_type || "").toLowerCase();
+      const pCat = (p.category || "").toLowerCase();
+      const pTitle = (p.title || "").toLowerCase();
+      const catLower = categoryName.toLowerCase();
+
+      const typeMatch = pType.includes((currentType || "").toLowerCase());
+      if (!typeMatch) return false;
+
+      return (
+        pCat === catLower ||
+        pCat.includes(catLower) ||
+        pTitle.includes(catLower) ||
+        (p.material_grades || []).some((g: string) =>
+          g.toLowerCase().includes(catLower),
+        ) ||
+        (p.equivalent_grades || []).some((g: string) =>
+          g.toLowerCase().includes(catLower),
+        )
+      );
+    });
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   };
 
   const buildUrl = (newCategory?: string) => {
@@ -377,6 +413,7 @@ export function ProductsSidebar({
 
                 {/* Sub-items */}
                 {subItems.map((subItem) => {
+<<<<<<< HEAD
                   const isCurrentLabel =
                     canonicalCategory(currentCategory || "") ===
                     canonicalCategory(subItem.label);
@@ -395,17 +432,31 @@ export function ProductsSidebar({
                     : isChildActive && currentCategory
                       ? getProductsForCategory(currentCategory)
                       : [];
+=======
+                  const isActive = currentCategory === subItem.label;
+                  const hasNested = subItem.nested && subItem.nested.length > 0;
+
+                  const subItemProducts = isActive
+                    ? getProductsForCategory(subItem.label)
+                    : [];
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
                   return (
                     <li key={subItem.label}>
                       <Link
                         to={buildUrl(subItem.label)}
                         className={`block px-3 py-2 text-[13px] rounded-md transition-colors ${
+<<<<<<< HEAD
                           isCurrentLabel
                             ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
                             : isChildActive
                               ? "text-[#e63946] font-medium hover:bg-gray-100"
                               : "text-gray-700 hover:bg-gray-100 hover:text-[#e63946]"
+=======
+                          isActive
+                            ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
+                            : "text-gray-700 hover:bg-gray-100 hover:text-[#e63946]"
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         }`}
                       >
                         <span className="flex items-start justify-between gap-2">
@@ -418,14 +469,19 @@ export function ProductsSidebar({
                           {hasNested && (
                             <ChevronRight
                               size={12}
+<<<<<<< HEAD
                               className={`text-gray-400 mt-1 flex-shrink-0 transition-transform ${
                                 isExpanded ? "rotate-90 text-[#e63946]" : ""
                               }`}
+=======
+                              className="text-gray-400 mt-1 flex-shrink-0"
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                             />
                           )}
                         </span>
                       </Link>
 
+<<<<<<< HEAD
                       {/* NESTED SUB-ITEMS (shown when parent or child is active) */}
                       {hasNested && isExpanded && (
                         <ul className="ml-5 mt-1 space-y-0.5 border-l-2 border-gray-200 pl-3">
@@ -453,6 +509,26 @@ export function ProductsSidebar({
 
                       {/* INLINE PRODUCTS (only for categories without nested sub-items) */}
                       {!hasNested && isExpanded && subItemProducts.length > 0 && (
+=======
+                      {/* NESTED SUB-ITEMS (shown when parent is active) */}
+                      {hasNested && isActive && (
+                        <ul className="ml-5 mt-1 space-y-0.5 border-l-2 border-gray-200 pl-3">
+                          {subItem.nested!.map((nestedItem) => (
+                            <li key={nestedItem}>
+                              <Link
+                                to={buildUrl(nestedItem)}
+                                className="block px-3 py-1.5 text-[12px] rounded-md transition-colors text-gray-600 hover:bg-gray-100 hover:text-[#e63946]"
+                              >
+                                {nestedItem}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {/* INLINE PRODUCTS (shown when parent is active) */}
+                      {isActive && subItemProducts.length > 0 && (
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         <div className="ml-4 mt-2 mb-2">
                           <p className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-2 pl-2">
                             {subItemProducts.length}{" "}
@@ -488,7 +564,11 @@ export function ProductsSidebar({
                       )}
 
                       {/* Empty state */}
+<<<<<<< HEAD
                       {isCurrentLabel && !hasNested && subItemProducts.length === 0 && (
+=======
+                      {isActive && subItemProducts.length === 0 && (
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         <div className="ml-4 mt-2 mb-2 pl-2">
                           <p className="text-[11px] text-gray-400 italic">
                             No products available yet

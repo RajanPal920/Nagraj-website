@@ -78,6 +78,7 @@ export const products: ProductInfo[] = [
   },
 ];
 
+<<<<<<< HEAD
 export type ProductImageItem =
   | string
   | {
@@ -86,6 +87,8 @@ export type ProductImageItem =
       [key: string]: any;
     };
 
+=======
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 export interface ScrapedProduct {
   url: string;
   title: string;
@@ -123,13 +126,21 @@ export interface ScrapedProduct {
     items: string[];
   }>;
   current_stock?: any;
+<<<<<<< HEAD
   images?: Array<ProductImageItem>;
+=======
+  images: Array<{
+    url: string;
+    alt: string;
+  }>;
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   attachments: string[];
   scraped_at: string;
   status: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+<<<<<<< HEAD
 // DATA-DRIVEN PRODUCT IMAGE HELPERS (SINGLE SOURCE OF TRUTH: product.images)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -233,6 +244,12 @@ export function getProductGallery(
 // Maps all aliases and forms of a product type to its canonical display name
 // ═══════════════════════════════════════════════════════════════════════════
 export const normalizeProductType = (type: string): string => {
+=======
+// NORMALIZE PRODUCT TYPE
+// Sirf product shape normalize karo — material/category nahi
+// ═══════════════════════════════════════════════════════════════════════════
+const normalizeProductType = (type: string): string => {
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   if (!type) return type;
   const trimmed = type.trim();
   const lower = trimmed.toLowerCase();
@@ -246,14 +263,18 @@ export const normalizeProductType = (type: string): string => {
     rods: "Round Bars",
     roundbar: "Round Bars",
     roundbars: "Round Bars",
+<<<<<<< HEAD
     "round bar": "Round Bars",
     "round bars": "Round Bars",
+=======
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
     // Pipes
     pipe: "Pipes & Tubes",
     pipes: "Pipes & Tubes",
     tube: "Pipes & Tubes",
     tubes: "Pipes & Tubes",
+<<<<<<< HEAD
     "pipe & tube": "Pipes & Tubes",
     "pipe & tubes": "Pipes & Tubes",
     "pipes & tube": "Pipes & Tubes",
@@ -262,6 +283,8 @@ export const normalizeProductType = (type: string): string => {
     "pipe and tubes": "Pipes & Tubes",
     "pipes and tube": "Pipes & Tubes",
     "pipes and tubes": "Pipes & Tubes",
+=======
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
     // Plates
     plate: "Plates & Sheets",
@@ -270,6 +293,7 @@ export const normalizeProductType = (type: string): string => {
     sheets: "Plates & Sheets",
     coil: "Plates & Sheets",
     coils: "Plates & Sheets",
+<<<<<<< HEAD
     "plate & sheet": "Plates & Sheets",
     "plate & sheets": "Plates & Sheets",
     "plates & sheet": "Plates & Sheets",
@@ -278,6 +302,8 @@ export const normalizeProductType = (type: string): string => {
     "plate and sheets": "Plates & Sheets",
     "plates and sheet": "Plates & Sheets",
     "plates and sheets": "Plates & Sheets",
+=======
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
     // Flanges
     flange: "Flanges",
@@ -330,10 +356,19 @@ export const normalizeProductType = (type: string): string => {
   };
 
   if (TYPE_MAP[lower]) return TYPE_MAP[lower];
+<<<<<<< HEAD
+=======
+
+  // ⚠️ IMPORTANT: Partial match HATA diya — warna "Carbon Steel" jaisa
+  // material name bhi "Bar" se match kar jaayega aur galat normalize hoga
+
+  // Agar exact match nahi mila, toh trimmed value as-is return karo
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   return trimmed;
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+<<<<<<< HEAD
 // STRING NORMALIZATION UTILITIES
 // ═══════════════════════════════════════════════════════════════════════════
 export const normalize = (value: string): string =>
@@ -452,6 +487,18 @@ export function getFilteredProducts(
   });
 }
 
+=======
+// NORMALIZE CATEGORY — RAW PRESERVE
+// Category ko touch mat karo, warna "Carbon Steel" jaise materials ka
+// original meaning lost ho jaayega. Ye already clean hain products.json me.
+// ═══════════════════════════════════════════════════════════════════════════
+const normalizeCategory = (category: string): string => {
+  if (!category) return category;
+  // Sirf trim karo, kuch aur mat karo
+  return category.trim();
+};
+
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 // ── Module-level product data ──────────────────────────────────────────────
 
 let productsCache: ScrapedProduct[] | null = null;
@@ -570,12 +617,20 @@ export function getAllProductTypes(): string[] {
 /**
  * Get products by category.
  */
+<<<<<<< HEAD
 /**
  * Get products by category.
  */
 export function getProductsByCategory(category: string): ScrapedProduct[] {
   const products = getProducts();
   return getFilteredProducts(products, null, category);
+=======
+export function getProductsByCategory(category: string): ScrapedProduct[] {
+  const products = getProducts();
+  return products.filter(
+    (p) => p.category?.toLowerCase() === category.toLowerCase(),
+  );
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 }
 
 /**
@@ -583,19 +638,55 @@ export function getProductsByCategory(category: string): ScrapedProduct[] {
  */
 export function getProductsByType(type: string): ScrapedProduct[] {
   const products = getProducts();
+<<<<<<< HEAD
   return getFilteredProducts(products, type, null);
+=======
+  return products.filter(
+    (p) => p.product_type?.toLowerCase() === type.toLowerCase(),
+  );
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 }
 
 /**
  * Get products by BOTH type AND category (AND condition).
+<<<<<<< HEAD
  * Data-driven, strict normalized matching.
+=======
+ * Ye function strict filtering ke liye use hoga.
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
  */
 export function getProductsByTypeAndCategory(
   type: string,
   category: string,
 ): ScrapedProduct[] {
   const products = getProducts();
+<<<<<<< HEAD
   return getFilteredProducts(products, type, category);
+=======
+  const typeLower = type.toLowerCase().trim();
+  const catLower = category.toLowerCase().trim();
+
+  return products.filter((p) => {
+    const pType = (p.product_type || "").toLowerCase().trim();
+    if (pType !== typeLower) return false;
+
+    const pCat = (p.category || "").toLowerCase().trim();
+    const pTitle = (p.title || "").toLowerCase().trim();
+
+    // Category match — multiple fields me check
+    return (
+      pCat === catLower ||
+      pCat.includes(catLower) ||
+      pTitle.includes(catLower) ||
+      (p.material_grades || []).some((g) =>
+        g.toLowerCase().includes(catLower),
+      ) ||
+      (p.equivalent_grades || []).some((g) =>
+        g.toLowerCase().includes(catLower),
+      )
+    );
+  });
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 }
 
 /**

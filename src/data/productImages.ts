@@ -378,6 +378,7 @@ export const DEFAULT_PRODUCT_IMAGE = '/images/products/ss-bar.jpg';
  *
  * Always safe to use — never returns an external or watermarked URL.
  */
+<<<<<<< HEAD
 import { getProducts, getProductPrimaryImage } from "./products";
 
 export function getProductImage(productType: string, category?: string, title?: string): string {
@@ -408,6 +409,9 @@ export function getProductImage(productType: string, category?: string, title?: 
     }
   }
 
+=======
+export function getProductImage(productType: string, category?: string, title?: string): string {
+>>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   const visualType = title ? inferVisualType(title, productType) : productType;
 
   if (category) {
