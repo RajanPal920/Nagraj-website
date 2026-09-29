@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getProducts } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 import { ProductsSidebar } from "../components/ProductsSidebar";
-// import { WatermarkedImage } from "../components/WatermarkedImage";
+import { WatermarkedImage } from "../components/WatermarkedImage";
 import {
   ChevronRight,
   Search,
@@ -317,6 +317,11 @@ export function ProductsPage() {
   const categoryFilter = searchParams.get("category");
   const isSpecialized = searchParams.get("specialized") === "true";
 
+  const isPipesAndTubesRoute =
+    typeFilter?.toLowerCase() === "pipes & tubes" ||
+    typeFilter?.toLowerCase() === "pipe" ||
+    typeFilter?.toLowerCase() === "pipes";
+
   const [allProducts, setAllProducts] = useState<ScrapedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -504,39 +509,49 @@ export function ProductsPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
               {CATEGORY_CARDS.map((cat, idx) => (
                 <Link
                   key={cat.name}
                   to={`/products?type=${encodeURIComponent(cat.slug)}`}
-                  className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                  className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
-                  <div className="aspect-[4/3] bg-gray-100 relative">
-                    {/* <WatermarkedImage
+                  <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
+                    <WatermarkedImage
                       src={cat.image}
                       alt={cat.name}
+                      fallbackSrc="/images/pipe.jpg"
+                      showWatermark={!cat.slug.toLowerCase().includes("pipe")}
                       className="w-full h-full"
-                      imgClassName="group-hover:scale-[1.03] transition-transform duration-500"
-                    /> */}
+                      imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
                     {/* Category index badge */}
-                    <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20 z-20">
+                    <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[#8B1A1A]/20 shadow-xs z-20">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors mb-2 leading-tight uppercase tracking-wide">
-                      {cat.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-4">
-                      {cat.description}
-                    </p>
-                    <div className="mt-auto flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#8B1A1A]">
-                      Explore
-                      <ArrowRight
-                        className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200"
-                        strokeWidth={2.5}
-                      />
+                  <div className="p-5 flex flex-col flex-1 justify-between bg-white">
+                    <div>
+                      <h3 className="font-display font-bold text-base text-gray-900 group-hover:text-[#8B1A1A] transition-colors duration-200 mb-2 leading-tight uppercase tracking-wide">
+                        {cat.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 min-h-[2rem]">
+                        {cat.description}
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-3.5 border-t border-gray-100 flex items-center justify-between">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                        Catalogue
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8B1A1A] group-hover:text-[#6F1414] transition-colors uppercase tracking-wider">
+                        Explore
+                        <ArrowRight
+                          className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200"
+                          strokeWidth={2.5}
+                        />
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -753,39 +768,51 @@ export function ProductsPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
                     {specializedData?.subItems?.map((subItem, idx) => (
                       <Link
                         key={subItem}
                         to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
-                        className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                        className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
                       >
-                        <div className="aspect-[4/3] bg-[#F7F7F7] relative">
-                          {/* <WatermarkedImage
+                        <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
+                          <WatermarkedImage
                             src={specializedData.image || PRODUCT_HERO_FALLBACK}
                             alt={subItem}
+                            fallbackSrc={PRODUCT_HERO_FALLBACK}
                             className="w-full h-full"
-                            imgClassName="object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500"
-                          /> */}
-                          <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 z-20">
+                            imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+                          <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs z-20">
                             {specializedData.name}
                           </div>
-                          <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20 z-20">
+                          <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[#8B1A1A]/20 shadow-xs z-20">
                             {String(idx + 1).padStart(2, "0")}
                           </span>
                         </div>
-                        <div className="p-5 flex flex-col flex-1">
-                          <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-4 uppercase tracking-wide leading-tight">
-                            {subItem}
-                          </h3>
-                          <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
+                        <div className="p-5 flex flex-col flex-1 justify-between bg-white">
+                          <div>
+                            <h3 className="font-display font-bold text-sm text-gray-900 group-hover:text-[#8B1A1A] transition-colors duration-200 line-clamp-2 min-h-[2.5rem] mb-2 uppercase tracking-wide leading-snug">
+                              {subItem}
+                            </h3>
+                            <div className="min-h-[24px] mb-3">
+                              <span className="inline-block text-[10px] font-medium text-gray-500 bg-gray-50 border border-gray-200/80 px-2 py-0.5 rounded uppercase tracking-wider">
+                                Industrial Grade
+                              </span>
+                            </div>
+                          </div>
+                          <div className="mt-auto pt-3.5 border-t border-gray-100 flex items-center justify-between">
                             <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
-                              View Details
+                              View Grade
                             </span>
-                            <ArrowRight
-                              className="w-3.5 h-3.5 text-[#8B1A1A] group-hover:translate-x-1 transition-transform duration-200"
-                              strokeWidth={2.5}
-                            />
+                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8B1A1A] group-hover:text-[#6F1414] transition-colors uppercase tracking-wider">
+                              View Details
+                              <ArrowRight
+                                className="w-3.5 h-3.5 text-[#8B1A1A] group-hover:translate-x-1 transition-transform duration-200"
+                                strokeWidth={2.5}
+                              />
+                            </span>
                           </div>
                         </div>
                       </Link>
@@ -869,7 +896,7 @@ export function ProductsPage() {
                   </div>
 
                   {/* Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                     {filteredProducts.map((product, idx) => {
                       const title = product.title || product.slug;
                       const productImg = product.images?.[0]?.url;
@@ -879,63 +906,94 @@ export function ProductsPage() {
                         PRODUCT_HERO_FALLBACK;
                       const img = productImg || categoryImg;
 
+                      const isPipeProduct =
+                        isPipesAndTubesRoute ||
+                        product.product_type?.toLowerCase().includes("pipe") ||
+                        product.category?.toLowerCase().includes("pipe");
+
                       return (
                         <Link
                           key={product.slug}
                           to={`/product/${product.slug}`}
-                          className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-300 flex flex-col overflow-hidden"
+                          id={`product-card-${product.slug}`}
+                          className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
                         >
-                          <div className="aspect-[4/3] bg-[#F7F7F7] relative">
-                            {/* <WatermarkedImage
+                          {/* Image Container - Exact Fixed Height across all cards */}
+                          <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
+                            <WatermarkedImage
                               src={img}
                               alt={title}
+                              fallbackSrc={categoryImg}
+                              showWatermark={!isPipeProduct}
                               className="w-full h-full"
-                              imgClassName="group-hover:scale-[1.03] transition-transform duration-500"
-                            /> */}
+                              imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                            />
+
+                            {/* Subtle dark gradient overlay on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+
+                            {/* Category Badge */}
                             {product.category && (
-                              <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-[#8B1A1A]/20 z-20">
+                              <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-[#8B1A1A]/20 shadow-xs z-20">
                                 {product.category}
                               </span>
                             )}
-                            <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-gray-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-gray-200 z-20">
+
+                            {/* Product Index Number */}
+                            <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-gray-600 font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-gray-200/80 shadow-xs z-20">
                               {String(idx + 1).padStart(2, "0")}
                             </span>
                           </div>
 
-                          <div className="p-5 flex flex-col flex-1">
-                            <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-3 leading-snug">
-                              {title}
-                            </h3>
+                          {/* Card Content - Uniform Heights & Alignment */}
+                          <div className="p-5 flex flex-col flex-1 justify-between bg-white">
+                            <div>
+                              {/* Title with exact 2-line clamp and min-height for uniform alignment */}
+                              <h3 className="font-display font-bold text-sm text-gray-900 group-hover:text-[#8B1A1A] transition-colors duration-200 line-clamp-2 min-h-[2.75rem] leading-snug mb-3">
+                                {title}
+                              </h3>
 
-                            {product.material_grades &&
-                              product.material_grades.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5 mb-4">
-                                  {product.material_grades
-                                    .slice(0, 2)
-                                    .map((g, i) => (
-                                      <span
-                                        key={i}
-                                        className="text-[10px] bg-white text-gray-700 px-2 py-0.5 border border-gray-200 font-medium uppercase tracking-wide"
-                                      >
-                                        {g}
+                              {/* Material Grades / Spec Pills - Fixed min-height so cards with & without grades align identically */}
+                              <div className="min-h-[28px] mb-3 flex items-center flex-wrap gap-1.5">
+                                {product.material_grades &&
+                                product.material_grades.length > 0 ? (
+                                  <>
+                                    {product.material_grades
+                                      .slice(0, 2)
+                                      .map((g, i) => (
+                                        <span
+                                          key={i}
+                                          className="text-[10px] bg-gray-50 text-gray-700 px-2 py-0.5 rounded border border-gray-200/80 font-medium uppercase tracking-wide"
+                                        >
+                                          {g}
+                                        </span>
+                                      ))}
+                                    {product.material_grades.length > 2 && (
+                                      <span className="text-[10px] text-gray-400 font-medium px-1">
+                                        +{product.material_grades.length - 2} more
                                       </span>
-                                    ))}
-                                  {product.material_grades.length > 2 && (
-                                    <span className="text-[10px] text-gray-400 px-2 py-0.5 font-medium">
-                                      +{product.material_grades.length - 2}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
+                                    )}
+                                  </>
+                                ) : (
+                                  <span className="text-[10px] text-gray-400 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded font-medium uppercase tracking-wide">
+                                    Certified Industrial Grade
+                                  </span>
+                                )}
+                              </div>
+                            </div>
 
-                            <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
-                              <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
-                                {product.product_type}
-                              </span>
-                              <span className="text-[#8B1A1A] text-[11px] font-bold flex items-center gap-1 uppercase tracking-wider">
-                                View
+                            {/* Footer with Divider */}
+                            <div className="mt-auto pt-3.5 border-t border-gray-100 flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#8B1A1A] shrink-0" />
+                                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">
+                                  {product.product_type}
+                                </span>
+                              </div>
+                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#8B1A1A] group-hover:text-[#6F1414] transition-colors uppercase tracking-wider shrink-0 ml-2">
+                                View Product
                                 <ArrowRight
-                                  className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200"
+                                  className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200"
                                   strokeWidth={2.5}
                                 />
                               </span>

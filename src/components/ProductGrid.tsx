@@ -5,7 +5,6 @@ import { ArrowRight, Package, Award, Shield, Zap } from "lucide-react";
 import { useProducts } from "../hooks/useProducts";
 import { getProductImage } from "../data/productImages";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
-import { getTypeDisplayLabel } from "../data/categoryConfig";
 import { getProducts } from "../data/products";
 
 // ─── Type to display label mapping ──────────────────────────────────────────
@@ -268,7 +267,7 @@ export function ProductGrid() {
               No product types available
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
               {limitedProductTypes.map((type, index) => {
                 const displayLabel = getDisplayLabel(type);
                 const description = getDescription(type);
@@ -296,20 +295,23 @@ export function ProductGrid() {
                     to={`/products?type=${encodeURIComponent(navType)}`}
                     id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}`}
                     className={`
-                      group block bg-white rounded-2xl overflow-hidden 
+                      group flex flex-col h-full bg-white rounded-2xl overflow-hidden 
                       shadow-sm hover:shadow-2xl transition-all duration-500 
                       border border-gray-100 hover:border-brand-red/30 
                       hover:-translate-y-2 relative
                       ${gridVisible ? `animate-fade-in-up stagger-${(index % 4) + 1}` : "opacity-0"}
                     `}
                   >
-                    {/* Image Section - Increased height */}
-                    <div className="relative h-52 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                    {/* Image Section - Fixed height */}
+                    <div className="relative h-52 w-full shrink-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                       <img
                         src={image}
                         alt={displayLabel}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/bar.jpg";
+                        }}
                       />
 
                       {/* Premium Gradient Overlay */}
@@ -344,35 +346,43 @@ export function ProductGrid() {
                     </div>
 
                     {/* Content Section - Increased padding */}
-                    <div className="p-5">
-                      {/* Title */}
-                      <h3 className="font-display font-bold text-lg text-brand-charcoal group-hover:text-brand-red transition-colors duration-300">
-                        {displayLabel}
-                      </h3>
+                    <div className="p-5 flex flex-col flex-1 justify-between">
+                      <div>
+                        {/* Title */}
+                        <h3 className="font-display font-bold text-lg text-brand-charcoal group-hover:text-brand-red transition-colors duration-300">
+                          {displayLabel}
+                        </h3>
 
-                      {/* Description */}
-                      <p className="font-body text-sm text-gray-500 mt-1.5 leading-relaxed line-clamp-2">
-                        {description}
-                      </p>
+                        {/* Description */}
+                        <p className="font-body text-sm text-gray-500 mt-1.5 leading-relaxed line-clamp-2 min-h-[2.5rem]">
+                          {description}
+                        </p>
 
-                      {/* Grades / Materials */}
-                      {topGroups.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {topGroups.map((g) => (
-                            <span
-                              key={g}
-                              className="text-[10px] font-medium text-brand-red bg-brand-red/8 px-2.5 py-0.5 rounded-full border border-brand-red/10"
-                            >
-                              {g}
-                            </span>
-                          ))}
-                          {topGroups.length < 3 && (
-                            <span className="text-[10px] font-medium text-gray-400 px-2.5 py-0.5">
-                              + More
+                        {/* Grades / Materials */}
+                        <div className="min-h-[26px] mt-3 flex flex-wrap gap-1.5">
+                          {topGroups.length > 0 ? (
+                            <>
+                              {topGroups.map((g) => (
+                                <span
+                                  key={g}
+                                  className="text-[10px] font-medium text-brand-red bg-brand-red/8 px-2.5 py-0.5 rounded-full border border-brand-red/10"
+                                >
+                                  {g}
+                                </span>
+                              ))}
+                              {topGroups.length < 3 && (
+                                <span className="text-[10px] font-medium text-gray-400 px-2.5 py-0.5">
+                                  + More
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-[10px] font-medium text-gray-400 py-0.5">
+                              Premium Steel Grades
                             </span>
                           )}
                         </div>
-                      )}
+                      </div>
 
                       {/* Premium Divider */}
                       <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">

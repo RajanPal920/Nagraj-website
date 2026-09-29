@@ -129,47 +129,64 @@ function RelatedCard({
 }) {
   const title = product.title || product.slug;
   const img = product.images?.[0]?.url || fallbackImage;
+  const isPipeRelated =
+    product.product_type?.toLowerCase().includes("pipe") ||
+    product.category?.toLowerCase().includes("pipe");
 
   return (
     <Link
       to={`/product/${product.slug}`}
-      className="group bg-white border border-gray-200 hover:border-[#8B1A1A] transition-all duration-200 flex flex-col overflow-hidden"
+      className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
     >
-      {/* Image with watermark */}
-      <div className="aspect-[4/3] bg-gray-50 relative">
+      {/* Image with watermark - uniform fixed height */}
+      <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
         <WatermarkedImage
           src={img}
           alt={title}
+          fallbackSrc={fallbackImage}
+          showWatermark={!isPipeRelated}
           className="w-full h-full"
-          imgClassName="group-hover:scale-[1.03] transition-transform duration-300"
+          imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
         {product.category && (
-          <span className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 border border-[#8B1A1A]/20">
+          <span className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-sm text-[#8B1A1A] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-[#8B1A1A]/20 shadow-xs">
             {product.category}
           </span>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-2 leading-snug">
-          {title}
-        </h3>
+      <div className="p-4 flex flex-col flex-1 justify-between bg-white">
+        <div>
+          <h3 className="font-display font-bold text-sm text-gray-900 group-hover:text-[#8B1A1A] transition-colors line-clamp-2 min-h-[2.5rem] mb-2 leading-snug">
+            {title}
+          </h3>
 
-        {product.material_grades && product.material_grades.length > 0 && (
-          <p className="text-[11px] text-gray-500 mb-3 line-clamp-1 uppercase tracking-wide">
-            {product.material_grades.slice(0, 2).join(" • ")}
-          </p>
-        )}
+          <div className="min-h-[20px] mb-3">
+            {product.material_grades && product.material_grades.length > 0 ? (
+              <p className="text-[11px] text-gray-500 line-clamp-1 uppercase tracking-wide">
+                {product.material_grades.slice(0, 2).join(" • ")}
+              </p>
+            ) : (
+              <p className="text-[11px] text-gray-400 uppercase tracking-wide">
+                Certified Grade
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
-          <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
-            {product.product_type}
-          </span>
-          <span className="text-[#8B1A1A] text-xs font-bold flex items-center gap-1">
-            View Product
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#8B1A1A] shrink-0" />
+            <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold truncate">
+              {product.product_type}
+            </span>
+          </div>
+          <span className="text-[#8B1A1A] group-hover:text-[#6F1414] text-xs font-bold flex items-center gap-1 uppercase tracking-wider shrink-0 ml-2">
+            View
             <ArrowRight
-              className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200"
+              className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200"
               strokeWidth={2.5}
             />
           </span>
@@ -317,6 +334,11 @@ export function ProductPage() {
                 <WatermarkedImage
                   src={mainImage}
                   alt={title}
+                  showWatermark={
+                    !product.product_type?.toLowerCase().includes("pipe") &&
+                    !product.category?.toLowerCase().includes("pipe") &&
+                    !slug?.toLowerCase().includes("pipe")
+                  }
                   className="absolute inset-0 w-full h-full"
                   imgClassName="object-cover object-center"
                 />
@@ -562,7 +584,7 @@ export function ProductPage() {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
               {relatedProducts.map((rp) => (
                 <RelatedCard
                   key={rp.slug}

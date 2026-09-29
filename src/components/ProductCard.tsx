@@ -11,12 +11,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
   return (
     <article
       id={`product-card-${product.id}`}
-      className="card-base flex flex-col group overflow-hidden"
+      className="card-base flex flex-col h-full group overflow-hidden"
       style={{ animationDelay: `${index * 80}ms` }}
       aria-label={`${product.name} — Nagraj Metal Industries product`}
     >
       {/* Image Header */}
-      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+      <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
         <img
           src={product.imageUrl}
           onError={(e) => {
@@ -29,7 +29,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         <div className="absolute inset-0 bg-brand-red-dark/10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
       </div>
 
-      <div className="p-7 flex flex-col flex-1">
+      <div className="p-7 flex flex-col flex-1 justify-between">
         {/* Name */}
         <h3 className="font-display font-bold text-lg text-brand-charcoal mb-2 group-hover:text-brand-red transition-colors duration-200">
           {product.name}
