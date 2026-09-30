@@ -267,7 +267,7 @@ export function ProductsSidebar({
             className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-[#e63946]" />
+              <Filter size={16} className="text-[#8B1A1A]" />
               <h3 className="text-base font-bold text-gray-900">
                 {isSpecialized
                   ? "Specialized Categories"
@@ -284,7 +284,7 @@ export function ProductsSidebar({
 
           {categoryDropdownOpen && (
             <div className="px-5 pb-4">
-              <div className="w-10 h-[3px] bg-[#e63946] rounded-full mb-4" />
+              <div className="w-10 h-[3px] bg-[#8B1A1A] rounded-full mb-4" />
 
               {isSpecialized ? (
                 <div className="relative">
@@ -296,7 +296,7 @@ export function ProductsSidebar({
                         val === "__all__" ? undefined : val,
                       );
                     }}
-                    className="w-full appearance-none bg-white border border-gray-300 rounded-md px-4 py-2.5 pr-10 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#e63946] cursor-pointer"
+                    className="w-full appearance-none bg-white border border-gray-300 rounded-md px-4 py-2.5 pr-10 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#8B1A1A] cursor-pointer"
                   >
                     <option value="__all__">All Specialized Products</option>
                     {Object.keys(SPECIALIZED_MENU_DATA).map((name) => (
@@ -315,7 +315,7 @@ export function ProductsSidebar({
                   <select
                     value={currentType || ""}
                     onChange={(e) => handleTypeChange(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-300 rounded-md px-4 py-2.5 pr-10 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#e63946] cursor-pointer"
+                    className="w-full appearance-none bg-white border border-gray-300 rounded-md px-4 py-2.5 pr-10 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#8B1A1A] cursor-pointer"
                   >
                     {PRODUCTS_MENU_DATA.map((item) => (
                       <option key={item.name} value={item.name}>
@@ -340,7 +340,7 @@ export function ProductsSidebar({
             className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <span className="text-[#e63946] text-xl font-bold leading-none">
+              <span className="text-[#8B1A1A] text-xl font-bold leading-none">
                 ≡
               </span>
               <h3 className="text-base font-bold text-gray-900">Products</h3>
@@ -355,7 +355,7 @@ export function ProductsSidebar({
 
           {productsDropdownOpen && (
             <div className="px-3 pb-4">
-              <div className="w-10 h-[3px] bg-[#e63946] rounded-full mb-3 ml-2" />
+              <div className="w-10 h-[3px] bg-[#8B1A1A] rounded-full mb-3 ml-2" />
 
               <ul className="space-y-0.5 max-h-[600px] overflow-y-auto pr-1 sidebar-scroll">
                 {/* All option */}
@@ -400,8 +400,8 @@ export function ProductsSidebar({
                           canonicalCategory("Fasteners"),
                           canonicalCategory("Fastener"),
                         ].includes(canonicalCategory(currentCategory || "")))
-                        ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
-                        : "text-gray-700 hover:bg-gray-100 hover:text-[#e63946]"
+                        ? "bg-[#8B1A1A]/10 text-[#8B1A1A] font-semibold"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-[#8B1A1A]"
                     }`}
                   >
                     <span className="flex items-center gap-2">
@@ -532,10 +532,10 @@ export function ProductsSidebar({
                         to={buildUrl(subItem.label)}
                         className={`block px-3 py-2 text-[13px] rounded-md transition-colors ${
                           isCurrentLabel
-                            ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
+                            ? "bg-[#8B1A1A]/10 text-[#8B1A1A] font-semibold"
                             : isChildActive
-                              ? "text-[#e63946] font-medium hover:bg-gray-100"
-                              : "text-gray-700 hover:bg-gray-100 hover:text-[#e63946]"
+                              ? "text-[#8B1A1A] font-medium hover:bg-gray-100"
+                              : "text-gray-700 hover:bg-gray-100 hover:text-[#8B1A1A]"
                         }`}
                       >
                         <span className="flex items-start justify-between gap-2">
@@ -549,7 +549,7 @@ export function ProductsSidebar({
                             <ChevronRight
                               size={12}
                               className={`text-gray-400 mt-1 flex-shrink-0 transition-transform ${
-                                isExpanded ? "rotate-90 text-[#e63946]" : ""
+                                isExpanded ? "rotate-90 text-[#8B1A1A]" : ""
                               }`}
                             />
                           )}
@@ -569,8 +569,8 @@ export function ProductsSidebar({
                                   to={buildUrl(nestedItem)}
                                   className={`block px-3 py-1.5 text-[12px] rounded-md transition-colors ${
                                     isNestedActive
-                                      ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
-                                      : "text-gray-600 hover:bg-gray-100 hover:text-[#e63946]"
+                                      ? "bg-[#8B1A1A]/10 text-[#8B1A1A] font-semibold"
+                                      : "text-gray-600 hover:bg-gray-100 hover:text-[#8B1A1A]"
                                   }`}
                                 >
                                   {nestedItem}
@@ -592,17 +592,17 @@ export function ProductsSidebar({
                             available
                           </p>
 
-                          <ul className="space-y-0.5 border-l-2 border-[#e63946]/30 pl-2">
+                          <ul className="space-y-0.5 border-l-2 border-[#8B1A1A]/30 pl-2">
                             {subItemProducts.map((product) => {
                               const title = product.title || product.slug;
                               return (
                                 <li key={product.slug}>
                                   <Link
                                     to={`/product/${product.slug}`}
-                                    className="block px-2 py-1.5 text-[12px] text-gray-600 hover:bg-[#e63946]/5 hover:text-[#e63946] rounded-md transition-colors group"
+                                    className="block px-2 py-1.5 text-[12px] text-gray-600 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] rounded-md transition-colors group"
                                   >
                                     <span className="flex items-start gap-2">
-                                      <span className="text-[#e63946] text-[10px] mt-0.5 flex-shrink-0 opacity-50 group-hover:opacity-100">
+                                      <span className="text-[#8B1A1A] text-[10px] mt-0.5 flex-shrink-0 opacity-50 group-hover:opacity-100">
                                         ▸
                                       </span>
                                       <span className="leading-snug line-clamp-2">
@@ -643,11 +643,11 @@ export function ProductsSidebar({
           border-radius: 10px;
         }
         .sidebar-scroll::-webkit-scrollbar-thumb {
-          background: #e63946;
+          background: #8B1A1A;
           border-radius: 10px;
         }
         .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-          background: #c92a36;
+          background: #6F1414;
         }
       `}</style>
     </aside>

@@ -29,7 +29,9 @@ import {
   Check,
   ChevronRight,
   ArrowRight,
+  Download,
 } from "lucide-react";
+import { downloadProductCatalogue } from "../utils/catalogueGenerator";
 
 // ─── Category fallback images ─────────────────────────────────────────────
 const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
@@ -270,9 +272,8 @@ function TechnicalTable({
           {rows.map((row, i) => (
             <tr
               key={i}
-              className={`${
-                i % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } hover:bg-[#8B1A1A]/5 transition-colors border-b border-gray-100 last:border-b-0`}
+              className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                } hover:bg-[#8B1A1A]/5 transition-colors border-b border-gray-100 last:border-b-0`}
             >
               <td className="px-5 py-3 font-semibold text-gray-800">
                 {row.key}
@@ -374,8 +375,8 @@ export function ProductPage() {
   const title = product ? product.title || product.slug : "";
   const categoryImg = product
     ? CATEGORY_FALLBACK_IMAGES[product.product_type] ||
-      CATEGORY_FALLBACK_IMAGES[product.category] ||
-      PRODUCT_HERO_FALLBACK
+    CATEGORY_FALLBACK_IMAGES[product.category] ||
+    PRODUCT_HERO_FALLBACK
     : PRODUCT_HERO_FALLBACK;
   const primaryImage = product ? getProductPrimaryImage(product, categoryImg) : "";
   const primaryAlt = product ? getProductImageAlt(product, title) : "";
@@ -453,15 +454,15 @@ export function ProductPage() {
   const specRows =
     product.specifications && product.specifications.length > 0
       ? product.specifications.map((spec) => {
-          const idx = spec.indexOf(":");
-          if (idx > 0) {
-            return {
-              key: spec.substring(0, idx).trim(),
-              value: spec.substring(idx + 1).trim(),
-            };
-          }
-          return { key: spec, value: "—" };
-        })
+        const idx = spec.indexOf(":");
+        if (idx > 0) {
+          return {
+            key: spec.substring(0, idx).trim(),
+            value: spec.substring(idx + 1).trim(),
+          };
+        }
+        return { key: spec, value: "—" };
+      })
       : [];
 
   return (
@@ -594,7 +595,7 @@ export function ProductPage() {
               <div className="flex flex-col sm:flex-row gap-3 mb-4">
                 <a
                   href="tel:+917073875529"
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-semibold py-3.5 px-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 text-sm uppercase tracking-wide"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-semibold py-3.5 px-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 text-xs sm:text-sm uppercase tracking-wide"
                 >
                   <IoIosCall className="w-4 h-4 flex-shrink-0" />
                   <span>Call for Price</span>
@@ -604,11 +605,20 @@ export function ProductPage() {
                   href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3.5 px-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 text-sm uppercase tracking-wide"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3.5 px-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 text-xs sm:text-sm uppercase tracking-wide"
                 >
                   <IoLogoWhatsapp className="w-4 h-4 flex-shrink-0" />
                   <span>WhatsApp</span>
                 </a>
+
+                <button
+                  onClick={() => downloadProductCatalogue()}
+                  className="inline-flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-[#8B1A1A] text-gray-800 hover:text-white border border-gray-200 font-semibold py-3.5 px-4 transition-all duration-200 text-xs sm:text-sm uppercase tracking-wide"
+                  title="Download full product catalogue PDF"
+                >
+                  <Download className="w-4 h-4 flex-shrink-0" />
+                  <span>Catalogue</span>
+                </button>
               </div>
 
               {/* Trust line */}
@@ -832,17 +842,25 @@ export function ProductPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="tel:+917073875529"
-                className="inline-flex items-center justify-center gap-2 bg-white text-[#8B1A1A] font-semibold py-3.5 px-8 hover:bg-gray-100 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wide"
+                className="inline-flex items-center justify-center gap-2 bg-white text-[#8B1A1A] font-semibold py-3.5 px-7 hover:bg-gray-100 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wide"
               >
                 <IoIosCall className="w-4 h-4 flex-shrink-0" />
                 <span>Call: 7073875529</span>
               </a>
 
+              <button
+                onClick={() => downloadProductCatalogue()}
+                className="inline-flex items-center justify-center gap-2 bg-[#C9A84C] hover:bg-[#A8892E] text-black font-semibold py-3.5 px-7 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wide"
+              >
+                <Download className="w-4 h-4 flex-shrink-0" />
+                <span>Download Catalogue (PDF)</span>
+              </button>
+
               <a
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3.5 px-8 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wide"
+                className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3.5 px-7 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wide"
               >
                 <IoLogoWhatsapp className="w-4 h-4 flex-shrink-0" />
                 <span>WhatsApp Enquiry</span>

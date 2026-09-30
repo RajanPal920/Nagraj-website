@@ -7,12 +7,12 @@ import {
   FileText,
   Layers,
   BookOpen,
-  Building2,
   ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { downloadProductCatalogue } from "../utils/catalogueGenerator";
 
 const technicalSections = [
   {
@@ -786,157 +786,184 @@ export function TechnicalInfoPage() {
         content="Technical information including chemical composition, pipe specifications, and AMS standards from Nagraj Metal Industries."
       />
 
-{/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* ── Cinematic Industrial Hero ─────────────────────────────────────────── */}
+      {/* ─── Standardized Hero (Desktop: Full Width Clear Image + Floating Navy Glass Card | Mobile: Top Image Card + Clean Stacked Content) ─── */}
       <section
         id="technical-hero"
-        className="relative min-h-[60vh] sm:min-h-screen sm:h-screen flex items-end sm:items-center justify-start sm:justify-center overflow-hidden bg-white sm:bg-[#102F3D] md:!bg-transparent pt-20 sm:pt-0"
+        className="relative pt-24 overflow-hidden"
         aria-label="Technical Information - Nagraj Metal Industries"
       >
-        {/* Desktop Background */}
-        <div className="absolute inset-0 z-0 hidden sm:block">
+        {/* DESKTOP HERO (hidden on mobile, block on lg+) */}
+        <div className="hidden lg:block relative w-full h-[540px] xl:h-[580px] overflow-hidden select-none">
+          {/* Crystal Clear Industrial Background Image */}
           <img
             src="/images/tech.jpg"
             alt="Technical Information - Nagraj Metal Industries"
-            className="w-full h-full object-cover object-center select-none"
+            className="absolute inset-0 w-full h-full object-cover object-center select-none"
             loading="eager"
           />
-        </div>
 
-        {/* Overlay - Light Red on Desktop */}
-        {/* <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-red/40 via-brand-red/20 to-transparent z-5 hidden sm:block"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/30 via-transparent to-transparent z-5 hidden sm:block"></div> */}
+          {/* Floating Navy/Slate Glassmorphic Card on Left */}
+          <div className="relative max-w-7xl mx-auto h-full px-8 xl:px-12 flex items-center z-10">
+            <div className="bg-gradient-to-br from-[#2a2a2a]/55 via-[#1f1f1f]/47 to-[#0f0f0f] backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-11 border border-white/20 shadow-2xl max-w-xl xl:max-w-2xl text-white transition-all duration-300">
+              {/* Tag / Breadcrumb */}
+              <div className="flex items-center gap-2.5 mb-3.5">
+                <span className="w-6 h-[2px] bg-[#E63946]" />
+                <span className="text-xs font-mono font-bold tracking-[0.25em] text-white/90 uppercase">
+                  METALLURGICAL DATASHEETS • ASTM & AMS
+                </span>
+              </div>
 
-        {/* Bottom gradient shadow - Light Red on Desktop */}
-        <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-display font-extrabold text-white tracking-tight leading-[1.14] mb-4">
+                Material Specifications
+                <span className="block text-[#E63946] mt-1">
+                  & Technical Engineering Data.
+                </span>
+              </h1>
 
-        {/* Steel texture overlay */}
-        <div className="absolute inset-0 z-0 steel-texture opacity-0 sm:opacity-40 mix-blend-overlay" />
+              {/* Description */}
+              <p className="text-white/85 text-sm sm:text-[15px] leading-relaxed mb-6 font-body max-w-lg">
+                Comprehensive metallurgical datasheets, chemical compositions, mechanical tolerances, and international ASTM, ASME, and AMS standards for all steel and alloy grades.
+              </p>
 
-        {/* Red bottom border line - Desktop only */}
-        <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3.5 mb-6">
+                <button
+                  onClick={downloadTechnicalData}
+                  className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                >
+                  <Download size={15} />
+                  <span>Download PDF Datasheets</span>
+                </button>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <span>Enquire Custom Specs</span>
+                </Link>
+              </div>
 
-        {/* ================= DESKTOP CONTENT ================= */}
-        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
-          <div className="max-w-3xl">
-            {/* Transparent background, white text */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Technical <span className="text-brand-red">Information</span>
-            </h1>
-            {/* Transparent background, white text */}
-            <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 leading-relaxed">
-              Browse through our comprehensive technical data including chemical
-              compositions, pipe specifications, and AMS standards.
-            </p>
-            
-            {/* Desktop CTA */}
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/contact"
-                id="technical-cta-desktop"
-                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
-              >
-                Enquire Now
-              </Link>
+              {/* Feature Badges Row */}
+              <div className="flex items-center gap-4 sm:gap-6 pt-4 border-t border-white/15 text-xs sm:text-sm text-white/95 font-medium flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>ASTM / ASME Standards</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Chemical Compositions</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Pipe Dimensions</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ================= MOBILE CONTENT ================= */}
-        <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
-          {/* Hero Image */}
-          <div className="w-full flex justify-center items-center px-4 mt-5">
-            <img
-              src="/images/tech.jpg"
-              alt="Technical Information - Nagraj Metal Industries"
-              className="w-full max-h-[35vh] object-contain rounded-lg"
-            />
+        {/* MOBILE HERO (block on mobile, hidden on lg+) */}
+        <div className="block lg:hidden w-full bg-white pb-6">
+          {/* Tech Image at Top: Clean, Complete & Completely Visible */}
+          <div className="px-4 pt-3 pb-3">
+            <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+              <img
+                src="/images/tech.jpg"
+                alt="Technical Information - Nagraj Metal Industries"
+                className="w-full h-auto object-cover select-none"
+                loading="eager"
+              />
+            </div>
           </div>
 
-          {/* Mobile Content */}
-          <div className="flex-1 px-5 pt-4 pb-6">
-            <div className="inline-flex items-center gap-1.5 mb-3 bg-brand-red/10 border border-brand-red/30 px-3 py-1.5 rounded-full">
-              <Building2 size={10} className="text-brand-red" />
-              <span className="text-brand-charcoal font-display font-bold text-[8px] uppercase tracking-wider">
-                Technical Info
+          {/* Content Below Photo */}
+          <div className="px-5 pt-1">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-1.5 bg-[#fdf0f0] border border-[#f5c6cb] px-3.5 py-1 rounded-full mb-3 text-gray-800">
+              <Beaker size={13} className="text-[#B22222] shrink-0" />
+              <span className="text-[11px] font-bold uppercase tracking-wider font-display">
+                METALLURGICAL DATASHEETS
               </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-brand-red uppercase">
-              Technical Info
-            </h1>
-            <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
-              Browse through our comprehensive technical data including chemical
-              compositions, pipe specifications, and AMS standards.
+            {/* Subtitle Uppercase Tracker */}
+            <p className="text-[#B22222] font-display font-bold text-[10px] uppercase tracking-wider mb-1.5">
+              ASTM · ASME · AMS INTERNATIONAL STANDARDS
             </p>
 
-            {/* Mobile Stats */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <div className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center">
-                <div className="font-display font-extrabold text-base text-brand-red">
-                  Chemical
-                </div>
-                <div className="font-body text-gray-500 text-[8px] font-medium">
-                  Composition
-                </div>
+            {/* Heading */}
+            <h1 className="text-3xl sm:text-4xl font-display font-extrabold leading-[1.15] mb-3">
+              <span className="text-[#B22222] block tracking-tight">MATERIAL</span>
+              <span className="text-gray-900 tracking-tight">Specifications & Data</span>
+            </h1>
+
+            {/* Paragraph Text */}
+            <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4 font-body">
+              Comprehensive metallurgical datasheets, chemical compositions, mechanical tolerances, and international ASTM, ASME, and AMS standards for all steel and alloy grades.
+            </p>
+
+            {/* 2-Column Checkmarks Grid */}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-2 mb-4 text-[11px] sm:text-xs text-gray-800 font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>ASTM & ASME Specs</span>
               </div>
-              <div className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center">
-                <div className="font-display font-extrabold text-base text-brand-red">
-                  Pipe
-                </div>
-                <div className="font-body text-gray-500 text-[8px] font-medium">
-                  Specifications
-                </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>AMS Aerospace Grades</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Chemical Tolerances</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Pipe Sizing Charts</span>
               </div>
             </div>
 
-            {/* Mobile CTA */}
-            <div className="relative z-20 pointer-events-auto">
-              <Link
-                to="/contact"
-                id="technical-cta-mobile"
-                className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm relative z-20"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                Enquire Now
-                <ArrowRight size={16} />
-              </Link>
+            {/* Badges */}
+            <div className="flex items-center gap-4 text-xs text-gray-700 font-medium mb-5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#B22222] font-bold">PDF:</span>
+                <span>Instant Datasheet Generation</span>
+              </div>
             </div>
+
+            {/* Big Red Full-Width CTA */}
+            <button
+              onClick={downloadTechnicalData}
+              className="w-full bg-[#B22222] hover:bg-[#8B1A1A] text-white py-3.5 sm:py-4 px-6 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+            >
+              <Download size={16} />
+              <span>Download PDF Datasheets</span>
+            </button>
           </div>
         </div>
-
-        {/* Scroll indicator - Desktop only */}
-        <a
-          href="#technical-main"
-          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
-          aria-label="Scroll to Technical Information section"
-        >
-          <ChevronDown
-            size={20}
-            className="sm:w-[28px] sm:h-[28px]"
-            strokeWidth={1.5}
-          />
-        </a>
       </section>
 
       {/* ── Main Content ─────────────────────────────────────────────────── */}
-      <section id="technical-main" className="section-padding bg-white">
+      <section id="technical-main" className="section-padding bg-gray-50/60">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
-          <div className="text-center mb-14">
-            <p className="section-label text-brand-red">Technical Data</p>
-            <h2 className="section-title text-brand-charcoal mx-auto">
-              Material <span className="text-brand-red">Specifications</span>
+          <div className="text-center mb-12 sm:mb-14">
+            <div className="inline-flex items-center gap-2 mb-2 bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 px-3 py-1 rounded-full">
+              <Beaker size={14} className="text-[#8B1A1A]" />
+              <span className="text-[11px] font-bold text-[#8B1A1A] uppercase tracking-widest">
+                Datasheet Reference
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-gray-950 mb-3 tracking-tight">
+              Material <span className="text-[#8B1A1A]">Specifications</span>
             </h2>
-            <div className="section-divider mx-auto bg-brand-red" />
-            <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              Browse through our comprehensive technical data including chemical
-              compositions, pipe specifications, and AMS standards.
+            <div className="w-16 h-1 bg-[#8B1A1A] mx-auto mb-4 rounded-full" />
+            <p className="font-body text-gray-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              Browse through our comprehensive technical data including chemical compositions, pipe specifications, and AMS aerospace standards.
             </p>
           </div>
 
-          {/* Technical Sections */}
-          <div className="max-w-6xl mx-auto space-y-6">
+          {/* Technical Sections Accordion */}
+          <div className="max-w-6xl mx-auto space-y-5">
             {technicalSections.map((section) => {
               const isOpen = openSections.includes(section.id);
               const Icon = section.icon;
@@ -944,86 +971,94 @@ export function TechnicalInfoPage() {
               return (
                 <div
                   key={section.id}
-                  className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+                  className="bg-white rounded-xl border border-gray-200/90 overflow-hidden shadow-xs hover:border-[#8B1A1A]/30 transition-all duration-300"
                 >
                   {/* Section Header */}
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center justify-between p-5 sm:p-6 hover:bg-gray-50 transition-colors duration-200 text-left"
+                    className="w-full flex items-center justify-between p-5 sm:p-6 hover:bg-gray-50/80 transition-colors duration-200 text-left group"
                   >
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-brand-red/10 flex items-center justify-center flex-shrink-0">
-                        <Icon size={20} className="text-brand-red" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#8B1A1A] transition-all duration-300">
+                        <Icon size={22} className="text-[#8B1A1A] group-hover:text-white transition-colors duration-300" />
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-brand-charcoal text-base sm:text-lg">
+                        <h3 className="font-display font-extrabold text-gray-900 text-base sm:text-lg group-hover:text-[#8B1A1A] transition-colors">
                           {section.title}
                         </h3>
-                        <p className="font-body text-gray-500 text-xs sm:text-sm">
+                        <p className="font-body text-gray-500 text-xs sm:text-sm mt-0.5">
                           {section.description}
                         </p>
                       </div>
                     </div>
-                    {isOpen ? (
-                      <ChevronDown
-                        size={20}
-                        className="text-gray-400 flex-shrink-0"
-                      />
-                    ) : (
-                      <ChevronRight
-                        size={20}
-                        className="text-gray-400 flex-shrink-0"
-                      />
-                    )}
+                    <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 group-hover:bg-[#8B1A1A]/10 transition-colors">
+                      {isOpen ? (
+                        <ChevronDown
+                          size={18}
+                          className="text-[#8B1A1A]"
+                        />
+                      ) : (
+                        <ChevronRight
+                          size={18}
+                          className="text-gray-500 group-hover:text-[#8B1A1A]"
+                        />
+                      )}
+                    </div>
                   </button>
 
                   {/* Section Content */}
                   {isOpen && (
-                    <div className="px-4 sm:px-6 pb-6 pt-4 border-t border-gray-200">
+                    <div className="px-5 sm:px-7 pb-7 pt-2 border-t border-gray-100 bg-gray-50/30">
                       {section.subsections.map((subsection, idx) => (
                         <div
                           key={subsection.id}
-                          className={idx > 0 ? "mt-8" : ""}
+                          className={idx > 0 ? "mt-8" : "mt-4"}
                         >
-                          <h4 className="font-display font-bold text-brand-red text-sm uppercase tracking-wider mb-4">
-                            {subsection.title}
-                          </h4>
-                          <div className="overflow-x-auto rounded-lg border border-gray-200">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="w-1 h-4 bg-[#8B1A1A]" />
+                            <h4 className="font-display font-bold text-gray-900 text-xs sm:text-sm uppercase tracking-wider">
+                              {subsection.title}
+                            </h4>
+                          </div>
+
+                          <div className="overflow-x-auto rounded-xl border border-gray-200/90 bg-white shadow-xs">
                             <table className="w-full text-sm font-body">
-                              <thead className="bg-brand-red text-white">
+                              <thead className="bg-[#8B1A1A] text-white">
                                 <tr>
                                   {Object.keys(subsection.data[0] || {}).map(
                                     (key) => (
                                       <th
                                         key={key}
-                                        className="px-3 sm:px-4 py-2.5 sm:py-3 text-left font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap"
+                                        className="px-4 py-3 text-left font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider whitespace-nowrap"
                                       >
                                         {key === "n_ppm"
                                           ? "N (PPM)"
                                           : key === "cr"
                                             ? "Cr"
                                             : key.charAt(0).toUpperCase() +
-                                              key.slice(1)}
+                                            key.slice(1)}
                                       </th>
                                     ),
                                   )}
                                 </tr>
                               </thead>
-                              <tbody>
+                              <tbody className="divide-y divide-gray-100">
                                 {subsection.data.map((row, index) => (
                                   <tr
                                     key={index}
-                                    className={
-                                      index % 2 === 0
-                                        ? "bg-white"
-                                        : "bg-gray-50"
-                                    }
+                                    className={`${index % 2 === 0
+                                      ? "bg-white"
+                                      : "bg-gray-50/60"
+                                      } hover:bg-[#8B1A1A]/5 transition-colors`}
                                   >
                                     {Object.values(row).map(
                                       (value, colIndex) => (
                                         <td
                                           key={colIndex}
-                                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-gray-700 text-[11px] sm:text-xs whitespace-nowrap"
+                                          className={`px-4 py-2.5 text-gray-700 text-xs whitespace-nowrap ${colIndex === 0
+                                            ? "font-bold text-gray-900"
+                                            : "font-mono"
+                                            }`}
                                         >
                                           {value}
                                         </td>
@@ -1043,27 +1078,36 @@ export function TechnicalInfoPage() {
             })}
           </div>
 
-          {/* Download Section */}
-          <div className="mt-16 bg-brand-red/5 border border-brand-red/20 rounded-lg p-6 sm:p-8 max-w-3xl mx-auto text-center">
-            <FileText size={32} className="text-brand-red mx-auto mb-4" />
-            <h3 className="font-display font-bold text-brand-charcoal text-lg sm:text-xl mb-2">
-              Need Complete Technical Data?
+          {/* Download CTA Section */}
+          <div className="mt-16 bg-gradient-to-b from-gray-950 via-[#140b0b] to-black rounded-2xl border border-gray-800 p-10 sm:p-14 text-center max-w-3xl mx-auto shadow-2xl relative overflow-hidden text-white">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#8B1A1A] to-transparent" />
+            <div className="w-16 h-16 rounded-2xl bg-[#8B1A1A]/20 border border-[#8B1A1A]/30 flex items-center justify-center mx-auto mb-5">
+              <FileText size={30} className="text-[#B22222]" />
+            </div>
+            <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-3 tracking-tight">
+              Need Complete Technical Data Sheets?
             </h3>
-            <p className="font-body text-gray-600 text-sm mb-6">
-              Download our comprehensive technical data sheets or contact us for
-              specific material specifications.
+            <p className="font-body text-gray-300 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
+              Download our generated technical reference package with full chemical and mechanical grade charts, or contact our engineering desk for specific project specifications.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={downloadTechnicalData}
-                className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
+                className="inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-7 py-3.5 rounded-lg transition-all duration-300 text-xs uppercase tracking-wider shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 <Download size={16} />
-                Download Data Sheets
+                <span>Download Data Sheets</span>
+              </button>
+              <button
+                onClick={downloadProductCatalogue}
+                className="inline-flex items-center justify-center gap-2 bg-[#C9A84C]/20 hover:bg-[#C9A84C] text-[#F0E6B0] hover:text-black border border-[#C9A84C]/40 hover:border-[#C9A84C] font-display font-bold px-7 py-3.5 rounded-lg transition-all duration-300 text-xs uppercase tracking-wider shadow-md hover:-translate-y-0.5"
+              >
+                <Download size={16} />
+                <span>Product Catalogue (PDF)</span>
               </button>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-6 py-2.5 rounded-lg transition-all duration-200 text-sm"
+                className="inline-flex items-center justify-center gap-2 border border-white/20 hover:border-white text-white hover:bg-white/10 font-display font-bold px-7 py-3.5 rounded-lg transition-all duration-300 text-xs uppercase tracking-wider"
               >
                 Contact for More Info
               </Link>

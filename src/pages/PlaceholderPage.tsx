@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Construction } from "lucide-react";
+import { Construction, ArrowRight } from "lucide-react";
 
 interface PlaceholderPageProps {
   title: string;
@@ -8,42 +8,42 @@ interface PlaceholderPageProps {
 
 export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Red top bar */}
-      <div className="h-1 bg-brand-red" />
+    <div className="min-h-screen bg-gray-50/60 flex flex-col pt-24">
+      {/* Red accent top bar */}
+      <div className="h-1 bg-gradient-to-r from-[#8B1A1A] via-[#B22222] to-[#6F1414]" />
 
-      {/* Spacer for fixed header */}
-      <div className="h-20 bg-brand-red" />
-
-      <main className="flex-1 flex items-center justify-center px-4 py-24">
-        <div className="text-center max-w-lg">
-          <div className="w-20 h-20 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center mx-auto mb-6">
+      <main className="flex-1 flex items-center justify-center px-4 py-20">
+        <div className="text-center max-w-lg bg-white rounded-2xl border border-gray-200/90 p-8 sm:p-12 shadow-lg">
+          <div className="w-20 h-20 rounded-2xl bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 flex items-center justify-center mx-auto mb-6">
             <Construction
               size={36}
-              className="text-brand-red"
-              strokeWidth={1.5}
+              className="text-[#8B1A1A]"
+              strokeWidth={1.75}
             />
           </div>
-          <p className="section-label text-brand-red">Coming Soon</p>
-          <h1 className="font-display font-extrabold text-4xl text-brand-charcoal mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#8B1A1A]/10 text-[#8B1A1A] text-[10px] font-bold uppercase tracking-widest mb-3">
+            In Preparation
+          </div>
+          <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-gray-900 mb-3 tracking-tight">
             {title}
           </h1>
-          <div className="w-16 h-1 bg-brand-red mx-auto mb-6" />
-          <p className="font-body text-gray-500 text-base leading-relaxed mb-10">
+          <div className="w-14 h-1 bg-[#8B1A1A] mx-auto mb-6 rounded-full" />
+          <p className="font-body text-gray-600 text-sm sm:text-base leading-relaxed mb-8">
             {description}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/"
               id="placeholder-back-home"
-              className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
+              className="bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-7 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-xs uppercase tracking-wider inline-flex items-center justify-center gap-2"
             >
-              Back to Home
+              <span>Back to Home</span>
+              <ArrowRight size={14} />
             </Link>
             <Link
               to="/contact"
               id="placeholder-contact"
-              className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 hover:-translate-y-0.5 text-base inline-flex items-center justify-center"
+              className="border border-gray-300 hover:border-[#8B1A1A] text-gray-800 hover:text-[#8B1A1A] font-display font-bold px-7 py-3 rounded-lg transition-all duration-300 hover:-translate-y-0.5 text-xs uppercase tracking-wider inline-flex items-center justify-center"
             >
               Contact Us
             </Link>
@@ -51,12 +51,12 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
         </div>
       </main>
 
-      <footer className="bg-brand-charcoal text-white py-6 text-center">
-        <p className="font-body text-white/40 text-xs">
-          © {new Date().getFullYear()} Nagraj Metal Industries · Subject to
-          Mumbai Jurisdiction
+      <footer className="bg-gray-950 border-t border-gray-800 text-white py-6 text-center">
+        <p className="font-body text-gray-400 text-xs">
+          © {new Date().getFullYear()} Nagraj Metal Industries · Subject to Mumbai Jurisdiction
         </p>
       </footer>
     </div>
   );
 }
+

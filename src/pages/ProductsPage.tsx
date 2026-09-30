@@ -12,12 +12,15 @@ import type { ScrapedProduct } from "../data/products";
 import { ProductsSidebar } from "../components/ProductsSidebar";
 import { WatermarkedImage } from "../components/WatermarkedImage";
 import {
-  ChevronRight,
   Search,
   Package,
   ArrowRight,
   Grid3x3,
+  Download,
+  Award,
+  ShieldCheck,
 } from "lucide-react";
+import { downloadProductCatalogue } from "../utils/catalogueGenerator";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // IMAGE CONSTANTS — All images use public folder strings (Vite-friendly)
@@ -460,63 +463,159 @@ export function ProductsPage() {
   if (!typeFilter && !categoryFilter && !isSpecialized && !searchQuery.trim()) {
     return (
       <div className="min-h-screen bg-[#F7F7F7]">
-        {/* ═══ HERO ═══ */}
-        <section className="relative pt-32 pb-24 bg-[#0F0F0F] overflow-hidden">
-          {/* ✅ HERO BACKGROUND IMAGE — FULLY VISIBLE (no opacity reduction) */}
-          <img
-            src={PRODUCT_HERO_FALLBACK}
-            alt="Premium Industrial Metals"
-            className="absolute inset-0 w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              if (!target.src.includes("productHero")) {
-                target.src = PRODUCT_HERO_FALLBACK;
-              }
-            }}
-          />
+        {/* ─── Standardized Hero (Desktop: Full Width Clear Image + Floating Navy Glass Card | Mobile: Top Image Card + Clean Stacked Content) ─── */}
+        <section
+          id="products-hero"
+          className="relative pt-24 overflow-hidden"
+          aria-label="Products - Nagraj Metal Industries"
+        >
+          {/* DESKTOP HERO (hidden on mobile, block on lg+) */}
+          <div className="hidden lg:block relative w-full h-[540px] xl:h-[580px] overflow-hidden select-none">
+            {/* Crystal Clear Industrial Background Image */}
+            <img
+              src="/images/productHero.png"
+              alt="Nagraj Metal Industries Products Portfolio"
+              className="absolute inset-0 w-full h-full object-cover object-center select-none"
+              loading="eager"
+            />
 
-          {/* ✅ LIGHT dark overlay — image visible + text readable */}
-          <div className="absolute inset-0 bg-[#0F0F0F]/40"></div>
+            {/* Floating Navy/Slate Glassmorphic Card on Left */}
+            <div className="relative max-w-7xl mx-auto h-full px-8 xl:px-12 flex items-center z-10">
+              <div className="bg-gradient-to-br from-[#2a2a2a]/55 via-[#1f1f1f]/47 to-[#0f0f0f] backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-11 border border-white/15 shadow-2xl max-w-xl xl:max-w-2xl text-white transition-all duration-300">
+                {/* Tag / Breadcrumb */}
+                <div className="flex items-center gap-2.5 mb-3.5">
+                  <span className="w-6 h-[2px] bg-[#E63946]" />
+                  <span className="text-xs font-mono font-bold tracking-[0.25em] text-white/90 uppercase">
+                    500+ PRODUCTS • 15+ CATEGORIES
+                  </span>
+                </div>
 
-          {/* Subtle diagonal pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `repeating-linear-gradient(45deg, #fff, #fff 1px, transparent 1px, transparent 20px)`,
-            }}
-          ></div>
+                {/* Headline */}
+                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-display font-extrabold text-white tracking-tight leading-[1.14] mb-4">
+                  Engineered Metal Solutions
+                  <span className="block text-[#E63946] mt-1">
+                    Complete Industrial Portfolio.
+                  </span>
+                </h1>
 
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#8B1A1A]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                {/* Description */}
+                <p className="text-white text-sm sm:text-[15px] leading-relaxed mb-6 font-bold max-w-lg">
+                  Discover our comprehensive inventory of prime stainless steel, carbon steel, nickel alloys, pipes, plates, round bars, flanges, fittings, and precision fasteners.
+                </p>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#ffb3b3] mb-6 px-3 py-1.5 border border-white/20">
-                <span className="w-1.5 h-1.5 bg-[#8B1A1A]"></span>
-                Premium Industrial Metals
-              </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
-                Our Product
-                <br />
-                <span className="text-[#8B1A1A]">Range</span>
-              </h1>
-              <p className="text-base text-white mb-10 leading-relaxed max-w-2xl">
-                Discover our comprehensive portfolio of high-quality industrial
-                metals engineered for demanding applications worldwide.
-              </p>
-              <div className="flex flex-wrap gap-x-10 gap-y-4 text-white">
-                {[
-                  { num: "500+", label: "Products" },
-                  { num: "15+", label: "Categories" },
-                  { num: "ISO 9001", label: "Certified" },
-                ].map((s) => (
-                  <div key={s.label} className="flex items-baseline gap-2">
-                    <div className="text-2xl font-bold text-white">{s.num}</div>
-                    <div className="text-[11px] uppercase tracking-wider text-white">
-                      {s.label}
-                    </div>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3.5 mb-6">
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <span>Request a Quote</span>
+                    <span>→</span>
+                  </Link>
+                  <button
+                    onClick={() => downloadProductCatalogue()}
+                    className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <Download size={14} />
+                    <span>Download Catalogue</span>
+                  </button>
+                </div>
+
+                {/* Feature Badges Row */}
+                <div className="flex items-center gap-4 sm:gap-6 pt-4 border-t border-white/15 text-xs sm:text-sm text-white/95 font-medium flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                    <span>500+ Specifications</span>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                    <span>100% Traceability & MTC</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                    <span>Immediate Dispatch</span>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+
+          {/* MOBILE HERO (block on mobile, hidden on lg+) */}
+          <div className="block lg:hidden w-full bg-white pb-6">
+            {/* Product Image at Top: Clean, Complete & Completely Visible */}
+            <div className="px-4 pt-3 pb-3">
+              <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+                <img
+                  src="/images/productHero.png"
+                  alt="Nagraj Metal Industries Products Portfolio"
+                  className="w-full h-auto object-cover select-none"
+                  loading="eager"
+                />
+              </div>
+            </div>
+
+            {/* Content Below Photo */}
+            <div className="px-5 pt-1">
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-1.5 bg-[#fdf0f0] border border-[#f5c6cb] px-3.5 py-1 rounded-full mb-3 text-gray-800">
+                <Award size={13} className="text-[#B22222] shrink-0" />
+                <span className="text-[11px] font-bold uppercase tracking-wider font-display">
+                  CERTIFIED INDUSTRIAL INVENTORY
+                </span>
+              </div>
+
+              {/* Subtitle Uppercase Tracker */}
+              <p className="text-[#B22222] font-display font-bold text-[10px] uppercase tracking-wider mb-1.5">
+                500+ PRODUCTS · 15+ CATEGORIES · PAN-INDIA
+              </p>
+
+              {/* Heading */}
+              <h1 className="text-3xl sm:text-4xl font-display font-extrabold leading-[1.15] mb-3">
+                <span className="text-[#B22222] block tracking-tight">OUR PRODUCT</span>
+                <span className="text-gray-900 tracking-tight">Range & Solutions</span>
+              </h1>
+
+              {/* Paragraph Text */}
+              <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4 font-body">
+                Discover our comprehensive portfolio of high-quality industrial metals engineered for demanding applications with complete chemical and mechanical test certifications.
+              </p>
+
+              {/* 2-Column Checkmarks Grid */}
+              <div className="grid grid-cols-2 gap-x-2 gap-y-2 mb-4 text-[11px] sm:text-xs text-gray-800 font-medium">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>500+ Metal Grades</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>100% Mill Test Certs</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Custom Sizing & Cuts</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Immediate Dispatch</span>
+                </div>
+              </div>
+
+              {/* Badges */}
+              <div className="flex items-center gap-4 text-xs text-gray-700 font-medium mb-5">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck size={14} className="text-[#B22222] shrink-0" />
+                  <span>ISO 9001 Quality Assured</span>
+                </div>
+              </div>
+
+              {/* Big Red Full-Width CTA */}
+              <Link
+                to="/contact"
+                className="w-full bg-[#B22222] hover:bg-[#8B1A1A] text-white py-3.5 sm:py-4 px-6 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <span>Request a Quote</span>
+                <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
         </section>
@@ -611,10 +710,10 @@ export function ProductsPage() {
 
   const parentCategoryKey = categoryFilter
     ? Object.keys(SPECIALIZED_MENU_DATA).find(
-        (key) =>
-          key === categoryFilter ||
-          SPECIALIZED_MENU_DATA[key].subItems?.includes(categoryFilter),
-      )
+      (key) =>
+        key === categoryFilter ||
+        SPECIALIZED_MENU_DATA[key].subItems?.includes(categoryFilter),
+    )
     : null;
 
   const specializedData = parentCategoryKey
@@ -637,89 +736,205 @@ export function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F7F7]">
-      {/* ═══ HERO ═══ */}
-      <section className="relative h-[380px] lg:h-[550px] overflow-hidden bg-[#0F0F0F]">
-        <img
-          src={heroImage}
-          alt={pageTitle}
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            if (!target.src.includes("productHero")) {
-              target.src = PRODUCT_HERO_FALLBACK;
-            }
-          }}
-        />
-        {/* ✅ LIGHT dark overlay — image visible + text readable */}
-        <div className="absolute inset-0 bg-[#0F0F0F]/45"></div>
+      {/* ═══ STANDARDIZED CATEGORY / SPECIALIZED HERO ═══ */}
+      <section className="relative overflow-hidden pt-24" aria-label={pageTitle}>
+        {/* DESKTOP HERO (hidden on mobile, block on lg+) */}
+        <div className="hidden lg:block relative w-full h-[540px] xl:h-[580px] overflow-hidden select-none">
+          {/* Crystal Clear Background Image */}
+          <img
+            src={heroImage}
+            alt={pageTitle}
+            className="absolute inset-0 w-full h-full object-cover object-center select-none"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (!target.src.includes("productHero")) {
+                target.src = PRODUCT_HERO_FALLBACK;
+              }
+            }}
+            loading="eager"
+          />
 
-        {/* Subtle pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `repeating-linear-gradient(45deg, #fff, #fff 1px, transparent 1px, transparent 20px)`,
-          }}
-        ></div>
+          {/* Floating Navy/Slate Glassmorphic Card on Left */}
+          <div className="relative max-w-7xl mx-auto h-full px-8 xl:px-12 flex items-center z-10">
+            <div className="bg-gradient-to-br from-[#2a2a2a]/55 via-[#1f1f1f]/47 to-[#0f0f0f] backdrop-blur-xl rounded-3xl p-8 sm:p-10 border border-white/20 shadow-2xl max-w-xl xl:max-w-2xl text-white transition-all duration-300">
+              {/* Breadcrumb Tag */}
+              <div className="flex items-center gap-2 mb-3.5 flex-wrap text-xs font-mono font-bold tracking-wider text-white/90">
+                <span className="w-6 h-[2px] bg-[#E63946]" />
+                <Link to="/" className="hover:text-[#FF4D5E] transition-colors">
+                  HOME
+                </Link>
+                <span>/</span>
+                <Link to="/products" className="hover:text-[#FF4D5E] transition-colors">
+                  PRODUCTS
+                </Link>
+                {isSpecialized && (
+                  <>
+                    <span>/</span>
+                    <span className="text-[#FF4D5E]">SPECIALIZED</span>
+                  </>
+                )}
+                {typeFilter && !isSpecialized && (
+                  <>
+                    <span>/</span>
+                    <span className="text-[#FF4D5E] uppercase">{typeFilter}</span>
+                  </>
+                )}
+                {categoryFilter && (
+                  <>
+                    <span>/</span>
+                    <span className="text-white uppercase">{categoryFilter}</span>
+                  </>
+                )}
+              </div>
 
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pt-16">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-white/50 mb-5 flex-wrap">
-            <Link to="/" className="hover:text-white transition-colors">
-              Home
-            </Link>
-            <ChevronRight className="w-3 h-3 text-white/30" />
-            <Link to="/products" className="hover:text-white transition-colors">
-              Products
-            </Link>
-            {isSpecialized && (
-              <>
-                <ChevronRight className="w-3 h-3 text-white/30" />
-                <Link
-                  to="/products?specialized=true"
-                  className="hover:text-white transition-colors"
-                >
-                  Specialized
-                </Link>
-              </>
-            )}
-            {typeFilter && (
-              <>
-                <ChevronRight className="w-3 h-3 text-white/30" />
-                <Link
-                  to={`/products?type=${encodeURIComponent(typeFilter)}`}
-                  className="hover:text-white transition-colors"
-                >
-                  {typeFilter}
-                </Link>
-              </>
-            )}
-            {categoryFilter && (
-              <>
-                <ChevronRight className="w-3 h-3 text-white/30" />
-                <span className="text-white font-semibold">
-                  {categoryFilter}
+              {/* Headline - BOLD */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-display font-black text-white tracking-tight leading-[1.14] mb-3">
+                {pageTitle}
+                <span className="block text-[#FF4D5E] font-black text-2xl sm:text-3xl mt-1">
+                  {showSubItems
+                    ? `${specializedData?.subItems?.length || 0} Special Categories`
+                    : `${filteredProducts.length} Products Available In Stock`}
                 </span>
-              </>
-            )}
-          </nav>
+              </h1>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-[1.1] max-w-3xl tracking-tight">
-            {pageTitle}
-          </h1>
+              {/* Description - BOLD */}
+              <p className="text-white font-bold text-xs sm:text-sm leading-relaxed mb-6 font-body drop-shadow-xs max-w-lg">
+                Certified industrial metal supplies backed with 100% mill test certificates, chemical traceability, and rapid custom cutting & dispatch across India.
+              </p>
 
-          <p className="text-sm lg:text-base text-white/80 max-w-2xl mb-6 uppercase tracking-wide">
-            {showSubItems
-              ? `Browse our ${specializedData?.subItems?.length || 0} available categories.`
-              : `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} available`}
-          </p>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3 mb-6 flex-wrap">
+                <Link
+                  to="/products"
+                  className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white font-display font-bold text-xs sm:text-sm px-5 py-3 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <span>← All Products</span>
+                </Link>
+                <button
+                  onClick={() => downloadProductCatalogue()}
+                  className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <Download size={14} />
+                  <span>Download Catalogue</span>
+                </button>
+              </div>
 
-          <div>
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-white/5 hover:bg-[#8B1A1A] backdrop-blur-sm border border-white/20 hover:border-[#8B1A1A] text-white font-semibold py-2.5 px-5 transition-all duration-200 text-xs uppercase tracking-wider"
-            >
-              ← Back to All Products
-            </Link>
+              {/* Feature Badges Row */}
+              <div className="flex items-center gap-4 sm:gap-6 pt-4 border-t border-white/15 text-xs text-white font-bold flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-black shrink-0">
+                    ✓
+                  </span>
+                  <span>100% MTC Certified</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-black shrink-0">
+                    ✓
+                  </span>
+                  <span>Custom Cut Sizing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-black shrink-0">
+                    ✓
+                  </span>
+                  <span>Fast Dispatch</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE HERO (block on mobile, hidden on lg+) */}
+        <div className="block lg:hidden w-full bg-white pb-6">
+          {/* Top Image: Clean & Visible */}
+          <div className="px-4 pt-3 pb-3">
+            <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+              <img
+                src={heroImage}
+                alt={pageTitle}
+                className="w-full h-52 sm:h-60 object-cover select-none"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (!target.src.includes("productHero")) {
+                    target.src = PRODUCT_HERO_FALLBACK;
+                  }
+                }}
+                loading="eager"
+              />
+            </div>
+          </div>
+
+          {/* Content Below Photo - BOLD & CRISP */}
+          <div className="px-5 pt-1">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-1.5 bg-[#fdf0f0] border border-[#f5c6cb] px-3.5 py-1 rounded-full mb-3 text-gray-800">
+              <Package size={13} className="text-[#B22222] shrink-0" />
+              <span className="text-[11px] font-black uppercase tracking-wider font-display text-[#B22222]">
+                {isSpecialized ? "SPECIALIZED PRODUCTS" : "CERTIFIED INVENTORY"}
+              </span>
+            </div>
+
+            {/* Subtitle Uppercase Tracker */}
+            <p className="text-[#B22222] font-display font-black text-[10px] uppercase tracking-wider mb-1.5">
+              {showSubItems
+                ? `${specializedData?.subItems?.length || 0} CATEGORIES AVAILABLE`
+                : `${filteredProducts.length} PRODUCTS READY IN STOCK`}
+            </p>
+
+            {/* Heading */}
+            <h1 className="text-3xl font-display font-black leading-[1.15] mb-2 text-gray-900">
+              {pageTitle}
+            </h1>
+
+            {/* Paragraph Text - BOLD */}
+            <p className="text-gray-800 text-xs sm:text-sm font-semibold leading-relaxed mb-4 font-body">
+              Certified industrial metal grades with verified mill test certificates and express dispatch across India.
+            </p>
+
+            {/* 2-Column Checkmarks Grid */}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-2 mb-4 text-[11px] sm:text-xs text-gray-900 font-bold">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-black shrink-0">
+                  ✓
+                </span>
+                <span>100% Mill Certified</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-black shrink-0">
+                  ✓
+                </span>
+                <span>Custom Sizing</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-black shrink-0">
+                  ✓
+                </span>
+                <span>Govt Lab Tested</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-black shrink-0">
+                  ✓
+                </span>
+                <span>Direct Mill Rates</span>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={() => downloadProductCatalogue()}
+                className="w-full bg-[#B22222] hover:bg-[#8B1A1A] text-white py-3 px-4 rounded-xl font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all duration-300"
+              >
+                <Download size={14} />
+                <span>Download Product Catalogue (PDF)</span>
+              </button>
+              <Link
+                to="/products"
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 border border-gray-200"
+              >
+                <span>← Back to All Products</span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -740,6 +955,14 @@ export function ProductsPage() {
                 <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
               </div>
               <div className="flex items-center gap-3">
+                <button
+                  onClick={() => downloadProductCatalogue()}
+                  className="hidden md:inline-flex items-center gap-1.5 px-4 py-2.5 bg-gray-100 hover:bg-[#8B1A1A] text-gray-700 hover:text-white border border-gray-200 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors"
+                  title="Download full product catalogue PDF"
+                >
+                  <Download size={13} />
+                  <span>Catalogue PDF</span>
+                </button>
                 <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden sm:block">
                   Sort By
                 </label>
@@ -898,11 +1121,10 @@ export function ProductsPage() {
                     <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
                       <Link
                         to={`/products?type=${encodeURIComponent(typeFilter)}`}
-                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${
-                          !categoryFilter
-                            ? "bg-[#8B1A1A] text-white border-[#8B1A1A] shadow-xs"
-                            : "bg-white text-gray-700 border-gray-200 hover:border-[#8B1A1A]/40 hover:text-[#8B1A1A]"
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${!categoryFilter
+                          ? "bg-[#8B1A1A] text-white border-[#8B1A1A] shadow-xs"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-[#8B1A1A]/40 hover:text-[#8B1A1A]"
+                          }`}
                       >
                         All ({typeProductsCount})
                       </Link>
@@ -915,11 +1137,10 @@ export function ProductsPage() {
                           <Link
                             key={cat.name}
                             to={`/products?type=${encodeURIComponent(typeFilter)}&category=${encodeURIComponent(cat.name)}`}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${
-                              isActive
-                                ? "bg-[#8B1A1A] text-white border-[#8B1A1A] shadow-xs"
-                                : "bg-white text-gray-700 border-gray-200 hover:border-[#8B1A1A]/40 hover:text-[#8B1A1A]"
-                            }`}
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap border ${isActive
+                              ? "bg-[#8B1A1A] text-white border-[#8B1A1A] shadow-xs"
+                              : "bg-white text-gray-700 border-gray-200 hover:border-[#8B1A1A]/40 hover:text-[#8B1A1A]"
+                              }`}
                           >
                             {cat.name} ({cat.count})
                           </Link>
@@ -1016,7 +1237,7 @@ export function ProductsPage() {
                               {/* Material Grades / Spec Pills - Fixed min-height so cards with & without grades align identically */}
                               <div className="min-h-[28px] mb-3 flex items-center flex-wrap gap-1.5">
                                 {product.material_grades &&
-                                product.material_grades.length > 0 ? (
+                                  product.material_grades.length > 0 ? (
                                   <>
                                     {product.material_grades
                                       .slice(0, 2)

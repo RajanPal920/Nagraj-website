@@ -29,8 +29,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Montserrat", "sans-serif"],
-        body: ["Inter", "sans-serif"],
+        display: ["Raleway", "sans-serif"],
+        body: ["Poppins", "sans-serif"],
       },
       backgroundImage: {
         "brand-gradient":

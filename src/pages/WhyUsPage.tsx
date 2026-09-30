@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ShieldCheck,
@@ -14,18 +15,11 @@ import {
   FlaskConical,
   Ruler,
   Package,
-  ChevronDown,
-  Building2,
+  Download,
 } from "lucide-react";
+import { CatalogueModal } from "../components/CatalogueModal";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
-
-const stats = [
-  { value: "417+", label: "Products in Stock", icon: Package },
-  { value: "6", label: "Product Categories", icon: Layers },
-  { value: "ISO", label: "9001:2015 Certified", icon: ShieldCheck },
-  { value: "B2B", label: "Exclusive Focus", icon: Target },
-];
 
 const pillars = [
   {
@@ -151,6 +145,8 @@ const pillars = [
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function WhyUsPage() {
+  const [catalogueModalOpen, setCatalogueModalOpen] = useState(false);
+
   return (
     <>
       <title>
@@ -161,162 +157,180 @@ export function WhyUsPage() {
         content="Discover why industrial buyers choose Nagraj Metal Industries — MTC-backed quality, transparent pricing, pan-India dispatch, and 417+ products in stock."
       />
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* ── Cinematic Industrial Hero ─────────────────────────────────────────── */}
+      {/* ─── Standardized Hero (Desktop: Full Width Clear Image + Floating Navy Glass Card | Mobile: Top Image Card + Clean Stacked Content) ─── */}
       <section
         id="why-us-hero"
-        className="relative min-h-[60vh] sm:min-h-screen sm:h-screen flex items-end sm:items-center justify-start sm:justify-center overflow-hidden bg-white sm:bg-[#102F3D] md:!bg-transparent pt-20 sm:pt-0"
+        className="relative pt-24 overflow-hidden"
         aria-label="Why Choose Nagraj Metal Industries"
       >
-        {/* Desktop Background */}
-        <div className="absolute inset-0 z-0 hidden sm:block">
+        {/* DESKTOP HERO (hidden on mobile, block on lg+) */}
+        <div className="hidden lg:block relative w-full h-[540px] xl:h-[580px] overflow-hidden select-none">
+          {/* Crystal Clear Industrial Background Image */}
           <img
             src="/images/why.jpg"
             alt="Why Choose Nagraj Metal Industries"
-            className="w-full h-full object-cover object-center select-none"
+            className="absolute inset-0 w-full h-full object-cover object-center select-none"
             loading="eager"
           />
-        </div>
-        {/* Bottom gradient shadow - Light Red on Desktop */}
-        <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-brand-red/20 via-brand-red/10 to-transparent z-5 hidden sm:block"></div>
 
-        {/* Steel texture overlay */}
-        <div className="absolute inset-0 z-0 steel-texture opacity-0 sm:opacity-40 mix-blend-overlay" />
+          {/* Floating Navy/Slate Glassmorphic Card on Left */}
+          <div className="relative max-w-7xl mx-auto h-full px-8 xl:px-12 flex items-center z-10">
+            <div className="bg-gradient-to-br from-[#2a2a2a]/55 via-[#1f1f1f]/47 to-[#0f0f0f] backdrop-blur-xl rounded-3xl p-8 sm:p-10 lg:p-11 border border-white/20 shadow-2xl max-w-xl xl:max-w-2xl text-white transition-all duration-300">
+              {/* Tag / Breadcrumb */}
+              <div className="flex items-center gap-2.5 mb-3.5">
+                <span className="w-6 h-[2px] bg-[#E63946]" />
+                <span className="text-xs font-mono font-bold tracking-[0.25em] text-white/90 uppercase">
+                  MTC-BACKED QUALITY • TRANSPARENT PRICING
+                </span>
+              </div>
 
-        {/* Red bottom border line - Desktop only */}
-        <div className="hidden sm:block absolute bottom-0 left-0 right-0 h-1 bg-brand-red z-20" />
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-display font-extrabold text-white tracking-tight leading-[1.14] mb-4">
+                Why Choose Nagraj
+                <span className="block text-[#E63946] mt-1">
+                  Industrial Reliability Guaranteed.
+                </span>
+              </h1>
 
-        {/* =============== DESKTOP CONTENT =============== */}
-        <div className="relative z-10 hidden sm:flex items-center min-h-[600px] px-4 sm:px-8 md:px-16 lg:px-24">
-          <div className="max-w-3xl">
-            {/* Removed bg color, transparent background, white text */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Why <span className="text-brand-red">Choose</span> <span className="text-[#4a0c12] ">Us</span>
-            </h1>
-            {/* Removed bg color, transparent background, white text */}
-            <p className="text-left sm:text-lg md:text-xl bg-white bg-clip-text text-transparent mb-6 sm:mb-8 leading-relaxed">
-              Discover why industrial buyers choose Nagraj Metal Industries —
-              MTC-backed quality, transparent pricing, pan-India dispatch, and
-              417+ products in stock.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {/* Enquire Now Button - Navigates to Contact Page */}
-              <a
-                href="/contact"
-                className="px-6 py-3 bg-brand-red text-white font-semibold rounded hover:bg-brand-red/80 transition-colors inline-block"
-              >
-                Enquire Now
-              </a>
+              {/* Description */}
+              <p className="text-white text-sm sm:text-[15px] leading-relaxed mb-6 font-bold max-w-lg">
+                Discover why top engineering fabricators, EPC contractors, and OEMs partner with Nagraj Metal Industries — complete traceability, market-aligned pricing, and pan-India logistics.
+              </p>
 
-              {/* View Products Button - Navigates to Products Page */}
-              <a
-                href="/products"
-                className="px-6 py-3 border-2 border-white text-white font-semibold rounded hover:bg-white/10 transition-colors inline-block"
-              >
-                View Products
-              </a>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3.5 mb-6">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <span>Enquire Now</span>
+                  <span>→</span>
+                </Link>
+                <Link
+                  to="/products"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <span>View Products</span>
+                </Link>
+              </div>
+
+              {/* Feature Badges Row */}
+              <div className="flex items-center gap-4 sm:gap-6 pt-4 border-t border-white/15 text-xs sm:text-sm text-white/95 font-medium flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>100% Traceability</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Competitive Pricing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full bg-[#E63946] text-white flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                  <span>Fast Turnaround</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* =============== MOBILE CONTENT =============== */}
-        <div className="block sm:hidden w-full min-h-[60vh] flex flex-col bg-white">
-          {/* Hero Image */}
-          <div className="w-full flex justify-center items-center px-4 mt-5">
-            <img
-              src="/images/why.jpg"
-              alt="Why Choose Nagraj Metal Industries"
-              className="w-full max-h-[35vh] object-contain rounded-lg"
-            />
+        {/* MOBILE HERO (block on mobile, hidden on lg+) */}
+        <div className="block lg:hidden w-full bg-white pb-6">
+          {/* Why Us Image at Top: Clean, Complete & Completely Visible */}
+          <div className="px-4 pt-3 pb-3">
+            <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
+              <img
+                src="/images/why.jpg"
+                alt="Why Choose Nagraj Metal Industries"
+                className="w-full h-auto object-cover select-none"
+                loading="eager"
+              />
+            </div>
           </div>
 
-          {/* Mobile Content */}
-          <div className="flex-1 px-5 pt-4 pb-6">
-            <div className="inline-flex items-center gap-1.5 mb-3 bg-brand-red/10 border border-brand-red/30 px-3 py-1.5 rounded-full">
-              <Building2 size={10} className="text-brand-red" />
-              <span className="text-brand-charcoal font-display font-bold text-[8px] uppercase tracking-wider">
-                Why Us
+          {/* Content Below Photo */}
+          <div className="px-5 pt-1">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-1.5 bg-[#fdf0f0] border border-[#f5c6cb] px-3.5 py-1 rounded-full mb-3 text-gray-800">
+              <Award size={13} className="text-[#B22222] shrink-0" />
+              <span className="text-[11px] font-bold uppercase tracking-wider font-display">
+                TRUSTED INDUSTRIAL PARTNER
               </span>
             </div>
 
-            {/* Removed bg color, transparent background, red text */}
-            <h1 className="text-2xl font-bold text-brand-red uppercase">
-              Why Us
-            </h1>
-            {/* Removed bg color, transparent background, charcoal text */}
-            <p className="text-brand-charcoal text-[11px] leading-6 mt-2 mb-4">
-              Discover why industrial buyers choose Nagraj Metal Industries —
-              MTC-backed quality, transparent pricing, pan-India dispatch, and
-              417+ products in stock.
+            {/* Subtitle Uppercase Tracker */}
+            <p className="text-[#B22222] font-display font-bold text-[10px] uppercase tracking-wider mb-1.5">
+              MTC-BACKED QUALITY · TRANSPARENT PRICING
             </p>
 
-            {/* Mobile Stats */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {stats.map(({ value, label, icon: Icon }) => (
-                <div
-                  key={label}
-                  className="bg-gray-50 rounded-lg border border-gray-200 px-3 py-2.5 text-center"
-                >
-                  <Icon size={14} className="text-brand-red mx-auto mb-1" />
-                  <div className="font-display font-extrabold text-base text-brand-charcoal">
-                    {value}
-                  </div>
-                  <div className="font-body text-gray-500 text-[8px] font-medium">
-                    {label}
-                  </div>
-                </div>
-              ))}
+            {/* Heading */}
+            <h1 className="text-3xl sm:text-4xl font-display font-extrabold leading-[1.15] mb-3">
+              <span className="text-[#B22222] block tracking-tight">WHY CHOOSE</span>
+              <span className="text-gray-900 tracking-tight">Nagraj Metal Industries</span>
+            </h1>
+
+            {/* Paragraph Text */}
+            <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4 font-body">
+              Discover why top engineering fabricators, EPC contractors, and OEMs partner with Nagraj Metal Industries — complete traceability, market-aligned pricing, and pan-India logistics.
+            </p>
+
+            {/* 2-Column Checkmarks Grid */}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-2 mb-4 text-[11px] sm:text-xs text-gray-800 font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Independent Quality Assessment</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Stringent QC Measures</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Nationwide Timely Dispatch</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-[#B22222] text-[#B22222] flex items-center justify-center text-[9px] font-bold shrink-0">✓</span>
+                <span>Zero Hidden Charges</span>
+              </div>
             </div>
 
-            {/* Mobile Buttons */}
-            <div className="flex flex-col gap-2 mt-4">
-              {/* Enquire Now Button - Navigates to Contact Page */}
-              <a
-                href="/contact"
-                className="w-full bg-brand-red text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 shadow-lg active:scale-95 text-sm"
-              >
-                Enquire Now
-                <ArrowRight size={16} />
-              </a>
-
-              {/* View Products Button - Navigates to Products Page */}
-              <a
-                href="/products"
-                className="w-full border-2 border-brand-red text-brand-red bg-transparent py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all duration-200 active:scale-95 text-sm hover:bg-brand-red/5"
-              >
-                View Products
-                <ArrowRight size={16} />
-              </a>
+            {/* Badges */}
+            <div className="flex items-center gap-4 text-xs text-gray-700 font-medium mb-5">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-[#B22222] shrink-0" />
+                <span>10+ Years Excellence</span>
+              </div>
             </div>
+
+            {/* Big Red Full-Width CTA */}
+            <Link
+              to="/contact"
+              className="w-full bg-[#B22222] hover:bg-[#8B1A1A] text-white py-3.5 sm:py-4 px-6 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <span>Enquire Now</span>
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
-
-        {/* Scroll indicator - Desktop only */}
-        <a
-          href="#why-us-pillars"
-          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-brand-red transition-colors duration-200 animate-chevron z-20"
-          aria-label="Scroll to Why Us section"
-        >
-          <ChevronDown
-            size={20}
-            className="sm:w-[28px] sm:h-[28px]"
-            strokeWidth={1.5}
-          />
-        </a>
       </section>
 
+
       {/* ── Quality Pillars ────────────────────────────────────────────────────── */}
-      <section id="why-us-pillars" className="section-padding bg-white">
+      <section id="why-us-pillars" className="section-padding bg-gray-50/60">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
-            <p className="section-label text-brand-red">Our Commitment</p>
-            <h2 className="section-title text-brand-charcoal mx-auto">
-              Quality <span className="text-brand-red">Objectives</span>
+            <div className="inline-flex items-center gap-2 mb-2 bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 px-3 py-1 rounded-full">
+              <ShieldCheck size={14} className="text-[#8B1A1A]" />
+              <span className="text-[11px] font-bold text-[#8B1A1A] uppercase tracking-widest">
+                Our Core Commitment
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-gray-950 mb-3 tracking-tight">
+              Quality <span className="text-[#8B1A1A]">Objectives & Pillars</span>
             </h2>
-            <div className="section-divider mx-auto bg-brand-red" />
-            <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              We consider three elements essential for overall quality:
-              Independence & Objectivity, Technical & Scientific Quality, and
-              Practical Benefits to Clients.
+            <div className="w-16 h-1 bg-[#8B1A1A] mx-auto mb-4 rounded-full" />
+            <p className="font-body text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+              We consider three elements essential for overall quality: Independence & Objectivity, Technical & Scientific Quality, and Practical Benefits to Clients.
             </p>
           </div>
 
@@ -329,42 +343,49 @@ export function WhyUsPage() {
                 <div
                   key={id}
                   id={`why-us-pillar-${id}`}
-                  className={`card-base p-8 group flex flex-col bg-white border border-gray-100 shadow-sm hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 ${
-                    index === pillars.length - 1 && pillars.length % 3 !== 0
-                      ? "lg:col-span-3 lg:max-w-md lg:mx-auto"
-                      : ""
-                  }`}
+                  className={`bg-white rounded-xl border border-gray-200/90 p-7 sm:p-8 flex flex-col hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group shadow-xs ${index === pillars.length - 1 && pillars.length % 3 !== 0
+                    ? "lg:col-span-3 lg:max-w-md lg:mx-auto w-full"
+                    : ""
+                    }`}
                 >
-                  {/* Icon */}
-                  <div className="mb-5 w-14 h-14 rounded-lg bg-brand-red/8 flex items-center justify-center group-hover:bg-brand-red transition-colors duration-300 flex-shrink-0">
-                    <Icon
-                      size={24}
-                      className="text-brand-red group-hover:text-white transition-colors duration-300"
-                      strokeWidth={1.75}
-                    />
+                  {/* Top Bar Accent */}
+                  <div className="w-10 h-1 bg-gray-200 group-hover:bg-[#8B1A1A] transition-colors rounded-full mb-6" />
+
+                  {/* Icon & Category Tag */}
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="w-13 h-13 rounded-xl bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 flex items-center justify-center group-hover:bg-[#8B1A1A] transition-all duration-300 flex-shrink-0">
+                      <Icon
+                        size={24}
+                        className="text-[#8B1A1A] group-hover:text-white transition-colors duration-300"
+                        strokeWidth={1.8}
+                      />
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-400 group-hover:text-[#8B1A1A] uppercase tracking-wider font-mono">
+                      #{String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
 
-                  {/* Title */}
-                  <p className="font-display font-bold text-xs text-brand-red uppercase tracking-[0.15em] mb-1">
+                  {/* Title & Headline */}
+                  <p className="font-display font-bold text-xs text-[#8B1A1A] uppercase tracking-[0.15em] mb-1.5">
                     {title}
                   </p>
-                  <h3 className="font-display font-extrabold text-xl text-brand-charcoal mb-3">
+                  <h3 className="font-display font-extrabold text-xl text-gray-900 mb-3 group-hover:text-[#8B1A1A] transition-colors">
                     {headline}
                   </h3>
-                  <p className="font-body text-gray-500 text-sm leading-relaxed mb-5 flex-1">
+                  <p className="font-body text-gray-600 text-sm leading-relaxed mb-6 flex-1">
                     {description}
                   </p>
 
-                  {/* Bullet points */}
-                  <ul className="space-y-2 mt-auto">
+                  {/* Bullet Points */}
+                  <ul className="space-y-2.5 pt-4 border-t border-gray-100 mt-auto">
                     {points.map((pt) => (
                       <li key={pt} className="flex items-start gap-2.5">
                         <CheckCircle2
                           size={15}
-                          className="text-brand-red flex-shrink-0 mt-0.5"
-                          strokeWidth={2}
+                          className="text-[#8B1A1A] flex-shrink-0 mt-0.5"
+                          strokeWidth={2.2}
                         />
-                        <span className="font-body text-gray-600 text-xs leading-relaxed">
+                        <span className="font-body text-gray-700 text-xs leading-relaxed font-medium">
                           {pt}
                         </span>
                       </li>
@@ -378,73 +399,79 @@ export function WhyUsPage() {
       </section>
 
       {/* ── Quality Process Flow ─────────────────────────────────────────── */}
-      <section id="why-us-process" className="section-padding bg-gray-50">
+      <section id="why-us-process" className="section-padding bg-white border-y border-gray-200/80">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
-            <p className="section-label text-brand-red">Our Process</p>
-            <h2 className="section-title text-brand-charcoal mx-auto">
-              Quality <span className="text-brand-red">Control</span>
+            <div className="inline-flex items-center gap-2 mb-2 bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 px-3 py-1 rounded-full">
+              <FlaskConical size={14} className="text-[#8B1A1A]" />
+              <span className="text-[11px] font-bold text-[#8B1A1A] uppercase tracking-widest">
+                Stringent QA System
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-gray-950 mb-3 tracking-tight">
+              Quality <span className="text-[#8B1A1A]">Control Framework</span>
             </h2>
-            <div className="section-divider mx-auto bg-brand-red" />
-            <p className="font-body text-gray-500 text-base max-w-xl mx-auto">
-              We exercise stringent quality control measures for ensuring
-              accurate dimensions and mechanical properties of our products.
+            <div className="w-16 h-1 bg-[#8B1A1A] mx-auto mb-4 rounded-full" />
+            <p className="font-body text-gray-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              We exercise rigorous quality control measures across all procurement, sizing, and dispatch stages to ensure dimensionally accurate, mechanically sound metals.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
-              <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
-                <Package size={28} className="text-brand-red" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                step: "01",
+                icon: Package,
+                title: "Material Control System",
+                desc: "Stringent raw material verification against mill test certs.",
+              },
+              {
+                step: "02",
+                icon: Ruler,
+                title: "Machining & Dimensional Control",
+                desc: "Accurate physical dimensions & mechanical tolerances guaranteed.",
+              },
+              {
+                step: "03",
+                icon: FileCheck2,
+                title: "Certification & Testing",
+                desc: "Supplementary PMI, hydrostatic, ultrasonic & chemical checks.",
+              },
+              {
+                step: "04",
+                icon: FlaskConical,
+                title: "Finishing & Packaging",
+                desc: "Surface protection, tagging, secure transit packing pan-India.",
+              },
+            ].map(({ step, icon: Icon, title, desc }) => (
+              <div
+                key={step}
+                className="bg-gray-50 border border-gray-200/80 rounded-xl p-6 text-center hover:border-[#8B1A1A]/40 hover:bg-white hover:shadow-lg transition-all duration-300 relative group"
+              >
+                <div className="absolute top-3 right-4 font-mono font-bold text-gray-300 text-lg group-hover:text-[#8B1A1A] transition-colors">
+                  {step}
+                </div>
+                <div className="w-14 h-14 rounded-xl bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-[#8B1A1A] transition-all duration-300">
+                  <Icon size={24} className="text-[#8B1A1A] group-hover:text-white transition-colors" />
+                </div>
+                <h4 className="font-display font-bold text-gray-900 text-sm mb-2 group-hover:text-[#8B1A1A] transition-colors">
+                  {title}
+                </h4>
+                <p className="font-body text-gray-500 text-xs leading-relaxed">
+                  {desc}
+                </p>
               </div>
-              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
-                Material Control System
-              </h4>
-              <p className="font-body text-gray-500 text-xs">
-                Stringent quality control measures
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
-              <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
-                <Ruler size={28} className="text-brand-red" />
-              </div>
-              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
-                Machining & Dimensional Control
-              </h4>
-              <p className="font-body text-gray-500 text-xs">
-                Accurate dimensions & mechanical properties
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
-              <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
-                <FileCheck2 size={28} className="text-brand-red" />
-              </div>
-              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
-                Certification & Testing
-              </h4>
-              <p className="font-body text-gray-500 text-xs">
-                Certification and supplementary tests
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-card-hover transition-all duration-300">
-              <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center mx-auto mb-4">
-                <FlaskConical size={28} className="text-brand-red" />
-              </div>
-              <h4 className="font-display font-bold text-brand-charcoal text-sm mb-2">
-                Finishing & Marketing
-              </h4>
-              <p className="font-body text-gray-500 text-xs">
-                Quality assurance through every stage
-              </p>
-            </div>
+            ))}
           </div>
 
-          {/* Quality Statement */}
-          <div className="mt-10 bg-brand-red/5 border border-brand-red/20 rounded-lg p-8 max-w-3xl mx-auto text-center">
-            <p className="font-body text-brand-charcoal text-sm leading-relaxed italic">
-              "The impeccable quality standards of our product range as well as
-              services have contributed immensely to the success of our
-              company."
+          {/* Quality Statement Box */}
+          <div className="mt-12 bg-gradient-to-r from-gray-950 via-[#1a0a0a] to-gray-950 border border-[#8B1A1A]/30 rounded-xl p-8 max-w-3xl mx-auto text-center shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#8B1A1A] to-transparent" />
+            <p className="font-body text-gray-200 text-sm sm:text-base leading-relaxed italic mb-3">
+              "The impeccable quality standards of our product range as well as customer-centric dispatch services have contributed immensely to the trust placed in Nagraj Metal Industries by industrial buyers."
+            </p>
+            <p className="text-xs font-display font-bold uppercase tracking-widest text-[#B22222]">
+              — Management Commitment
             </p>
           </div>
         </div>
@@ -453,73 +480,87 @@ export function WhyUsPage() {
       {/* ── Testimonial / Trust strip ─────────────────────────────────────── */}
       <section
         id="why-us-trust"
-        className="bg-brand-red relative overflow-hidden py-20 px-4 sm:px-8 lg:px-16 xl:px-24"
+        className="bg-gradient-to-r from-[#5a0f0f] via-[#8B1A1A] to-[#4a0c0c] relative overflow-hidden py-16 px-4 sm:px-8 lg:px-16 xl:px-24"
       >
-        <div className="absolute inset-0 steel-texture opacity-20" />
+        <div className="absolute inset-0 steel-texture opacity-25 mix-blend-overlay" />
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 80px, rgba(255,255,255,0.2) 80px, rgba(255,255,255,0.2) 81px)`,
           }}
         />
 
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <div className="flex items-center justify-center gap-1 mb-6">
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <div className="flex items-center justify-center gap-1.5 mb-5">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
                 size={22}
-                className="text-white fill-white"
+                className="text-amber-400 fill-amber-400"
                 strokeWidth={1}
               />
             ))}
           </div>
-          <blockquote className="font-display font-bold text-2xl sm:text-3xl text-white max-w-3xl mx-auto leading-snug mb-6">
-            "Quality is our prime concern. We maintain high quality standards
-            through our committed personnel and sound infrastructure."
+          <blockquote className="font-display font-extrabold text-2xl sm:text-3xl text-white max-w-3xl mx-auto leading-snug mb-5">
+            "Quality is our prime concern. We maintain high quality standards through our committed personnel and sound infrastructure."
           </blockquote>
-          <p className="font-body text-white/75 text-sm">
+          <p className="font-body text-white/80 text-sm tracking-wide">
             — Nagraj Metal Industries Quality Policy
           </p>
         </div>
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section id="why-us-cta" className="section-padding bg-white">
+      <section id="why-us-cta" className="section-padding bg-gray-50/60">
         <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24">
-          <div className="bg-gray-50 rounded-lg border border-gray-100 shadow-card p-10 sm:p-16 text-center max-w-3xl mx-auto">
-            <p className="section-label text-brand-red flex justify-center">
-              Start Today
+          <div className="bg-gradient-to-b from-gray-950 via-[#140b0b] to-black rounded-2xl border border-gray-800 p-10 sm:p-14 text-center max-w-3xl mx-auto shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#8B1A1A] to-transparent" />
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#B22222] mb-3">
+              Partner With Us
             </p>
-            <h2 className="section-title text-brand-charcoal mx-auto mb-4">
-              Ready to <span className="text-brand-red">Place an Enquiry?</span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold text-white mb-4 tracking-tight">
+              Ready to <span className="text-[#B22222]">Place an Industrial Enquiry?</span>
             </h2>
-            <div className="section-divider mx-auto bg-brand-red" />
-            <p className="font-body text-gray-500 text-base max-w-xl mx-auto mb-10 leading-relaxed">
-              Share your product requirement — grade, size, and quantity — and
-              we'll respond with accurate pricing and availability within one
-              business day.
+            <div className="w-14 h-1 bg-[#8B1A1A] mx-auto mb-6 rounded-full" />
+            <p className="font-body text-gray-300 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
+              Share your product requirement — grade, dimensions, specifications, and volume — and our sales engineers will respond with verified mill-backed pricing and availability within one business day.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
                 id="why-us-cta-enquire"
-                className="bg-brand-red hover:bg-brand-red-dark text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base"
+                className="bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm uppercase tracking-wider"
               >
-                Send an Enquiry
+                <span>Send an Enquiry</span>
                 <ArrowRight size={16} />
               </Link>
+
+              <button
+                onClick={() => setCatalogueModalOpen(true)}
+                id="why-us-cta-download-catalogue"
+                className="bg-[#C9A84C]/20 hover:bg-[#C9A84C] text-[#F0E6B0] hover:text-black border border-[#C9A84C]/40 hover:border-[#C9A84C] font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm uppercase tracking-wider hover:-translate-y-0.5 shadow-md"
+              >
+                <Download size={16} />
+                <span>Download Catalogues</span>
+              </button>
+
               <Link
                 to="/products"
                 id="why-us-cta-catalogue"
-                className="border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 text-base"
+                className="border border-white/20 hover:border-white text-white hover:bg-white/10 font-display font-bold px-8 py-3.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm uppercase tracking-wider"
               >
-                View Full Catalogue
+                <span>Browse Products</span>
               </Link>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Catalogue Modal */}
+      <CatalogueModal
+        isOpen={catalogueModalOpen}
+        onClose={() => setCatalogueModalOpen(false)}
+      />
     </>
   );
 }

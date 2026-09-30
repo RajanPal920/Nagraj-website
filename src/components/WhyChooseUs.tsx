@@ -60,70 +60,68 @@ export function WhyChooseUs() {
   return (
     <section
       id="why-us"
-      className="section-padding bg-brand-red relative overflow-hidden"
+      className="py-20 lg:py-28 bg-gradient-to-b from-[#0f0f0f] via-[#080808] to-[#000000] relative overflow-hidden text-white border-b border-gray-800"
     >
-      {/* Background texture */}
-      <div className="absolute inset-0 steel-texture opacity-20" />
+      {/* Subtle background radial glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#8B1A1A]/10 blur-[140px] pointer-events-none rounded-full" />
 
-      {/* Decorative diagonal lines */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 80px,
-            rgba(0,0,0,0.2) 80px,
-            rgba(0,0,0,0.2) 81px
-          )`,
-        }}
-      />
-
-      <div className="container-xl px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div
           ref={headerRef}
-          className={`text-center mb-14 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`text-center mb-14 sm:mb-16 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
-          <p className="text-white/80 font-display font-bold text-sm uppercase tracking-[0.2em] mb-3">
-            Why Nagraj Metal Industries
-          </p>
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
-            Built on <span className="text-black/30">Reliability</span>
+          <div className="inline-flex items-center gap-2 mb-3 bg-white/10 border border-white/15 px-3.5 py-1.5 rounded-full">
+            <Award size={14} className="text-[#D43A3A]" />
+            <span className="text-[#D43A3A] font-display font-bold text-xs uppercase tracking-wider">
+              Why Nagraj Metal Industries
+            </span>
+          </div>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl text-white mb-3">
+            Built On <span className="text-[#D43A3A]">Uncompromising Reliability</span>
           </h2>
-          <div className="w-16 h-1 bg-white/50 mt-4 mb-6 mx-auto" />
-          <p className="font-body text-white/80 text-base max-w-xl mx-auto">
-            Dynamic group with young visionaries, ISO certified, and trusted by
-            government & multinational companies across India.
+          <div className="w-16 h-1 bg-[#8B1A1A] rounded-full mx-auto mb-4" />
+          <p className="font-body text-gray-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+            ISO 9001:2015 certified operations backed by over a decade of domain expertise, nationwide logistics, and complete chemical &amp; mechanical traceability.
           </p>
         </div>
 
-        {/* Feature grid */}
-        <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Feature grid — equal height cards */}
+        <div
+          ref={gridRef}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"
+        >
           {features.map(({ id, icon: Icon, title, description }, index) => (
             <div
               key={id}
               id={`why-us-${id}`}
-              className={`bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-lg group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-white/20 ${gridVisible ? `animate-fade-in-up stagger-${(index % 6) + 1}` : "opacity-0"}`}
+              className={`relative flex flex-col bg-white/[0.04] backdrop-blur-md border border-white/10 hover:border-[#8B1A1A]/60 rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-white/[0.07] ${gridVisible ? `animate-fade-in-up stagger-${(index % 6) + 1}` : "opacity-0"}`}
             >
-              <div className="flex flex-col items-start gap-4">
-                {/* Icon */}
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center group-hover:bg-white transition-colors duration-300">
-                  <Icon
-                    size={22}
-                    strokeWidth={1.75}
-                    className="text-white group-hover:text-brand-red transition-colors duration-300"
-                  />
-                </div>
-                {/* Text */}
-                <div>
-                  <h3 className="font-display font-bold text-lg text-white mb-2">
+              {/* Top accent bar — visible on hover */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#8B1A1A] via-[#D43A3A] to-[#8B1A1A] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              <div className="flex flex-col flex-1 p-6 sm:p-7">
+                {/* Icon + Title Row */}
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className="w-11 h-11 rounded-xl bg-[#8B1A1A]/20 border border-[#8B1A1A]/30 flex items-center justify-center shrink-0 group-hover:bg-[#8B1A1A] group-hover:border-[#8B1A1A] transition-colors duration-300">
+                    <Icon
+                      size={20}
+                      strokeWidth={1.75}
+                      className="text-[#D43A3A] group-hover:text-white transition-colors duration-300"
+                    />
+                  </div>
+                  <h3 className="font-display font-bold text-base sm:text-lg text-white group-hover:text-[#D43A3A] transition-colors leading-snug">
                     {title}
                   </h3>
-                  <p className="font-body text-white/70 text-sm leading-relaxed">
-                    {description}
-                  </p>
                 </div>
+
+                {/* Divider */}
+                <div className="w-full h-px bg-white/8 mb-4" />
+
+                {/* Description — fills remaining height */}
+                <p className="font-body text-gray-300 text-xs sm:text-sm leading-relaxed flex-1">
+                  {description}
+                </p>
               </div>
             </div>
           ))}

@@ -1,13 +1,27 @@
 // src/components/Header.tsx
 
 import { useState, useEffect } from "react";
-import { Phone, Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Phone,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronUp,
+  ChevronRight,
+  ExternalLink,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   CATEGORY_GROUPS,
   getCategoryDisplayLabel,
 } from "../data/categoryConfig";
 import { getProducts } from "../data/products";
+import { CatalogueModal } from "./CatalogueModal";
+import {
+  CertificateModal,
+  CERTIFICATE_DOCUMENTS,
+  type CertificateDoc,
+} from "./CertificateModal";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -239,6 +253,17 @@ export function Header() {
   const [activeSpecialized, setActiveSpecialized] = useState<string | null>(
     null,
   );
+  const [catalogueModalOpen, setCatalogueModalOpen] = useState(false);
+
+  // Certificates dropdown and modal state
+  const [selectedCertDoc, setSelectedCertDoc] =
+    useState<CertificateDoc | null>(null);
+  const [mobileCertificatesOpen, setMobileCertificatesOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
+  const [mobileSpecializedOpen, setMobileSpecializedOpen] = useState(false);
+  const [mobileExpandedCat, setMobileExpandedCat] = useState<string | null>(null);
+  const [mobileExpandedSpecCat, setMobileExpandedSpecCat] = useState<string | null>(null);
+  const [certificatesHovered, setCertificatesHovered] = useState(false);
 
   const isSolid = location.pathname !== "/" || scrolled;
 
@@ -324,25 +349,31 @@ export function Header() {
   return (
     <header
       id="header"
-      className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-400 ${
-        isSolid ? "bg-white shadow-lg" : "bg-white"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 h-24 transition-all duration-300 ${isSolid
+          ? "bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200/80"
+          : "bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs"
+        }`}
     >
-      <div className="container h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link to="/" className="flex items-center flex-shrink-0 w-[20%]">
+      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo - Increased height & clarity */}
+        <Link
+          to="/"
+          className="flex items-center flex-shrink-0 group py-1"
+          aria-label="Nagraj Metal Industries Home"
+        >
           <img
             src="/images/logo.png"
             alt="Nagraj Metal Industries Logo"
-            className="w-full h-auto max-h-14 sm:max-h-16 md:max-h-18 lg:max-h-20 xl:max-h-24 object-contain"
+            className="h-16 sm:h-20 lg:h-22 w-auto max-w-[260px] sm:max-w-[320px] object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-6 xl:gap-8 pl-6 xl:pl-10 font-extrabold">
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-5 xl:gap-7 pl-6 xl:pl-8">
           {navLinks.map((link) => {
             const isProductsLink = link.label === "Products";
             const isSpecializedLink = link.label === "Specialized Products";
+            const isCertificatesLink = link.label === "Certificates";
 
             // ✅ Active detection (path + search)
             const isActive =
@@ -351,33 +382,161 @@ export function Header() {
                 location.pathname === "/products" &&
                 location.search === "") ||
               (link.href === "/products?specialized=true" &&
-                location.search === "?specialized=true");
+                location.search === "?specialized=true") ||
+              (link.href === "/certificates" &&
+                location.pathname.startsWith("/certificates"));
+
+            // ─── CERTIFICATES ITEM (Matches Reference Image 1) ───
+            if (isCertificatesLink) {
+              return (
+                <div
+                  key={link.href}
+                  className="group relative whitespace-nowrap"
+                  onMouseEnter={() => setCertificatesHovered(true)}
+                  onMouseLeave={() => setCertificatesHovered(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCertificatesHovered((prev) => !prev);
+                    }}
+                    className={`relative py-2 flex items-center gap-1 font-display text-[13px] xl:text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer ${certificatesHovered || isActive
+                        ? "text-[#C8102E]"
+                        : "text-gray-800 hover:text-[#C8102E]"
+                      }`}
+                    aria-expanded={certificatesHovered}
+                    aria-haspopup="true"
+                  >
+                    <span>{link.label}</span>
+                    {certificatesHovered ? (
+                      <ChevronUp
+                        size={14}
+                        strokeWidth={2.5}
+                        className="text-[#C8102E] transition-transform duration-200"
+                      />
+                    ) : (
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={2.5}
+                        className="text-gray-400 group-hover:text-[#C8102E] transition-transform duration-200"
+                      />
+                    )}
+                    {/* Active/Hover Underline Indicator matching Image 1 */}
+                    <span
+                      className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[#C8102E] rounded-full transition-all duration-300 ${certificatesHovered || isActive
+                          ? "opacity-100 scale-x-100"
+                          : "opacity-0 scale-x-0 group-hover:opacity-100 group-hover:scale-x-100"
+                        }`}
+                    />
+                  </button>
+
+                  {/* ─── CERTIFICATES DROPDOWN (Matches Reference Image 1) ─── */}
+                  <div
+                    className={`
+                      absolute top-full left-1/2 -translate-x-1/2
+                      w-[390px] pt-3
+                      transition-all duration-200
+                      z-50
+                      ${certificatesHovered
+                        ? "opacity-100 visible pointer-events-auto"
+                        : "opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto"
+                      }
+                    `}
+                  >
+                    <div className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100/90 text-left">
+                      {/* Top Header Row matching Image 1: • CERTIFICATION • Official MSME Registration */}
+                      <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-[#F8FAFC]">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-[#C8102E] shrink-0" />
+                          <span className="font-extrabold text-[11px] tracking-wider text-[#0F2942] uppercase font-display">
+                            CERTIFICATIONS
+                          </span>
+                          <span className="text-gray-300">•</span>
+                          <span className="text-[11px] text-gray-500 font-medium font-body">
+                            1 Official Document
+                          </span>
+                        </div>
+                        <span className="text-[10px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded-full border border-green-200">
+                          Active
+                        </span>
+                      </div>
+
+                      {/* Official Udyam Certificate Item matching Image 1 */}
+                      <div className="p-2 space-y-1">
+                        {CERTIFICATE_DOCUMENTS.map((doc) => {
+                          const IconComp = doc.icon;
+                          return (
+                            <a
+                              key={doc.id}
+                              href={doc.image}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                setCertificatesHovered(false);
+                              }}
+                              className="w-full group/doc flex items-center justify-between p-3.5 rounded-xl hover:bg-blue-50/70 transition-all text-left cursor-pointer"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-xl bg-blue-50/90 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover/doc:bg-blue-100 group-hover/doc:text-blue-700 transition-colors shadow-2xs">
+                                  <IconComp size={22} strokeWidth={2} />
+                                </div>
+                                <div>
+                                  <span className="text-[13px] font-bold text-gray-900 group-hover/doc:text-[#0F2942] transition-colors leading-snug font-display block">
+                                    {doc.title}
+                                  </span>
+                                  <span className="text-[11px] text-[#B22222] font-mono font-semibold block mt-0.5">
+                                    UDYAM-MH-19-0231528
+                                  </span>
+                                  <span className="text-[10px] text-gray-500 font-body block">
+                                    Ministry of MSME · Govt. of India (Click to open certificate)
+                                  </span>
+                                </div>
+                              </div>
+                              <ExternalLink
+                                size={16}
+                                className="text-gray-400 group-hover/doc:text-blue-600 shrink-0 ml-2 transition-colors"
+                              />
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
 
             return (
               <div key={link.href} className="group relative whitespace-nowrap">
                 <Link
                   to={link.href}
                   onClick={(e) => {
-                    // ✅ Only prevent if EXACT same URL
                     const currentFull = location.pathname + location.search;
                     if (currentFull === link.href) {
                       e.preventDefault();
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`nav-link flex items-center gap-1 transition-colors duration-200 font-bold text-sm lg:text-base ${
-                    isActive
+                  className={`relative py-2 flex items-center gap-1.5 font-display text-[13px] xl:text-sm font-bold tracking-wide transition-all duration-200 ${isActive
                       ? "text-[#8B1A1A]"
-                      : "text-black/90 hover:text-[#8B1A1A]"
-                  }`}
+                      : "text-gray-800 hover:text-[#8B1A1A]"
+                    }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
                   {(isProductsLink || isSpecializedLink) && (
                     <ChevronDown
-                      size={14}
-                      className="group-hover:rotate-180 transition-transform duration-200"
+                      size={13}
+                      className="text-gray-400 group-hover:text-[#8B1A1A] group-hover:rotate-180 transition-transform duration-200"
                     />
                   )}
+                  {/* Subtle Active Indicator */}
+                  <span
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[#8B1A1A] rounded-full transition-all duration-300 ${isActive
+                        ? "opacity-100 scale-x-100"
+                        : "opacity-0 scale-x-0 group-hover:opacity-100 group-hover:scale-x-100"
+                      }`}
+                  />
                 </Link>
 
                 {/* ─── PRODUCTS DROPDOWN ─── */}
@@ -385,7 +544,7 @@ export function Header() {
                   <div
                     className="
                       absolute top-full left-1/2 -translate-x-1/2
-                      w-[260px] mt-1
+                      w-[270px] pt-3
                       opacity-0 invisible
                       group-hover:opacity-100 group-hover:visible
                       transition-all duration-200
@@ -393,12 +552,12 @@ export function Header() {
                       z-50
                     "
                   >
-                    <div className="bg-white shadow-2xl rounded-md overflow-visible relative border border-gray-200">
-                      <div className="py-1">
+                    <div className="bg-white shadow-2xl rounded-xl overflow-visible relative border border-gray-200/90 py-1.5">
+                      <div className="py-0.5">
                         {PRODUCTS_MENU_DATA.map((item) => (
                           <div
                             key={item.name}
-                            className="relative"
+                            className="relative px-1"
                             onMouseEnter={() => {
                               setActiveCategory(item.name);
                               setActiveSubItem(null);
@@ -406,15 +565,14 @@ export function Header() {
                           >
                             <Link
                               to={`/products?type=${encodeURIComponent(item.name)}`}
-                              className={`flex items-center justify-between px-4 py-3 text-sm transition-colors ${
-                                activeCategory === item.name
-                                  ? "bg-[#8B1A1A] text-white"
+                              className={`flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-lg transition-all duration-150 ${activeCategory === item.name
+                                  ? "bg-[#8B1A1A] text-white shadow-xs"
                                   : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
-                              }`}
+                                }`}
                             >
-                              <span className="font-medium">{item.name}</span>
+                              <span>{item.name}</span>
                               <ChevronRight
-                                size={14}
+                                size={13}
                                 className={
                                   activeCategory === item.name
                                     ? "text-white"
@@ -428,12 +586,12 @@ export function Header() {
                               <div
                                 className="
                                   absolute left-full top-0
-                                  w-[420px] ml-0
-                                  bg-white shadow-2xl border border-l-0 border-gray-200
-                                  z-50
+                                  w-[420px] ml-1
+                                  bg-white shadow-2xl border border-gray-200/90 rounded-xl
+                                  z-50 py-1.5
                                 "
                               >
-                                <div className="py-1">
+                                <div className="py-0.5 max-h-[70vh] overflow-y-auto">
                                   {item.subItems?.map((subItem) => {
                                     if (
                                       typeof subItem === "object" &&
@@ -443,22 +601,21 @@ export function Header() {
                                       return (
                                         <div
                                           key={subItem.name}
-                                          className="relative"
+                                          className="relative px-1"
                                           onMouseEnter={() =>
                                             setActiveSubItem(subItem.name)
                                           }
                                         >
                                           <Link
                                             to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem.name)}`}
-                                            className={`flex items-center justify-between px-5 py-3 text-sm transition-colors ${
-                                              activeSubItem === subItem.name
-                                                ? "bg-[#8B1A1A] text-white"
+                                            className={`flex items-center justify-between px-4 py-2.5 text-xs font-medium rounded-lg transition-colors ${activeSubItem === subItem.name
+                                                ? "bg-[#8B1A1A] text-white shadow-xs"
                                                 : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
-                                            }`}
+                                              }`}
                                           >
                                             <span>{subItem.name}</span>
                                             <ChevronRight
-                                              size={14}
+                                              size={13}
                                               className={
                                                 activeSubItem === subItem.name
                                                   ? "text-white"
@@ -472,18 +629,18 @@ export function Header() {
                                             <div
                                               className="
                                                 absolute left-full top-0
-                                                w-[220px] ml-0
-                                                bg-white shadow-2xl border border-l-0 border-gray-200
-                                                z-50
+                                                w-[230px] ml-1
+                                                bg-white shadow-2xl border border-gray-200/90 rounded-xl
+                                                z-50 py-1.5
                                               "
                                             >
-                                              <div className="py-1">
+                                              <div className="py-0.5 max-h-[60vh] overflow-y-auto">
                                                 {subItem.subItems.map(
                                                   (nestedItem) => (
                                                     <Link
                                                       key={nestedItem}
                                                       to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(nestedItem)}`}
-                                                      className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors"
+                                                      className="block px-4 py-2 text-xs text-gray-700 hover:bg-[#8B1A1A]/10 hover:text-[#8B1A1A] transition-colors"
                                                     >
                                                       {nestedItem}
                                                     </Link>
@@ -495,11 +652,12 @@ export function Header() {
                                         </div>
                                       );
                                     }
+
                                     return (
                                       <Link
                                         key={subItem as string}
                                         to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem as string)}`}
-                                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors border-b border-gray-100 last:border-b-0"
+                                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-[#8B1A1A]/10 hover:text-[#8B1A1A] transition-colors"
                                       >
                                         {subItem as string}
                                       </Link>
@@ -520,7 +678,7 @@ export function Header() {
                   <div
                     className="
                       absolute top-full left-1/2 -translate-x-1/2
-                      w-[260px] mt-1
+                      w-[270px] pt-3
                       opacity-0 invisible
                       group-hover:opacity-100 group-hover:visible
                       transition-all duration-200
@@ -528,26 +686,25 @@ export function Header() {
                       z-50
                     "
                   >
-                    <div className="bg-white shadow-2xl rounded-md overflow-visible relative border border-gray-200">
-                      <div className="py-1">
+                    <div className="bg-white shadow-2xl rounded-xl overflow-visible relative border border-gray-200/90 py-1.5">
+                      <div className="py-0.5">
                         {SPECIALIZED_PRODUCT_NAMES.map((item) => (
                           <div
                             key={item.name}
-                            className="relative"
+                            className="relative px-1"
                             onMouseEnter={() => setActiveSpecialized(item.name)}
                           >
                             <Link
                               to={`/products?specialized=true&category=${encodeURIComponent(item.name)}`}
-                              className={`flex items-center justify-between px-4 py-3 text-sm transition-colors ${
-                                activeSpecialized === item.name
-                                  ? "bg-[#8B1A1A] text-white"
+                              className={`flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-lg transition-colors ${activeSpecialized === item.name
+                                  ? "bg-[#8B1A1A] text-white shadow-xs"
                                   : "text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A]"
-                              }`}
+                                }`}
                             >
-                              <span className="font-medium">{item.name}</span>
+                              <span>{item.name}</span>
                               {item.subItems && item.subItems.length > 0 && (
                                 <ChevronRight
-                                  size={14}
+                                  size={13}
                                   className={
                                     activeSpecialized === item.name
                                       ? "text-white"
@@ -563,17 +720,17 @@ export function Header() {
                                 <div
                                   className="
                                     absolute left-full top-0
-                                    w-[420px] ml-0
-                                    bg-white shadow-2xl border border-l-0 border-gray-200
-                                    z-50
+                                    w-[420px] ml-1
+                                    bg-white shadow-2xl border border-gray-200/90 rounded-xl
+                                    z-50 py-1.5
                                   "
                                 >
-                                  <div className="py-1">
+                                  <div className="py-0.5 max-h-[70vh] overflow-y-auto">
                                     {item.subItems.map((subItem) => (
                                       <Link
                                         key={subItem}
                                         to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
-                                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#8B1A1A]/5 hover:text-[#8B1A1A] transition-colors border-b border-gray-100 last:border-b-0"
+                                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-[#8B1A1A]/10 hover:text-[#8B1A1A] transition-colors"
                                       >
                                         {subItem}
                                       </Link>
@@ -592,56 +749,390 @@ export function Header() {
           })}
         </nav>
 
-        {/* Phone CTA */}
-        <div className="hidden lg:flex items-center justify-end w-[20%]">
+        {/* Header CTAs */}
+        <div className="hidden lg:flex items-center justify-end pl-5">
           <a
             href="tel:+917073875529"
-            className="flex items-center gap-2 bg-[#1a1a1a] hover:bg-black text-white font-display font-bold text-sm px-5 py-2.5 rounded-lg transition-all duration-200 shadow-lg"
+            className="inline-flex items-center gap-2.5 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+            aria-label="Call +91 7073875529"
           >
-            <Phone size={14} strokeWidth={2.5} />
-            7073875529
+            <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center text-white">
+              <Phone size={11} strokeWidth={2.5} />
+            </div>
+            <span>7073875529</span>
           </a>
         </div>
 
         {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-black hover:text-black/70 p-2 rounded-lg hover:bg-black/10 transition-colors"
+          className="lg:hidden text-gray-800 hover:text-[#8B1A1A] p-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+          aria-label="Toggle mobile menu"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${
-          mobileOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <nav className="bg-white border-t border-black/10 px-6 py-4 flex flex-col gap-1 overflow-y-auto max-h-[70vh]">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              onClick={() => setMobileOpen(false)}
-              className={`font-body font-bold text-base py-3 px-6 rounded-lg transition-all duration-200 ${
-                location.pathname === link.href
-                  ? "bg-[#8B1A1A]/10 text-[#8B1A1A] border-l-4 border-[#8B1A1A]"
-                  : "text-black/90 hover:text-[#8B1A1A]"
-              }`}
+      {/* Mobile Menu - 100% Solid Opaque Background, Fixed Positioning, No Overlap */}
+      {mobileOpen && (
+        <div
+          className="lg:hidden fixed inset-x-0 top-24 bottom-0 z-50 bg-white overflow-y-auto border-t border-gray-200 shadow-2xl flex flex-col justify-between"
+          style={{ height: "calc(100vh - 6rem)" }}
+        >
+          <nav className="p-4 sm:p-5 flex flex-col gap-1.5 bg-white">
+            {navLinks.map((link) => {
+              const isProductsLink = link.label === "Products";
+              const isSpecializedLink = link.label === "Specialized Products";
+              const isCertificatesLink = link.label === "Certificates";
+              const isActive =
+                currentFullPath === link.href ||
+                (link.href === "/products" &&
+                  location.pathname === "/products" &&
+                  location.search === "") ||
+                (link.href === "/products?specialized=true" &&
+                  location.search === "?specialized=true") ||
+                (link.href === "/certificates" &&
+                  location.pathname.startsWith("/certificates"));
+
+              // ── Mobile Products Accordion ──
+              if (isProductsLink) {
+                return (
+                  <div key={link.href} className="border-b border-gray-100/90 pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
+                      className={`w-full font-display font-bold text-sm py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-between cursor-pointer ${mobileProductsOpen || isActive
+                          ? "bg-[#8B1A1A]/10 text-[#8B1A1A]"
+                          : "text-gray-800 hover:bg-gray-50 hover:text-[#8B1A1A]"
+                        }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{link.label}</span>
+                        <span className="text-[10px] bg-[#8B1A1A]/10 text-[#8B1A1A] border border-[#8B1A1A]/20 px-2 py-0.5 rounded-full font-bold">
+                          9 Categories
+                        </span>
+                      </span>
+                      {mobileProductsOpen ? (
+                        <ChevronUp size={16} className="text-[#8B1A1A]" />
+                      ) : (
+                        <ChevronDown size={16} className="text-gray-400" />
+                      )}
+                    </button>
+
+                    {/* Products Child Menu */}
+                    {mobileProductsOpen && (
+                      <div className="pl-3 pr-2 pt-2 pb-2 space-y-1.5 animate-fade-in bg-gray-50/70 rounded-xl my-1 border border-gray-100">
+                        <Link
+                          to="/products"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 text-xs font-bold text-[#8B1A1A] bg-white rounded-lg border border-[#8B1A1A]/20 shadow-2xs"
+                        >
+                          <span>Explore All Products Portfolio</span>
+                          <span>→</span>
+                        </Link>
+
+                        {PRODUCTS_MENU_DATA.map((item) => {
+                          const isCatExpanded = mobileExpandedCat === item.name;
+                          return (
+                            <div key={item.name} className="border-t border-gray-200/60 pt-1">
+                              <div className="flex items-center justify-between">
+                                <Link
+                                  to={`/products?type=${encodeURIComponent(item.name)}`}
+                                  onClick={() => setMobileOpen(false)}
+                                  className="flex-1 py-1.5 px-2 text-xs font-bold text-gray-800 hover:text-[#8B1A1A] transition-colors"
+                                >
+                                  {item.name}
+                                </Link>
+                                {item.subItems && item.subItems.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setMobileExpandedCat(
+                                        isCatExpanded ? null : item.name
+                                      )
+                                    }
+                                    className="p-1.5 text-gray-400 hover:text-[#8B1A1A] rounded-md"
+                                    aria-label={`Toggle ${item.name} sub-items`}
+                                  >
+                                    {isCatExpanded ? (
+                                      <ChevronUp size={14} className="text-[#8B1A1A]" />
+                                    ) : (
+                                      <ChevronDown size={14} />
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+
+                              {/* Nested sub-items */}
+                              {isCatExpanded && item.subItems && (
+                                <div className="pl-4 pr-1 py-1 space-y-1 bg-white/80 rounded-lg border-l-2 border-[#8B1A1A] my-1">
+                                  {item.subItems.map((subItem) => {
+                                    if (
+                                      typeof subItem === "object" &&
+                                      subItem !== null &&
+                                      "subItems" in subItem
+                                    ) {
+                                      return (
+                                        <div key={subItem.name} className="py-1">
+                                          <Link
+                                            to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem.name)}`}
+                                            onClick={() => setMobileOpen(false)}
+                                            className="block text-[11px] font-bold text-gray-700 hover:text-[#8B1A1A]"
+                                          >
+                                            {subItem.name}
+                                          </Link>
+                                          <div className="pl-3 pt-0.5 space-y-0.5">
+                                            {subItem.subItems.map((nested) => (
+                                              <Link
+                                                key={nested}
+                                                to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(nested)}`}
+                                                onClick={() => setMobileOpen(false)}
+                                                className="block text-[11px] text-gray-600 hover:text-[#8B1A1A] py-0.5"
+                                              >
+                                                • {nested}
+                                              </Link>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      );
+                                    }
+                                    return (
+                                      <Link
+                                        key={subItem as string}
+                                        to={`/products?type=${encodeURIComponent(item.name)}&category=${encodeURIComponent(subItem as string)}`}
+                                        onClick={() => setMobileOpen(false)}
+                                        className="block text-[11px] text-gray-700 hover:text-[#8B1A1A] py-1"
+                                      >
+                                        • {subItem as string}
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // ── Mobile Specialized Products Accordion ──
+              if (isSpecializedLink) {
+                return (
+                  <div key={link.href} className="border-b border-gray-100/90 pb-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileSpecializedOpen(!mobileSpecializedOpen)
+                      }
+                      className={`w-full font-display font-bold text-sm py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-between cursor-pointer ${mobileSpecializedOpen || isActive
+                          ? "bg-[#8B1A1A]/10 text-[#8B1A1A]"
+                          : "text-gray-800 hover:bg-gray-50 hover:text-[#8B1A1A]"
+                        }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{link.label}</span>
+                        <span className="text-[10px] bg-[#8B1A1A]/10 text-[#8B1A1A] border border-[#8B1A1A]/20 px-2 py-0.5 rounded-full font-bold">
+                          Specialty Alloys
+                        </span>
+                      </span>
+                      {mobileSpecializedOpen ? (
+                        <ChevronUp size={16} className="text-[#8B1A1A]" />
+                      ) : (
+                        <ChevronDown size={16} className="text-gray-400" />
+                      )}
+                    </button>
+
+                    {/* Specialized Child Menu */}
+                    {mobileSpecializedOpen && (
+                      <div className="pl-3 pr-2 pt-2 pb-2 space-y-1.5 animate-fade-in bg-gray-50/70 rounded-xl my-1 border border-gray-100">
+                        <Link
+                          to="/products?specialized=true"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 text-xs font-bold text-[#8B1A1A] bg-white rounded-lg border border-[#8B1A1A]/20 shadow-2xs"
+                        >
+                          <span>All Specialized Products</span>
+                          <span>→</span>
+                        </Link>
+
+                        {SPECIALIZED_PRODUCT_NAMES.map((item) => {
+                          const isSpecExpanded =
+                            mobileExpandedSpecCat === item.name;
+                          return (
+                            <div key={item.name} className="border-t border-gray-200/60 pt-1">
+                              <div className="flex items-center justify-between">
+                                <Link
+                                  to={`/products?specialized=true&category=${encodeURIComponent(item.name)}`}
+                                  onClick={() => setMobileOpen(false)}
+                                  className="flex-1 py-1.5 px-2 text-xs font-bold text-gray-800 hover:text-[#8B1A1A] transition-colors"
+                                >
+                                  {item.name}
+                                </Link>
+                                {item.subItems && item.subItems.length > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setMobileExpandedSpecCat(
+                                        isSpecExpanded ? null : item.name
+                                      )
+                                    }
+                                    className="p-1.5 text-gray-400 hover:text-[#8B1A1A] rounded-md"
+                                    aria-label={`Toggle ${item.name} sub-items`}
+                                  >
+                                    {isSpecExpanded ? (
+                                      <ChevronUp size={14} className="text-[#8B1A1A]" />
+                                    ) : (
+                                      <ChevronDown size={14} />
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+
+                              {isSpecExpanded && item.subItems && (
+                                <div className="pl-4 pr-1 py-1 space-y-1 bg-white/80 rounded-lg border-l-2 border-[#8B1A1A] my-1">
+                                  {item.subItems.map((subItem) => (
+                                    <Link
+                                      key={subItem}
+                                      to={`/products?specialized=true&category=${encodeURIComponent(subItem)}`}
+                                      onClick={() => setMobileOpen(false)}
+                                      className="block text-[11px] text-gray-700 hover:text-[#8B1A1A] py-1"
+                                    >
+                                      • {subItem}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // ── Mobile Certificates Accordion ──
+              if (isCertificatesLink) {
+                return (
+                  <div key={link.href} className="border-b border-gray-100/80 pb-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileCertificatesOpen(!mobileCertificatesOpen)
+                      }
+                      className={`w-full font-display font-bold text-sm py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-between cursor-pointer ${mobileCertificatesOpen || isActive
+                          ? "bg-[#C8102E]/10 text-[#C8102E]"
+                          : "text-gray-800 hover:bg-gray-50 hover:text-[#C8102E]"
+                        }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{link.label}</span>
+                        <span className="text-[10px] bg-[#C8102E]/10 text-[#C8102E] border border-[#C8102E]/20 px-2 py-0.5 rounded-full font-bold">
+                          1 Document
+                        </span>
+                      </span>
+                      {mobileCertificatesOpen ? (
+                        <ChevronUp size={16} className="text-[#C8102E]" />
+                      ) : (
+                        <ChevronDown size={16} className="text-gray-400" />
+                      )}
+                    </button>
+
+                    {/* Accordion dropdown on mobile - Opens in new tab directly */}
+                    {mobileCertificatesOpen && (
+                      <div className="pl-2 pr-1 pt-1.5 pb-2 space-y-1.5 animate-fade-in">
+                        <div className="px-3 py-1 flex items-center gap-2 text-[10px] uppercase font-bold text-[#0F2942]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C8102E]" />
+                          <span>CERTIFICATION • Click to Open in New Tab</span>
+                        </div>
+                        {CERTIFICATE_DOCUMENTS.map((doc) => {
+                          const IconComp = doc.icon;
+                          return (
+                            <a
+                              key={doc.id}
+                              href={doc.image}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                setMobileOpen(false);
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-left transition-colors border border-gray-200 cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                  <IconComp size={18} />
+                                </div>
+                                <div>
+                                  <span className="text-xs font-bold text-gray-900 leading-snug block">
+                                    {doc.title}
+                                  </span>
+                                  <span className="text-[10px] font-mono text-[#B22222] font-semibold block">
+                                    UDYAM-MH-19-0231528
+                                  </span>
+                                  <span className="text-[9px] text-gray-500 font-body block">
+                                    Opens certificate image in new tab ↗
+                                  </span>
+                                </div>
+                              </div>
+                              <ExternalLink
+                                size={14}
+                                className="text-gray-400 shrink-0 ml-1.5"
+                              />
+                            </a>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`font-display font-bold text-sm py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-between ${isActive
+                      ? "bg-[#8B1A1A] text-white shadow-sm"
+                      : "text-gray-800 hover:bg-gray-100 hover:text-[#8B1A1A]"
+                    }`}
+                >
+                  <span>{link.label}</span>
+                  <ChevronRight
+                    size={14}
+                    className={isActive ? "text-white" : "text-gray-400"}
+                  />
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="p-5 border-t border-gray-100 bg-gray-50/70 flex flex-col gap-2.5">
+            <a
+              href="tel:+917073875529"
+              className="flex items-center justify-center gap-2.5 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-md transition-all duration-200"
             >
-              {link.label}
-            </Link>
-          ))}
-          <a
-            href="tel:+917073875529"
-            className="mt-2 flex items-center gap-2 bg-[#1a1a1a] text-white font-bold text-sm px-4 py-3 rounded-sm"
-          >
-            <Phone size={14} strokeWidth={2.5} />
-            Call: 7073875529
-          </a>
-        </nav>
-      </div>
+              <Phone size={14} strokeWidth={2.5} className="text-white" />
+              Call Now: +91 7073875529
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Catalogue Download Modal */}
+      <CatalogueModal
+        isOpen={catalogueModalOpen}
+        onClose={() => setCatalogueModalOpen(false)}
+      />
+
+      {/* Certificate Viewer Modal */}
+      <CertificateModal
+        isOpen={!!selectedCertDoc}
+        onClose={() => setSelectedCertDoc(null)}
+        certificate={selectedCertDoc}
+      />
     </header>
   );
 }

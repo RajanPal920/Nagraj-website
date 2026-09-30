@@ -41,87 +41,88 @@ export function Locations() {
   const [gridRef, gridVisible] = useIntersectionObserver<HTMLDivElement>();
 
   return (
-    <section id="locations" className="section-padding bg-gray-50">
-      <div className="container-xl px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+    <section id="locations" className="py-20 lg:py-28 bg-[#F8FAFC] border-b border-gray-200/80">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div
           ref={headerRef}
-          className={`text-center mb-8 sm:mb-10 md:mb-14 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`text-center mb-12 sm:mb-16 ${headerVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
-          <p className="section-label text-brand-red text-xs sm:text-sm">
-            Connect With Us
-          </p>
-          <h2 className="section-title text-brand-charcoal mx-auto text-2xl sm:text-3xl md:text-4xl">
-            Our <span className="text-brand-red">Presence</span>
+          <div className="inline-flex items-center gap-2 mb-3 bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 px-3.5 py-1.5 rounded-full">
+            <Building2 size={14} className="text-[#8B1A1A]" />
+            <span className="text-[#8B1A1A] font-display font-bold text-xs uppercase tracking-wider">
+              Strategic Presence
+            </span>
+          </div>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl text-gray-900 mb-3">
+            Corporate & Industrial <span className="text-[#8B1A1A]">Offices</span>
           </h2>
-          <div className="section-divider mx-auto bg-brand-red w-12 sm:w-16" />
-          <p className="font-body text-gray-500 text-sm sm:text-base max-w-xl mx-auto px-4">
-            Nagraj Metal Industries operates from Mumbai and Pune, serving
-            industrial clients across India with quality steel products and
-            reliable service.
+          <div className="w-16 h-1 bg-[#8B1A1A] rounded-full mx-auto mb-4" />
+          <p className="font-body text-gray-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Operating from registered facilities in Mumbai and Pune to guarantee rapid response, stock dispatch, and technical support across India.
           </p>
         </div>
 
         {/* Single Container with Office Details and Contact Information */}
         <div
           ref={gridRef}
-          className={`max-w-4xl mx-auto bg-white rounded-lg shadow-card p-6 sm:p-8 border border-gray-100 ${gridVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`max-w-5xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-200/80 p-6 sm:p-10 ${gridVisible ? "animate-fade-in-up" : "opacity-0"}`}
         >
           {/* ISO Badge */}
-          <div className="text-center mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-2 bg-brand-red/10 text-brand-red px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
-              <Award size={14} className="sm:w-4 sm:h-4" />
-              <span className="font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider">
-                ISO Certified Company
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-[#8B1A1A]/10 text-[#8B1A1A] px-4 py-1.5 rounded-full mb-3 border border-[#8B1A1A]/20">
+              <Award size={15} />
+              <span className="font-display font-bold text-xs uppercase tracking-wider">
+                ISO 9001:2015 Certified Metal Supplier
               </span>
             </div>
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-brand-charcoal">
-              Get in <span className="text-brand-red">Touch</span>
+            <h3 className="font-display font-bold text-xl sm:text-2xl text-gray-900">
+              Direct Contact & <span className="text-[#8B1A1A]">Operations</span>
             </h3>
             <p className="font-body text-gray-500 text-xs sm:text-sm mt-1">
-              Reach out to us for inquiries, quotes, or technical support
+              Reach our central sales desk for instantaneous quotes, MTC requests, or technical consultation
             </p>
           </div>
 
           {/* Office Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {offices.map(({ id, type, city, address, note }, index) => (
               <div
                 key={id}
                 id={`office-${id}`}
-                className={`rounded-lg border-t-4 border-brand-red bg-gray-50 p-4 sm:p-5 hover:shadow-card-hover transition-all duration-300 ${gridVisible ? `animate-fade-in-up stagger-${(index % 2) + 1}` : "opacity-0"}`}
+                className={`rounded-2xl border border-gray-200/80 bg-gray-50/60 p-6 hover:border-[#8B1A1A]/40 hover:shadow-md transition-all duration-300 ${gridVisible ? `animate-fade-in-up stagger-${(index % 2) + 1}` : "opacity-0"}`}
               >
                 {/* Badge */}
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <div className="bg-brand-red text-white text-[10px] font-display font-bold px-2 py-0.5 rounded-lg uppercase tracking-wider">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                  <div className="bg-[#8B1A1A] text-white text-[11px] font-display font-bold px-3 py-1 rounded-lg uppercase tracking-wider">
                     {type}
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-gray-400">
-                    <Clock size={10} />
-                    <span>Mon-Sat 9AM-6PM</span>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+                    <Clock size={12} className="text-[#8B1A1A]" />
+                    <span>Mon–Sat 9AM–6PM</span>
                   </div>
                 </div>
 
                 {/* City */}
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2.5 mb-3">
                   <Building2
-                    size={14}
-                    className="text-brand-red"
-                    strokeWidth={1.75}
+                    size={18}
+                    className="text-[#8B1A1A]"
+                    strokeWidth={2}
                   />
-                  <h3 className="font-display font-extrabold text-lg sm:text-xl text-brand-red">
+                  <h3 className="font-display font-extrabold text-xl text-gray-900">
                     {city}
                   </h3>
                 </div>
 
                 {/* Address */}
-                <div className="flex gap-2 mb-3">
+                <div className="flex gap-2.5 mb-4">
                   <MapPin
-                    size={12}
-                    className="text-brand-red flex-shrink-0 mt-0.5"
+                    size={16}
+                    className="text-[#8B1A1A] shrink-0 mt-0.5"
                     strokeWidth={2}
                   />
-                  <address className="not-italic font-body text-gray-600 text-[11px] sm:text-xs leading-relaxed">
+                  <address className="not-italic font-body text-gray-600 text-xs sm:text-sm leading-relaxed">
                     {address.map((line, i) => (
                       <span key={i}>
                         {line}
@@ -132,10 +133,10 @@ export function Locations() {
                 </div>
 
                 {/* Note */}
-                <div className="pt-2 border-t border-gray-200">
-                  <p className="font-body text-[10px] text-gray-500 italic flex items-center gap-2">
-                    <span className="w-1 h-1 bg-brand-red rounded-full flex-shrink-0"></span>
-                    {note}
+                <div className="pt-3 border-t border-gray-200/80">
+                  <p className="font-body text-xs text-gray-500 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#8B1A1A] rounded-full shrink-0" />
+                    <span>{note}</span>
                   </p>
                 </div>
               </div>
@@ -143,49 +144,41 @@ export function Locations() {
           </div>
 
           {/* Contact Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 sm:pt-6 border-t border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-gray-200">
             {/* Contact Person */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
-                <User
-                  size={16}
-                  className="text-brand-red sm:w-[18px] sm:h-[18px]"
-                />
+            <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100/80 transition-colors border border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-[#8B1A1A]/10 flex items-center justify-center shrink-0">
+                <User size={18} className="text-[#8B1A1A]" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-body text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                  Contact Person
+                <p className="font-body text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+                  Executive Desk
                 </p>
-                <p className="font-display font-bold text-brand-charcoal text-xs sm:text-sm">
+                <p className="font-display font-bold text-gray-900 text-xs sm:text-sm truncate">
                   Mr. Rajesh Padhiyar
                 </p>
-                <p className="font-body text-[10px] sm:text-xs text-gray-500">
-                  (CEO)
-                </p>
+                <p className="font-body text-[11px] text-gray-500">Chief Executive Officer</p>
               </div>
             </div>
 
             {/* Phone */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
-                <Phone
-                  size={16}
-                  className="text-brand-red sm:w-[18px] sm:h-[18px]"
-                />
+            <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100/80 transition-colors border border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-[#8B1A1A]/10 flex items-center justify-center shrink-0">
+                <Phone size={18} className="text-[#8B1A1A]" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-body text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                  Phone
+                <p className="font-body text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+                  Direct Line
                 </p>
                 <a
                   href="tel:+917073875529"
-                  className="font-body text-brand-charcoal hover:text-brand-red transition-colors text-xs sm:text-sm block"
+                  className="font-body font-bold text-gray-900 hover:text-[#8B1A1A] transition-colors text-xs sm:text-sm block"
                 >
                   +91 7073875529
                 </a>
                 <a
                   href="tel:+912266518595"
-                  className="font-body text-brand-charcoal hover:text-brand-red transition-colors text-xs sm:text-sm block"
+                  className="font-body text-gray-500 hover:text-[#8B1A1A] transition-colors text-xs block"
                 >
                   +91 22-66518595
                 </a>
@@ -193,58 +186,51 @@ export function Locations() {
             </div>
 
             {/* Email */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
-                <Mail
-                  size={16}
-                  className="text-brand-red sm:w-[18px] sm:h-[18px]"
-                />
+            <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100/80 transition-colors border border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-[#8B1A1A]/10 flex items-center justify-center shrink-0">
+                <Mail size={18} className="text-[#8B1A1A]" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-body text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                  Email
+                <p className="font-body text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+                  Official Email
                 </p>
                 <a
                   href="mailto:sales@nagrajmetal.com"
-                  className="font-body text-brand-charcoal hover:text-brand-red transition-colors text-xs sm:text-sm block"
+                  className="font-body font-semibold text-gray-900 hover:text-[#8B1A1A] transition-colors text-xs sm:text-sm block truncate"
                 >
                   sales@nagrajmetal.com
                 </a>
+                <p className="font-body text-[11px] text-gray-500">24-Hour SLA</p>
               </div>
             </div>
 
-            {/* Location */}
-            <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-red/5 transition-colors">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
-                <MapPin
-                  size={16}
-                  className="text-brand-red sm:w-[18px] sm:h-[18px]"
-                />
+            {/* Jurisdiction */}
+            <div className="flex items-start gap-3 p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100/80 transition-colors border border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-[#8B1A1A]/10 flex items-center justify-center shrink-0">
+                <MapPin size={18} className="text-[#8B1A1A]" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-body text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
-                  Main Office
+                <p className="font-body text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+                  Jurisdiction
                 </p>
-                <p className="font-body text-brand-charcoal text-[10px] sm:text-xs leading-relaxed">
-                  Jalaram Niwas, Plot No. 2,
-                  <br />
-                  1st Floor, 1st Kumbharwada,
-                  <br />
-                  Mumbai 400004
+                <p className="font-body font-bold text-gray-900 text-xs sm:text-sm">
+                  Mumbai Jurisdiction
                 </p>
+                <p className="font-body text-[11px] text-gray-500">GST Documented</p>
               </div>
             </div>
           </div>
 
           {/* Trust Badge */}
-          <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-100 text-center">
-            <p className="font-body text-[10px] sm:text-xs text-gray-400 leading-relaxed">
-              <span className="text-brand-red font-semibold">✓</span> Registered
-              with semi-govt., govt., private & multinational companies
-              <span className="hidden sm:inline mx-2">|</span>
-              <br className="sm:hidden" />
-              <span className="text-brand-red font-semibold">✓</span> Modvat
-              invoices & excise benefits available
+          <div className="mt-6 pt-5 border-t border-gray-100 text-center">
+            <p className="font-body text-xs text-gray-500 flex items-center justify-center gap-4 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 font-medium text-gray-700">
+                <span className="text-[#8B1A1A] font-bold">✓</span> Registered with Semi-Govt., Govt. & MNCs
+              </span>
+              <span className="hidden sm:inline text-gray-300">•</span>
+              <span className="inline-flex items-center gap-1.5 font-medium text-gray-700">
+                <span className="text-[#8B1A1A] font-bold">✓</span> Modvat Invoices & Excise Benefits
+              </span>
             </p>
           </div>
         </div>

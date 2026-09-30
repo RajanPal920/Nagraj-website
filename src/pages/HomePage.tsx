@@ -4,6 +4,7 @@ import { ProductGrid } from '../components/ProductGrid';
 import { WhyChooseUs } from '../components/WhyChooseUs';
 import { Locations } from '../components/Locations';
 import { ContactBand } from '../components/ContactBand';
+import { CountriesExport } from '../components/CountriesExport';
 
 export function HomePage() {
   return (
@@ -14,6 +15,7 @@ export function HomePage() {
       <WhyChooseUs />
       <Locations />
       <ContactBand />
+      <CountriesExport />
     </main>
   );
 }
