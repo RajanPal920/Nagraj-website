@@ -29,7 +29,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Raleway", "sans-serif"],
+        display: ["Cinzel", "serif"],
         body: ["Poppins", "sans-serif"],
       },
       backgroundImage: {
