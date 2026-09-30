@@ -16,8 +16,6 @@ import {
   Package,
   ChevronDown,
   Building2,
-  Shield,
-  Truck,
 } from "lucide-react";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */

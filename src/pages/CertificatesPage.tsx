@@ -9,7 +9,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 // Certificate data - Only Udyam Certificate
 const certificates = [

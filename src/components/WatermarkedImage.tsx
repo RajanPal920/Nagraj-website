@@ -10,8 +10,7 @@ interface WatermarkedImageProps {
 }
 
 /**
- * Image with Nagraj Metal Industries watermark
- * Style inspired by premium B2B steel companies
+ * Product Image component (clean, without watermarks)
  */
 export function WatermarkedImage({
   src,
@@ -19,7 +18,7 @@ export function WatermarkedImage({
   className = "",
   imgClassName = "",
   fallbackSrc = "/images/productHero.png",
-  showWatermark = true,
+  showWatermark: _showWatermark = false,
 }: WatermarkedImageProps) {
   return (
     <div className={`relative overflow-hidden w-full h-full ${className}`}>
@@ -37,30 +36,6 @@ export function WatermarkedImage({
           }
         }}
       />
-
-      {showWatermark && (
-        <>
-          {/* ✅ Watermark 1 — Center Diagonal Logo (Semi-transparent) */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10">
-            <img
-              src="/images/logo.png"
-              alt=""
-              className="w-[50%] max-w-[160px] h-auto object-contain opacity-[0.18] transform -rotate-12"
-            />
-          </div>
-
-          {/* ✅ Watermark 2 — Bottom-Right Brand Badge */}
-          <div className="absolute bottom-2 right-2.5 pointer-events-none select-none z-10">
-            <div className="bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded shadow-sm border border-gray-200/80">
-              <img
-                src="/images/logo.png"
-                alt="Nagraj Metal Industries"
-                className="w-12 h-6 object-contain"
-              />
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }

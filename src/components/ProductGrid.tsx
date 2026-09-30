@@ -5,11 +5,7 @@ import { ArrowRight, Package, Award, Shield, Zap } from "lucide-react";
 import { useProducts } from "../hooks/useProducts";
 import { getProductImage } from "../data/productImages";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
-<<<<<<< HEAD
 import { getProducts, getProductPrimaryImage, getProductImageAlt } from "../data/products";
-=======
-import { getProducts } from "../data/products";
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
 // ─── Type to display label mapping ──────────────────────────────────────────
 const TYPE_TO_DISPLAY: Record<string, string> = {
@@ -278,7 +274,6 @@ export function ProductGrid() {
                 const Icon = getIcon(type);
                 const count = getProductCountForType(type);
                 const sampleProduct = getSampleProductForType(type);
-<<<<<<< HEAD
                 const defaultImage = getProductCardImage(
                   displayLabel,
                   type,
@@ -287,19 +282,6 @@ export function ProductGrid() {
                 const image = sampleProduct
                   ? getProductPrimaryImage(sampleProduct, defaultImage)
                   : defaultImage;
-=======
-                const image = getProductCardImage(
-                  displayLabel,
-                  type,
-                  sampleProduct
-                    ? getProductImage(
-                        sampleProduct.product_type,
-                        sampleProduct.category,
-                        sampleProduct.title,
-                      )
-                    : getProductImage(type, undefined, type),
-                );
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                 const navType = displayLabel;
                 const groups = typeTree[type] || [];
                 const topGroups = groups.map((g) => g.group).slice(0, 3);
@@ -321,19 +303,11 @@ export function ProductGrid() {
                     <div className="relative h-52 w-full shrink-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                       <img
                         src={image}
-<<<<<<< HEAD
                         alt={sampleProduct ? getProductImageAlt(sampleProduct, displayLabel) : displayLabel}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.src = defaultImage || "/images/bar.jpg";
-=======
-                        alt={displayLabel}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = "/images/bar.jpg";
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         }}
                       />
 

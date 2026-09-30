@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-<<<<<<< HEAD
 import {
   findProductBySlug,
   getProducts,
@@ -10,18 +9,11 @@ import {
   canonicalType,
   getProductPrimaryImage,
   getProductImageAlt,
-  getProductGallery,
 } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { IoIosCall } from "react-icons/io";
-=======
-import { findProductBySlug, getProducts } from "../data/products";
-import type { ScrapedProduct } from "../data/products";
-import { IoLogoWhatsapp } from "react-icons/io";
-import { IoIosCall } from "react-icons/io";
 import { WatermarkedImage } from "../components/WatermarkedImage";
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 import {
   Award,
   FileCheck,
@@ -45,13 +37,10 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Plates & Sheets": "/images/sheet.jpg",
   "Round Bars": "/images/bar.jpg",
   "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
-<<<<<<< HEAD
   "AISI O1 Round Bars": "/images/products/aisi-o1-round-bars.jpg",
   "HCHCR-D2 Round Bars": "/images/products/hchcr-d2-round-bars.jpg",
   "Toolox 33 Round Bars": "/images/products/tool-steel-round-bar-500x500.jpg",
   "Toolox 44 Round Bars": "/images/products/c60-steel.jpg",
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   Flanges: "/images/flange.jpg",
   Fasteners: "/images/fasteners.jpg",
   Fittings: "/images/fitting.jpg",
@@ -62,7 +51,6 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
 
 const PRODUCT_HERO_FALLBACK = "/images/productHero.png";
 
-<<<<<<< HEAD
 const MATERIAL_FAMILIES = [
   {
     name: "Nickel Alloy",
@@ -124,15 +112,11 @@ function getCategoryFamily(p: ScrapedProduct) {
 }
 
 // ─── Category-First Strict Related Products ──────────────────────────────
-=======
-// ─── Strict Related Products — ONLY same product_type ────────────────────
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 function getRelatedProducts(
   current: ScrapedProduct,
   all: ScrapedProduct[],
   limit = 8,
 ): ScrapedProduct[] {
-<<<<<<< HEAD
   const currentCat = canonicalCategory(current.category);
   const currentType = canonicalType(current.product_type);
   const currentFamily = getCategoryFamily(current);
@@ -193,13 +177,6 @@ function getRelatedProducts(
 
   // Strict: Never fall back to unrelated categories
   return results.slice(0, limit);
-=======
-  return all
-    .filter(
-      (p) => p.slug !== current.slug && p.product_type === current.product_type,
-    )
-    .slice(0, limit);
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -268,7 +245,7 @@ function TechnicalTable({
   );
 }
 
-/** Related product card — premium industrial catalogue with watermark */
+/** Related product card — premium industrial catalogue */
 function RelatedCard({
   product,
   fallbackImage,
@@ -277,44 +254,21 @@ function RelatedCard({
   fallbackImage: string;
 }) {
   const title = product.title || product.slug;
-<<<<<<< HEAD
   const img = getProductPrimaryImage(product, fallbackImage);
   const altText = getProductImageAlt(product, title);
-=======
-  const img = product.images?.[0]?.url || fallbackImage;
-  const isPipeRelated =
-    product.product_type?.toLowerCase().includes("pipe") ||
-    product.category?.toLowerCase().includes("pipe");
-
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   return (
     <Link
       to={`/product/${product.slug}`}
       className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
     >
-<<<<<<< HEAD
-      {/* Uniform fixed height image */}
-      <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
-        <img
-          src={img || fallbackImage}
-          alt={altText}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (target.src !== fallbackImage) target.src = fallbackImage;
-          }}
-=======
-      {/* Image with watermark - uniform fixed height */}
+      {/* Product Image - uniform fixed height */}
       <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
         <WatermarkedImage
           src={img}
-          alt={title}
+          alt={altText}
           fallbackSrc={fallbackImage}
-          showWatermark={!isPipeRelated}
           className="w-full h-full"
           imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
         {product.category && (
@@ -373,7 +327,6 @@ export function ProductPage() {
   const [product, setProduct] = useState<ScrapedProduct | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ScrapedProduct[]>([]);
   const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
   const [activeImage, setActiveImage] = useState<string>("");
   const [activeAlt, setActiveAlt] = useState<string>("");
 
@@ -385,9 +338,6 @@ export function ProductPage() {
     : PRODUCT_HERO_FALLBACK;
   const primaryImage = product ? getProductPrimaryImage(product, categoryImg) : "";
   const primaryAlt = product ? getProductImageAlt(product, title) : "";
-  const gallery = product ? getProductGallery(product) : [];
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
   useEffect(() => {
     setLoading(true);
@@ -403,16 +353,12 @@ export function ProductPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [slug]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (primaryImage) {
       setActiveImage(primaryImage);
       setActiveAlt(primaryAlt);
     }
   }, [primaryImage, primaryAlt]);
-
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-28 bg-[#F7F7F7]">
@@ -448,19 +394,8 @@ export function ProductPage() {
     );
   }
 
-<<<<<<< HEAD
   const currentImage = activeImage || primaryImage;
   const currentAlt = activeAlt || primaryAlt;
-=======
-  const title = product.title || product.slug;
-
-  const productImg = product.images?.[0]?.url;
-  const categoryImg =
-    CATEGORY_FALLBACK_IMAGES[product.product_type] ||
-    CATEGORY_FALLBACK_IMAGES[product.category] ||
-    PRODUCT_HERO_FALLBACK;
-  const mainImage = productImg || categoryImg;
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
   const whatsappLink = `https://wa.me/917073875529?text=${encodeURIComponent(
     `Enquiry for ${title}\n\nURL: ${window.location.href}`,
@@ -503,7 +438,6 @@ export function ProductPage() {
           >
             Products
           </Link>
-<<<<<<< HEAD
           {product.product_type && (
             <>
               <Link
@@ -526,16 +460,6 @@ export function ProductPage() {
               <ChevronRight className="w-3 h-3 text-gray-300" />
             </>
           )}
-=======
-          <ChevronRight className="w-3 h-3 text-gray-300" />
-          <Link
-            to={`/products?type=${encodeURIComponent(product.product_type || product.category)}`}
-            className="hover:text-[#8B1A1A] transition-colors"
-          >
-            {product.product_type || product.category}
-          </Link>
-          <ChevronRight className="w-3 h-3 text-gray-300" />
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
           <span className="text-[#8B1A1A] font-semibold truncate max-w-[200px] sm:max-w-xs">
             {title}
           </span>
@@ -544,7 +468,7 @@ export function ProductPage() {
         {/* ═══ MAIN PRODUCT HERO ═══ */}
         <div className="bg-white border border-gray-200 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* LEFT: Image Panel with Watermark */}
+            {/* LEFT: Image Panel */}
             <div className="lg:sticky lg:top-28 lg:self-start border-b lg:border-b-0 lg:border-r border-gray-200">
               <div className="relative w-full aspect-[3/4] bg-white overflow-hidden">
                 {/* Premium Quality Badge */}
@@ -553,60 +477,16 @@ export function ProductPage() {
                   Premium Quality
                 </span>
 
-<<<<<<< HEAD
                 {/* Product Image */}
-                <img
+                <WatermarkedImage
                   src={currentImage || categoryImg}
                   alt={currentAlt}
-                  className="absolute inset-0 w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (target.src !== categoryImg) target.src = categoryImg;
-                  }}
-                />
-              </div>
-
-              {/* Gallery thumbnails if multiple images exist */}
-              {gallery.length > 1 && (
-                <div className="p-3 bg-gray-50 border-t border-gray-200 flex gap-2 overflow-x-auto">
-                  {gallery.map((g, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setActiveImage(g.url);
-                        setActiveAlt(g.alt);
-                      }}
-                      className={`relative w-16 h-16 rounded overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${
-                        currentImage === g.url
-                          ? "border-[#8B1A1A] shadow-xs"
-                          : "border-gray-200 hover:border-gray-400 opacity-70 hover:opacity-100"
-                      }`}
-                    >
-                      <img
-                        src={g.url}
-                        alt={g.alt}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-=======
-                {/* ✅ Watermarked Image */}
-                <WatermarkedImage
-                  src={mainImage}
-                  alt={title}
-                  showWatermark={
-                    !product.product_type?.toLowerCase().includes("pipe") &&
-                    !product.category?.toLowerCase().includes("pipe") &&
-                    !slug?.toLowerCase().includes("pipe")
-                  }
+                  fallbackSrc={categoryImg}
                   className="absolute inset-0 w-full h-full"
                   imgClassName="object-cover object-center"
                 />
               </div>
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
+
             </div>
 
             {/* RIGHT: Info Panel */}
@@ -832,7 +712,6 @@ export function ProductPage() {
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3 uppercase tracking-wide">
                   <span className="w-1 h-6 bg-[#8B1A1A]"></span>
-<<<<<<< HEAD
                   Related {product.category || product.product_type} Products
                 </h2>
                 <p className="text-xs text-gray-500 mt-1.5 ml-4 uppercase tracking-wider">
@@ -848,19 +727,6 @@ export function ProductPage() {
                 className="text-xs text-[#8B1A1A] hover:text-[#6F1414] font-semibold whitespace-nowrap inline-flex items-center gap-1 uppercase tracking-wider"
               >
                 View All {product.category || ""}
-=======
-                  Related {product.product_type}
-                </h2>
-                <p className="text-xs text-gray-500 mt-1.5 ml-4 uppercase tracking-wider">
-                  Similar products you may require
-                </p>
-              </div>
-              <Link
-                to={`/products?type=${encodeURIComponent(product.product_type || product.category)}`}
-                className="text-xs text-[#8B1A1A] hover:text-[#6F1414] font-semibold whitespace-nowrap inline-flex items-center gap-1 uppercase tracking-wider"
-              >
-                View All
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                 <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
               </Link>
             </div>

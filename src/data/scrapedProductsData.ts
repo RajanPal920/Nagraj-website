@@ -39,14 +39,7 @@ export interface ScrapedProduct {
     items: string[];
   }>;
   current_stock?: any;
-<<<<<<< HEAD
   images?: Array<import("./products").ProductImageItem>;
-=======
-  images: Array<{
-    url: string;
-    alt: string;
-  }>;
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   attachments: string[];
   scraped_at: string;
   status: string;
@@ -232,7 +225,6 @@ export function searchProducts(query: string): ScrapedProduct[] {
 
 // Export the products directly as well
 export const products = (allProducts as unknown as ScrapedProduct[]) || [];
-<<<<<<< HEAD
 
 export {
   extractProductImageUrl,
@@ -242,5 +234,3 @@ export {
   getProductGallery,
 } from "./products";
 export type { ProductImageItem } from "./products";
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e

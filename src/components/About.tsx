@@ -1,10 +1,6 @@
 import {
-  MapPin,
-  Package,
   Building2,
-  TrendingUp,
   Award,
-  Shield,
   Truck,
   FlaskConical,
 } from "lucide-react";

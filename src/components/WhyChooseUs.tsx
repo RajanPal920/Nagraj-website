@@ -4,9 +4,7 @@ import {
   IndianRupee,
   Globe2,
   Award,
-  Truck,
   TrendingUp,
-  Users,
 } from "lucide-react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 

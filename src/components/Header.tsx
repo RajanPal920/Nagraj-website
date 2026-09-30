@@ -120,9 +120,6 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Corten Steel",
       "EFSW/SAW/HSAW/LSAW Pipes",
       "Welded Wear Resistant",
-      "Pipe/AR400 Pipe",
-      "Plate Welded Pipes",
-      "Large OD Seamless Pipes",
     ],
   },
   {

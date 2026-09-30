@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
 import {
   Phone,
   Mail,
@@ -10,7 +9,6 @@ import {
   User,
   Globe,
   ChevronDown,
-  ArrowRight,
 } from "lucide-react";
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */

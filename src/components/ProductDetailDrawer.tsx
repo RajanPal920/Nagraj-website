@@ -2,17 +2,12 @@ import { useEffect } from "react";
 import { X, ExternalLink, ArrowRight, Beaker, Gauge } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { ScrapedProduct } from "../data/scrapedProductsData";
-<<<<<<< HEAD
 import {
   getCategoryDisplayLabel,
   CATEGORY_FALLBACK_IMAGES,
   PRODUCT_HERO_FALLBACK,
 } from "../data/categoryConfig";
 import { getProductPrimaryImage, getProductImageAlt } from "../data/products";
-=======
-import { getCategoryLabel } from "../data/scrapedProductsData";
-import { getProductImage } from "../data/productImages";
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
 interface ProductDetailDrawerProps {
   product: ScrapedProduct | null;
@@ -46,21 +41,12 @@ export function ProductDetailDrawer({
 
   if (!product) return null;
 
-<<<<<<< HEAD
   const fallbackImage =
     CATEGORY_FALLBACK_IMAGES[product.product_type] ||
     CATEGORY_FALLBACK_IMAGES[product.category] ||
     PRODUCT_HERO_FALLBACK;
   const imageUrl = getProductPrimaryImage(product, fallbackImage);
   const categoryLabel = getCategoryDisplayLabel(product.category);
-=======
-  const imageUrl = getProductImage(
-    product.product_type,
-    product.category,
-    product.title,
-  );
-  const categoryLabel = getCategoryLabel(product.category);
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   const isSpecialized = product.category !== "Products";
 
   // Parse description — strip leading "Description\n\n" if present
@@ -96,21 +82,10 @@ export function ProductDetailDrawer({
         <div className="relative h-64 w-full flex-shrink-0 overflow-hidden bg-gray-100">
           <img
             src={imageUrl}
-<<<<<<< HEAD
             alt={getProductImageAlt(product, product.title)}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.src = fallbackImage;
-=======
-            alt={product.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = getProductImage(
-                product.product_type,
-                product.category,
-                product.title,
-              );
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -214,11 +189,7 @@ export function ProductDetailDrawer({
                           {entry.min_value}
                         </td>
                         <td className="px-3 py-2 text-gray-500">
-<<<<<<< HEAD
                           {(entry as any).unit || ""}
-=======
-                          {entry.unit}
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         </td>
                       </tr>
                     ))}
@@ -260,11 +231,7 @@ export function ProductDetailDrawer({
                           {entry.value}
                         </td>
                         <td className="px-3 py-2 text-gray-500">
-<<<<<<< HEAD
                           {(entry as any).unit || ""}
-=======
-                          {entry.unit}
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                         </td>
                       </tr>
                     ))}

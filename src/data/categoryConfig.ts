@@ -123,13 +123,10 @@ export const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Plates & Sheets": "/images/sheet.jpg",
   "Round Bars": "/images/bar.jpg",
   "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
-<<<<<<< HEAD
   "AISI O1 Round Bars": "/images/products/aisi-o1-round-bars.jpg",
   "HCHCR-D2 Round Bars": "/images/products/hchcr-d2-round-bars.jpg",
   "Toolox 33 Round Bars": "/images/products/tool-steel-round-bar-500x500.jpg",
   "Toolox 44 Round Bars": "/images/products/c60-steel.jpg",
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   Flanges: "/images/flange.jpg",
   Fasteners: "/images/fasteners.jpg",
   Fittings: "/images/fitting.jpg",

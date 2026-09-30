@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-<<<<<<< HEAD
 import {
   getProducts,
   getFilteredProducts,
@@ -11,12 +10,7 @@ import {
 } from "../data/products";
 import type { ScrapedProduct } from "../data/products";
 import { ProductsSidebar } from "../components/ProductsSidebar";
-=======
-import { getProducts } from "../data/products";
-import type { ScrapedProduct } from "../data/products";
-import { ProductsSidebar } from "../components/ProductsSidebar";
 import { WatermarkedImage } from "../components/WatermarkedImage";
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 import {
   ChevronRight,
   Search,
@@ -35,13 +29,10 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Plates & Sheets": "/images/sheet.jpg",
   "Round Bars": "/images/bar.jpg",
   "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
-<<<<<<< HEAD
   "AISI O1 Round Bars": "/images/products/aisi-o1-round-bars.jpg",
   "HCHCR-D2 Round Bars": "/images/products/hchcr-d2-round-bars.jpg",
   "Toolox 33 Round Bars": "/images/products/tool-steel-round-bar-500x500.jpg",
   "Toolox 44 Round Bars": "/images/products/c60-steel.jpg",
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
   Flanges: "/images/flange.jpg",
   Fasteners: "/images/fasteners.jpg",
   Fittings: "/images/fitting.jpg",
@@ -337,12 +328,6 @@ export function ProductsPage() {
   const categoryFilter = searchParams.get("category");
   const isSpecialized = searchParams.get("specialized") === "true";
 
-  const isPipesAndTubesRoute =
-    typeFilter?.toLowerCase() === "pipes & tubes" ||
-    typeFilter?.toLowerCase() === "pipe" ||
-    typeFilter?.toLowerCase() === "pipes";
-
-<<<<<<< HEAD
   const querySearch =
     searchParams.get("search") || searchParams.get("q") || "";
   const [allProducts, setAllProducts] = useState<ScrapedProduct[]>([]);
@@ -357,14 +342,6 @@ export function ProductsPage() {
   }, [querySearch]);
 
   useEffect(() => {
-=======
-  const [allProducts, setAllProducts] = useState<ScrapedProduct[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"default" | "az" | "za">("default");
-
-  useEffect(() => {
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
     setLoading(true);
     const data = getProducts();
     setAllProducts(data);
@@ -375,7 +352,6 @@ export function ProductsPage() {
   // STRICT FILTERING — UNCHANGED
   // ═══════════════════════════════════════════════════════════════════════
   const filteredProducts = useMemo(() => {
-<<<<<<< HEAD
     let result: ScrapedProduct[] = [];
 
     if (isSpecialized) {
@@ -383,48 +359,12 @@ export function ProductsPage() {
         result = allProducts.filter((p) => isSpecializedMatch(p));
       } else {
         const catLower = categoryFilter.toLowerCase();
-=======
-    let result = allProducts.filter((p) => {
-      const pType = (p.product_type || "").trim().toLowerCase();
-      const pCat = (p.category || "").trim().toLowerCase();
-      const pTitle = (p.title || "").trim().toLowerCase();
-      const typeLower = (typeFilter || "").trim().toLowerCase();
-      const catLower = (categoryFilter || "").trim().toLowerCase();
-
-      if (typeFilter && categoryFilter) {
-        if (pType !== typeLower) return false;
-        if (pCat === catLower) return true;
-        if (pCat.includes(catLower)) return true;
-        if (pTitle.includes(catLower)) return true;
-        return false;
-      }
-
-      if (typeFilter) {
-        return pType === typeLower;
-      }
-
-      if (categoryFilter && !isSpecialized) {
-        if (pCat === catLower) return true;
-        if (pCat.includes(catLower)) return true;
-        if (pTitle.includes(catLower)) return true;
-        return false;
-      }
-
-      if (isSpecialized) {
-        if (!categoryFilter) {
-          return isSpecializedMatch(p);
-        }
-
-        const catLower = categoryFilter.toLowerCase();
-
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
         const parentKey = Object.keys(SPECIALIZED_MENU_DATA).find(
           (key) => key.toLowerCase() === catLower,
         );
 
         if (parentKey) {
           const subItems = SPECIALIZED_MENU_DATA[parentKey].subItems || [];
-<<<<<<< HEAD
           if (subItems.length > 0) {
             result = allProducts.filter((p) =>
               subItems.some((sub) => isSpecializedMatch(p, sub)),
@@ -444,20 +384,6 @@ export function ProductsPage() {
       // Reusable, generic, data-driven filtering for all Product Types and Categories
       result = getFilteredProducts(allProducts, typeFilter, categoryFilter);
     }
-=======
-
-          if (subItems.length > 0) {
-            return subItems.some((sub) => isSpecializedMatch(p, sub));
-          }
-
-          return isSpecializedMatch(p, parentKey);
-        }
-
-        return isSpecializedMatch(p, categoryFilter);
-      }
-      return true;
-    });
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
 
     if (searchQuery.trim()) {
       const sq = searchQuery.toLowerCase();
@@ -490,7 +416,6 @@ export function ProductsPage() {
     sortBy,
   ]);
 
-<<<<<<< HEAD
   // ─── Available Category Tabs for Current Type ──────────────────────────────
   const categoryTabs = useMemo(() => {
     if (!typeFilter) return [];
@@ -520,12 +445,6 @@ export function ProductsPage() {
   // VIEW 1: CATEGORY CARDS (Landing)
   // ═══════════════════════════════════════════════════════════════════════
   if (!typeFilter && !categoryFilter && !isSpecialized && !searchQuery.trim()) {
-=======
-  // ═══════════════════════════════════════════════════════════════════════
-  // VIEW 1: CATEGORY CARDS (Landing)
-  // ═══════════════════════════════════════════════════════════════════════
-  if (!typeFilter && !categoryFilter && !isSpecialized) {
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
     return (
       <div className="min-h-screen bg-[#F7F7F7]">
         {/* ═══ HERO ═══ */}
@@ -619,25 +538,12 @@ export function ProductsPage() {
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
-<<<<<<< HEAD
-                    <img
-                      src={cat.image || "/images/pipe.jpg"}
-                      alt={cat.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (target.src !== "/images/pipe.jpg") target.src = "/images/pipe.jpg";
-                      }}
-=======
                     <WatermarkedImage
                       src={cat.image}
                       alt={cat.name}
                       fallbackSrc="/images/pipe.jpg"
-                      showWatermark={!cat.slug.toLowerCase().includes("pipe")}
                       className="w-full h-full"
                       imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
                     {/* Category index badge */}
@@ -889,24 +795,12 @@ export function ProductsPage() {
                         className="group bg-white rounded-xl border border-gray-200/90 hover:border-[#8B1A1A]/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs relative"
                       >
                         <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
-<<<<<<< HEAD
-                          <img
-                            src={specializedData.image || PRODUCT_HERO_FALLBACK}
-                            alt={subItem}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                            onError={(e) => {
-                              const target = e.currentTarget;
-                              if (target.src !== PRODUCT_HERO_FALLBACK) target.src = PRODUCT_HERO_FALLBACK;
-                            }}
-=======
                           <WatermarkedImage
                             src={specializedData.image || PRODUCT_HERO_FALLBACK}
                             alt={subItem}
                             fallbackSrc={PRODUCT_HERO_FALLBACK}
                             className="w-full h-full"
                             imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
                           <div className="absolute top-3 left-3 bg-[#8B1A1A] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs z-20">
@@ -986,7 +880,6 @@ export function ProductsPage() {
               ) : (
                 /* ═══ PRODUCT GRID ═══ */
                 <>
-<<<<<<< HEAD
                   {/* Category Quick Filter Pills */}
                   {typeFilter && categoryTabs.length > 1 && (
                     <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
@@ -1021,9 +914,6 @@ export function ProductsPage() {
                       })}
                     </div>
                   )}
-
-=======
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                   {/* Result Count Bar */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-200">
                     <div className="flex items-center gap-3">
@@ -1062,25 +952,12 @@ export function ProductsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                     {filteredProducts.map((product, idx) => {
                       const title = product.title || product.slug;
-<<<<<<< HEAD
-=======
-                      const productImg = product.images?.[0]?.url;
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                       const categoryImg =
                         CATEGORY_FALLBACK_IMAGES[product.product_type] ||
                         CATEGORY_FALLBACK_IMAGES[product.category] ||
                         PRODUCT_HERO_FALLBACK;
-<<<<<<< HEAD
                       const img = getProductPrimaryImage(product, categoryImg);
                       const altText = getProductImageAlt(product, title);
-=======
-                      const img = productImg || categoryImg;
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
-
-                      const isPipeProduct =
-                        isPipesAndTubesRoute ||
-                        product.product_type?.toLowerCase().includes("pipe") ||
-                        product.category?.toLowerCase().includes("pipe");
 
                       return (
                         <Link
@@ -1091,25 +968,12 @@ export function ProductsPage() {
                         >
                           {/* Image Container - Exact Fixed Height across all cards */}
                           <div className="h-48 sm:h-52 w-full relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 shrink-0">
-<<<<<<< HEAD
-                            <img
-                              src={img || categoryImg}
-                              alt={altText}
-                              loading="lazy"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                              onError={(e) => {
-                                const target = e.currentTarget;
-                                if (target.src !== categoryImg) target.src = categoryImg;
-                              }}
-=======
                             <WatermarkedImage
                               src={img}
-                              alt={title}
+                              alt={altText}
                               fallbackSrc={categoryImg}
-                              showWatermark={!isPipeProduct}
                               className="w-full h-full"
                               imgClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
->>>>>>> be074d624297769e9560c69b7230a036a1b19a1e
                             />
 
                             {/* Subtle dark gradient overlay on hover */}
