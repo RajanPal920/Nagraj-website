@@ -172,10 +172,18 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Incoloy",
     ],
   },
-  { name: "Fasteners", subItems: ["High Tensile"] },
+  {
+    name: "Fasteners",
+    subItems: [
+      "Bolts",
+      "Nuts",
+      "Screws",
+      "Washers",
+    ],
+  },
   {
     name: "Fittings",
-    subItems: ["Hastelloy Buttweld Fittings", "Forged Fittings"],
+    subItems: ["Buttweld Fittings", "Forged Fittings"],
   },
   {
     name: "Welding Electrodes",

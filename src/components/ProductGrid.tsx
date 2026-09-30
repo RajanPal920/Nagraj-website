@@ -3,217 +3,116 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Package, Award, Shield, Zap } from "lucide-react";
 import { useProducts } from "../hooks/useProducts";
-import { getProductImage } from "../data/productImages";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
-import { getProducts, getProductPrimaryImage, getProductImageAlt } from "../data/products";
+import { getProducts } from "../data/products";
 
-// ─── Type to display label mapping ──────────────────────────────────────────
-const TYPE_TO_DISPLAY: Record<string, string> = {
-  Plate: "Plates",
-  Bar: "Bars",
-  Sheet: "Sheets",
-  Pipe: "Pipes",
-  Rod: "Rods",
-  Strip: "Strips",
-  Flange: "Flanges",
-  Fitting: "Fittings",
-  Forging: "Forgings",
-  Fastener: "Fasteners",
-  "Welding Wire": "Welding Wires",
-  "Hollow Section": "Hollow Sections",
-  "Structural Profile": "Structural Profiles",
-  Coil: "Coils",
-};
+// ─── Featured 8 Categories for Homepage Grid ──────────────────────────────
+interface FeaturedCategory {
+  id: string;
+  name: string;
+  displayLabel: string;
+  navType: string;
+  image: string;
+  description: string;
+  Icon: React.ElementType;
+  productTypeKeys: string[];
+}
 
-// ─── Descriptions for each product type ────────────────────────────────────
-const TYPE_DESCRIPTIONS: Record<string, string> = {
-  Flange: "Precision-engineered steel flanges for piping systems.",
-  Fitting: "High-quality pipe fittings for industrial connections.",
-  Plate: "Premium steel plates for structural and industrial use.",
-  Bar: "High-strength steel bars for construction and fabrication.",
-  Pipe: "Durable steel pipes for fluid and gas transmission.",
-  Sheet: "Versatile steel sheets for manufacturing and fabrication.",
-  Rod: "Quality steel rods for machining and engineering.",
-  Forging: "Precision-forged steel components for demanding applications.",
-  Fastener: "Reliable steel fasteners for secure assemblies.",
-  "Structural Profile":
-    "Structural steel profiles for building and construction.",
-  "Hollow Section": "Hollow steel sections for lightweight structures.",
-  "Welding Wire": "Premium welding wires for strong, durable welds.",
-  Strip: "Steel strips for precision manufacturing applications.",
-  Coil: "Steel coils for high-volume production and processing.",
-};
-
-// ─── Icons for each product type ───────────────────────────────────────────
-const TYPE_ICONS: Record<string, React.ElementType> = {
-  Flange: Award,
-  Fitting: Shield,
-  Plate: Package,
-  Bar: Zap,
-  Pipe: Package,
-  Sheet: Package,
-  Rod: Package,
-  Forging: Shield,
-  Fastener: Shield,
-  "Structural Profile": Package,
-  "Hollow Section": Package,
-  "Welding Wire": Zap,
-  Strip: Package,
-  Coil: Package,
-};
-
-// ─── Card image mapping by product card name (from /public/images/) ─────────
-const CARD_IMAGE_BY_NAME: Record<string, string> = {
-  "Round Bars": "/images/bar.jpg",
-  Bar: "/images/bar.jpg",
-  Bars: "/images/bar.jpg",
-  "Pipes & Tubes": "/images/pipe.jpg",
-  Pipe: "/images/pipe.jpg",
-  Pipes: "/images/pipe.jpg",
-  "Plates & Sheets": "/images/sheet.jpg",
-  Plate: "/images/sheet.jpg",
-  Plates: "/images/sheet.jpg",
-  Sheet: "/images/sheet.jpg",
-  Sheets: "/images/sheet.jpg",
-  Flanges: "/images/flange.jpg",
-  Flange: "/images/flange.jpg",
-  Fasteners: "/images/fasteners.jpg",
-  Fastener: "/images/fasteners.jpg",
-  Fittings: "/images/fitting.jpg",
-  Fitting: "/images/fitting.jpg",
-  Forgings: "/images/forging.jpg",
-  Forging: "/images/forging.jpg",
-  "Welding Electrodes": "/images/Welding-Electrodes.jpg",
-  "Welding Wire": "/images/Welding-Electrodes.jpg",
-  "Welding Wires": "/images/Welding-Electrodes.jpg",
-  Galvanized: "/images/Galvanized.jpg",
-  Pins: "/images/Pins.jpg",
-  Pin: "/images/Pins.jpg",
-  "Hollow Sections": "/images/hollow.jpg",
-  "Hollow Section": "/images/hollow.jpg",
-  "Cold Work Tool Steels": "/images/Cold-Work-Tool-Steels.jpg",
-};
-
-const getProductCardImage = (
-  cardName: string,
-  type: string,
-  fallback?: string,
-): string => {
-  if (CARD_IMAGE_BY_NAME[cardName]) return CARD_IMAGE_BY_NAME[cardName];
-  if (CARD_IMAGE_BY_NAME[type]) return CARD_IMAGE_BY_NAME[type];
-
-  const lower = (cardName || type || "").toLowerCase().trim();
-  if (lower.includes("round bar") || lower.includes("bar"))
-    return "/images/bar.jpg";
-  if (lower.includes("pipe") || lower.includes("tube"))
-    return "/images/pipe.jpg";
-  if (lower.includes("plate") || lower.includes("sheet"))
-    return "/images/sheet.jpg";
-  if (lower.includes("flange")) return "/images/flange.jpg";
-  if (lower.includes("fastener")) return "/images/fasteners.jpg";
-  if (lower.includes("fitting")) return "/images/fitting.jpg";
-  if (lower.includes("forging")) return "/images/forging.jpg";
-  if (lower.includes("weld")) return "/images/Welding-Electrodes.jpg";
-  if (lower.includes("pin")) return "/images/Pins.jpg";
-  if (lower.includes("galvaniz")) return "/images/Galvanized.jpg";
-  if (lower.includes("hollow")) return "/images/hollow.jpg";
-  if (lower.includes("tool steel")) return "/images/Cold-Work-Tool-Steels.jpg";
-
-  return fallback || "/images/bar.jpg";
-};
-
-const getDisplayLabel = (type: string): string => {
-  return TYPE_TO_DISPLAY[type] || type;
-};
-
-const getDescription = (type: string): string => {
-  return (
-    TYPE_DESCRIPTIONS[type] ||
-    `Premium ${getDisplayLabel(type)} for industrial applications.`
-  );
-};
-
-const getIcon = (type: string): React.ElementType => {
-  return TYPE_ICONS[type] || Package;
-};
+const FEATURED_CATEGORIES: FeaturedCategory[] = [
+  {
+    id: "round-bars",
+    name: "Round Bars",
+    displayLabel: "Round Bars",
+    navType: "Round Bars",
+    image: "/images/bar.jpg",
+    description: "Premium Round Bars for industrial applications.",
+    Icon: Zap,
+    productTypeKeys: ["bar", "round bars", "rod"],
+  },
+  {
+    id: "pipes-tubes",
+    name: "Pipes & Tubes",
+    displayLabel: "Pipes & Tubes",
+    navType: "Pipes & Tubes",
+    image: "/images/pipe.jpg",
+    description: "Premium Pipes & Tubes for industrial applications.",
+    Icon: Package,
+    productTypeKeys: ["pipe", "tube", "pipes & tubes"],
+  },
+  {
+    id: "plates-sheets",
+    name: "Plates & Sheets",
+    displayLabel: "Plates & Sheets",
+    navType: "Plates & Sheets",
+    image: "/images/sheet.jpg",
+    description: "Premium Plates & Sheets for industrial applications.",
+    Icon: Package,
+    productTypeKeys: ["plate", "sheet", "plates & sheets"],
+  },
+  {
+    id: "flanges",
+    name: "Flanges",
+    displayLabel: "Flanges",
+    navType: "Flanges",
+    image: "/images/flange.jpg",
+    description: "Premium Flanges for industrial applications.",
+    Icon: Award,
+    productTypeKeys: ["flange", "flanges"],
+  },
+  {
+    id: "fasteners",
+    name: "Fasteners",
+    displayLabel: "Fasteners",
+    navType: "Fasteners",
+    image: "/images/fasteners.jpg",
+    description: "Premium Fasteners for industrial applications.",
+    Icon: Shield,
+    productTypeKeys: ["fastener", "fasteners"],
+  },
+  {
+    id: "fittings",
+    name: "Fittings",
+    displayLabel: "Fittings",
+    navType: "Fittings",
+    image: "/images/fitting.jpg",
+    description: "Premium Fittings for industrial applications.",
+    Icon: Shield,
+    productTypeKeys: ["fitting", "fittings"],
+  },
+  {
+    id: "galvanized",
+    name: "Galvanized",
+    displayLabel: "Galvanized",
+    navType: "Galvanized",
+    image: "/images/Galvanized.jpg",
+    description: "Premium Galvanized products for industrial applications.",
+    Icon: Shield,
+    productTypeKeys: ["galvanized", "galvanised"],
+  },
+  {
+    id: "welding-electrodes",
+    name: "Welding Electrodes",
+    displayLabel: "Welding Electrodes",
+    navType: "Welding Electrodes",
+    image: "/images/Welding-Electrodes.jpg",
+    description: "Premium Welding Electrodes for industrial applications.",
+    Icon: Zap,
+    productTypeKeys: ["welding wire", "welding electrodes"],
+  },
+];
 
 export function ProductGrid() {
-  const { types, typeTree, loading } = useProducts();
+  const { typeTree, loading } = useProducts();
   const [headerRef, headerVisible] = useIntersectionObserver<HTMLDivElement>();
   const [gridRef, gridVisible] = useIntersectionObserver<HTMLDivElement>();
 
   const allProducts = getProducts();
 
-  const getActualProductTypes = () => {
-    const typeSet = new Set<string>();
-    allProducts.forEach((product) => {
-      if (product.product_type) {
-        typeSet.add(product.product_type);
-      }
-    });
-    return Array.from(typeSet).sort();
-  };
-
-  const actualProductTypes = getActualProductTypes();
-  const productTypes =
-    actualProductTypes.length > 0 ? actualProductTypes : types;
-
-  // ✅ Priority order — Round Bars pehle, Cold Work Tool Steels hataya
-  const PRIORITY_ORDER = [
-    "Round Bars",
-    "Bar",
-    "Pipes & Tubes",
-    "Pipe",
-    "Plates & Sheets",
-    "Plate",
-    "Flanges",
-    "Flange",
-    "Fasteners",
-    "Fastener",
-    "Fittings",
-    "Fitting",
-    "Forgings",
-    "Forging",
-    "Welding Electrodes",
-    "Welding Wire",
-    "Galvanized",
-    "Pins",
-    "Pin",
-    "Hollow Sections",
-    "Hollow Section",
-    "Structural Profiles",
-    "Structural Profile",
-  ];
-
-  // ✅ Cold Work Tool Steels aur duplicates hataye
-  const EXCLUDED_TYPES = ["Cold Work Tool Steels", "Tool Steel"];
-
-  // Step 1: Priority order ke hisaab se sort karo
-  const prioritized = [...productTypes]
-    .filter((t) => !EXCLUDED_TYPES.includes(t))
-    .sort((a, b) => {
-      const aIdx = PRIORITY_ORDER.findIndex(
-        (p) => p.toLowerCase() === a.toLowerCase(),
-      );
-      const bIdx = PRIORITY_ORDER.findIndex(
-        (p) => p.toLowerCase() === b.toLowerCase(),
-      );
-      // Jo priority list me hai, woh pehle
-      if (aIdx !== -1 && bIdx === -1) return -1;
-      if (aIdx === -1 && bIdx !== -1) return 1;
-      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-      // Dono priority me nahi — alphabetical
-      return a.localeCompare(b);
-    });
-
-  const limitedProductTypes = prioritized.slice(0, 8);
-
-  const getProductCountForType = (type: string) => {
-    return allProducts.filter((p) => p.product_type === type).length;
-  };
-
-  const getSampleProductForType = (type: string) => {
-    return allProducts.find((p) => p.product_type === type);
+  const getProductCount = (cat: FeaturedCategory) => {
+    return allProducts.filter((p) => {
+      const pType = (p.product_type || "").toLowerCase().trim();
+      return cat.productTypeKeys.some((k) => pType === k || pType.includes(k));
+    }).length;
   };
 
   return (
@@ -262,35 +161,23 @@ export function ProductGrid() {
                 </div>
               ))}
             </div>
-          ) : limitedProductTypes.length === 0 ? (
-            <div className="text-center py-12 text-gray-400 font-body">
-              No product types available
-            </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-              {limitedProductTypes.map((type, index) => {
-                const displayLabel = getDisplayLabel(type);
-                const description = getDescription(type);
-                const Icon = getIcon(type);
-                const count = getProductCountForType(type);
-                const sampleProduct = getSampleProductForType(type);
-                const defaultImage = getProductCardImage(
-                  displayLabel,
-                  type,
-                  getProductImage(type, undefined, type),
-                );
-                const image = sampleProduct
-                  ? getProductPrimaryImage(sampleProduct, defaultImage)
-                  : defaultImage;
-                const navType = displayLabel;
-                const groups = typeTree[type] || [];
+              {FEATURED_CATEGORIES.map((cat, index) => {
+                const count = getProductCount(cat);
+                const Icon = cat.Icon;
+                const groups =
+                  typeTree[cat.displayLabel] ||
+                  typeTree[cat.name] ||
+                  typeTree[cat.productTypeKeys[0]] ||
+                  [];
                 const topGroups = groups.map((g) => g.group).slice(0, 3);
 
                 return (
                   <Link
-                    key={type}
-                    to={`/products?type=${encodeURIComponent(navType)}`}
-                    id={`home-product-card-${type.toLowerCase().replace(/\s+/g, "-")}`}
+                    key={cat.id}
+                    to={`/products?type=${encodeURIComponent(cat.navType)}`}
+                    id={`home-product-card-${cat.id}`}
                     className={`
                       group flex flex-col h-full bg-white rounded-2xl overflow-hidden 
                       shadow-sm hover:shadow-2xl transition-all duration-500 
@@ -302,12 +189,12 @@ export function ProductGrid() {
                     {/* Image Section - Fixed height */}
                     <div className="relative h-52 w-full shrink-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                       <img
-                        src={image}
-                        alt={sampleProduct ? getProductImageAlt(sampleProduct, displayLabel) : displayLabel}
+                        src={cat.image}
+                        alt={cat.displayLabel}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         loading="lazy"
                         onError={(e) => {
-                          e.currentTarget.src = defaultImage || "/images/bar.jpg";
+                          e.currentTarget.src = "/images/bar.jpg";
                         }}
                       />
 
@@ -347,12 +234,12 @@ export function ProductGrid() {
                       <div>
                         {/* Title */}
                         <h3 className="font-display font-bold text-lg text-brand-charcoal group-hover:text-brand-red transition-colors duration-300">
-                          {displayLabel}
+                          {cat.displayLabel}
                         </h3>
 
                         {/* Description */}
                         <p className="font-body text-sm text-gray-500 mt-1.5 leading-relaxed line-clamp-2 min-h-[2.5rem]">
-                          {description}
+                          {cat.description}
                         </p>
 
                         {/* Grades / Materials */}

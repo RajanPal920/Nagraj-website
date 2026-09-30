@@ -35,6 +35,11 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Toolox 44 Round Bars": "/images/products/c60-steel.jpg",
   Flanges: "/images/flange.jpg",
   Fasteners: "/images/fasteners.jpg",
+  "High Tensile": "/images/fasteners.jpg",
+  Bolts: "/images/fasteners.jpg",
+  Nuts: "/images/fasteners.jpg",
+  Screws: "/images/fasteners.jpg",
+  Washers: "/images/fasteners.jpg",
   Fittings: "/images/fitting.jpg",
   "Welding Electrodes": "/images/Welding-Electrodes.jpg",
   Galvanized: "/images/Galvanized.jpg",
@@ -419,6 +424,14 @@ export function ProductsPage() {
   // ─── Available Category Tabs for Current Type ──────────────────────────────
   const categoryTabs = useMemo(() => {
     if (!typeFilter) return [];
+    if (canonicalType(typeFilter) === canonicalType("Fasteners")) {
+      return [
+        { name: "Bolts", count: getFilteredProducts(allProducts, "Fasteners", "Bolts").length },
+        { name: "Nuts", count: getFilteredProducts(allProducts, "Fasteners", "Nuts").length },
+        { name: "Screws", count: getFilteredProducts(allProducts, "Fasteners", "Screws").length },
+        { name: "Washers", count: getFilteredProducts(allProducts, "Fasteners", "Washers").length },
+      ].filter((tab) => tab.count > 0);
+    }
     const prodsOfType = allProducts.filter(
       (p) => canonicalType(p.product_type) === canonicalType(typeFilter),
     );

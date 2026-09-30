@@ -445,6 +445,308 @@ export function getFilteredProducts(
           return false;
         }
       } else if (
+        targetCategory === canonicalCategory("All Fittings") ||
+        targetCategory === canonicalCategory("All Fitting") ||
+        targetCategory === canonicalCategory("all-fittings") ||
+        targetCategory === canonicalCategory("all-fitting") ||
+        targetCategory === canonicalCategory("Fittings") ||
+        targetCategory === canonicalCategory("Fitting")
+      ) {
+        // Special handling for "All Fittings": show all buttweld and forged fittings
+        if (canonicalType(product.product_type) !== canonicalType("Fittings")) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Buttweld Fittings") ||
+        targetCategory === canonicalCategory("Buttweld Fitting") ||
+        targetCategory === canonicalCategory("Hastelloy Buttweld Fittings") ||
+        targetCategory === canonicalCategory("buttweld-fittings") ||
+        targetCategory === canonicalCategory("buttweld-fitting") ||
+        targetCategory === "buttweld"
+      ) {
+        // Special handling for "Buttweld Fittings" / "buttweld-fitting"
+        if (canonicalType(product.product_type) !== canonicalType("Fittings")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isButtweld =
+          pCat === canonicalCategory("Buttweld Fittings") ||
+          pCat === canonicalCategory("Buttweld Fitting") ||
+          pCat === canonicalCategory("Hastelloy Buttweld Fittings") ||
+          (product.category && product.category.toLowerCase().includes("buttweld")) ||
+          product.slug === "hastelloy-c276-pipe-fittings-flanges-fasteners-forged-elbow" ||
+          (product.title && product.title.toLowerCase().includes("buttweld"));
+        if (!isButtweld) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Forged Fittings") ||
+        targetCategory === canonicalCategory("Forged Fitting") ||
+        targetCategory === canonicalCategory("forged-fittings") ||
+        targetCategory === canonicalCategory("forged-fitting") ||
+        targetCategory === "forged"
+      ) {
+        // Special handling for "Forged Fittings" / "forged-fitting"
+        if (canonicalType(product.product_type) !== canonicalType("Fittings")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isForged =
+          product.slug !== "hastelloy-c276-pipe-fittings-flanges-fasteners-forged-elbow" &&
+          (pCat === canonicalCategory("Forged Fittings") ||
+            pCat === canonicalCategory("Forged Fitting") ||
+            (product.category &&
+              product.category.toLowerCase().includes("forged") &&
+              !product.category.toLowerCase().includes("buttweld")) ||
+            (product.slug && product.slug.includes("forged-fitting")));
+        if (!isForged) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("All Galvanized") ||
+        targetCategory === canonicalCategory("all-galvanized") ||
+        (targetType === canonicalType("Galvanized") &&
+          (targetCategory === canonicalCategory("Galvanized") ||
+            targetCategory === canonicalCategory("Galvanised") ||
+            targetCategory === "all"))
+      ) {
+        // Special handling for "All Galvanized": show all galvanized angles and channels
+        if (canonicalType(product.product_type) !== canonicalType("Galvanized")) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Hot Dip Galvanized Angles") ||
+        targetCategory === canonicalCategory("Hot Dip Galvanized Angle") ||
+        targetCategory === canonicalCategory("hot-dip-galvanized-angles") ||
+        targetCategory === canonicalCategory("hot-dip-galvanized-angle") ||
+        targetCategory === canonicalCategory("Galvanized Angles") ||
+        targetCategory === canonicalCategory("Galvanized Angle") ||
+        targetCategory === "angles" ||
+        targetCategory === "angle"
+      ) {
+        // Special handling for "Hot Dip Galvanized Angles"
+        if (canonicalType(product.product_type) !== canonicalType("Galvanized")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isAngle =
+          pCat === canonicalCategory("Hot Dip Galvanized Angles") ||
+          pCat === canonicalCategory("Hot Dip Galvanized Angle") ||
+          pCat === canonicalCategory("Galvanized Angles") ||
+          pCat === canonicalCategory("Galvanized Angle") ||
+          (product.category && product.category.toLowerCase().includes("angle")) ||
+          (product.title && product.title.toLowerCase().includes("angle")) ||
+          (product.slug && product.slug.includes("angle"));
+        if (!isAngle) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Hot Dip Galvanized Channels") ||
+        targetCategory === canonicalCategory("Hot Dip Galvanized Channel") ||
+        targetCategory === canonicalCategory("hot-dip-galvanized-channels") ||
+        targetCategory === canonicalCategory("hot-dip-galvanized-channel") ||
+        targetCategory === canonicalCategory("Galvanized Channels") ||
+        targetCategory === canonicalCategory("Galvanized Channel") ||
+        targetCategory === "channels" ||
+        targetCategory === "channel"
+      ) {
+        // Special handling for "Hot Dip Galvanized Channels"
+        if (canonicalType(product.product_type) !== canonicalType("Galvanized")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isChannel =
+          pCat === canonicalCategory("Hot Dip Galvanized Channels") ||
+          pCat === canonicalCategory("Hot Dip Galvanized Channel") ||
+          pCat === canonicalCategory("Galvanized Channels") ||
+          pCat === canonicalCategory("Galvanized Channel") ||
+          (product.category && product.category.toLowerCase().includes("channel")) ||
+          (product.title && product.title.toLowerCase().includes("channel")) ||
+          (product.slug && product.slug.includes("channel"));
+        if (!isChannel) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("All Pins") ||
+        targetCategory === canonicalCategory("All Pin") ||
+        targetCategory === canonicalCategory("all-pins") ||
+        targetCategory === canonicalCategory("all-pin") ||
+        (targetType === canonicalType("Pins") &&
+          (targetCategory === canonicalCategory("Pins") ||
+            targetCategory === canonicalCategory("Pin") ||
+            targetCategory === "all"))
+      ) {
+        // Special handling for "All Pins": show all pins (PTO pins & pipe linch pins)
+        if (canonicalType(product.product_type) !== canonicalType("Pins")) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("PTO Pins") ||
+        targetCategory === canonicalCategory("PTO Pin") ||
+        targetCategory === canonicalCategory("pto-pins") ||
+        targetCategory === canonicalCategory("pto-pin") ||
+        targetCategory === "pto"
+      ) {
+        // Special handling for "PTO Pins"
+        if (canonicalType(product.product_type) !== canonicalType("Pins")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isPto =
+          pCat === canonicalCategory("PTO Pins") ||
+          pCat === canonicalCategory("PTO Pin") ||
+          (product.category && product.category.toLowerCase().includes("pto")) ||
+          (product.title && product.title.toLowerCase().includes("pto")) ||
+          (product.slug && product.slug.includes("pto"));
+        if (!isPto) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Pipe Linch Pin") ||
+        targetCategory === canonicalCategory("Pipe Linch Pins") ||
+        targetCategory === canonicalCategory("pipe-linch-pin") ||
+        targetCategory === canonicalCategory("pipe-linch-pins") ||
+        targetCategory === canonicalCategory("Linch Pin") ||
+        targetCategory === canonicalCategory("Linch Pins") ||
+        targetCategory === "linch"
+      ) {
+        // Special handling for "Pipe Linch Pin"
+        if (canonicalType(product.product_type) !== canonicalType("Pins")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isLinch =
+          pCat === canonicalCategory("Pipe Linch Pin") ||
+          pCat === canonicalCategory("Pipe Linch Pins") ||
+          pCat === canonicalCategory("Linch Pin") ||
+          pCat === canonicalCategory("Linch Pins") ||
+          (product.category && (product.category.toLowerCase().includes("linch") || product.category.toLowerCase().includes("pipe linch"))) ||
+          (product.title && (product.title.toLowerCase().includes("linch") || product.title.toLowerCase().includes("pipe linch"))) ||
+          (product.slug && product.slug.includes("pipe-linch"));
+        if (!isLinch) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("All Fasteners") ||
+        targetCategory === canonicalCategory("All Fastener") ||
+        targetCategory === canonicalCategory("all-fasteners") ||
+        targetCategory === canonicalCategory("all-fastener") ||
+        (targetType === canonicalType("Fasteners") &&
+          (targetCategory === canonicalCategory("Fasteners") ||
+            targetCategory === canonicalCategory("Fastener") ||
+            targetCategory === "all"))
+      ) {
+        // Special handling for "All Fasteners": show all fastener products
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("High Tensile") ||
+        targetCategory === canonicalCategory("High Tensile Steel") ||
+        targetCategory === canonicalCategory("High Tensile Fasteners") ||
+        targetCategory === canonicalCategory("high-tensile") ||
+        targetCategory === "high tensile"
+      ) {
+        // Special handling for "High Tensile" Fasteners
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isHighTensile =
+          pCat === canonicalCategory("High Tensile") ||
+          pCat === canonicalCategory("High Tensile Steel") ||
+          pCat === canonicalCategory("High Tensile Fasteners") ||
+          (product.category && product.category.toLowerCase().includes("high tensile")) ||
+          (product.title && product.title.toLowerCase().includes("high tensile")) ||
+          (product.title && product.title.toLowerCase().startsWith("ht ")) ||
+          (product.slug && product.slug.toLowerCase().startsWith("ht-")) ||
+          (product.slug && product.slug.toLowerCase().includes("high-tensile"));
+        if (!isHighTensile) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Bolts") ||
+        targetCategory === canonicalCategory("Bolt") ||
+        targetCategory === canonicalCategory("bolts") ||
+        targetCategory === canonicalCategory("bolt")
+      ) {
+        // Special handling for "Bolts" Fasteners
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isBolt =
+          pCat === canonicalCategory("Bolts") ||
+          pCat === canonicalCategory("Bolt") ||
+          pCat === canonicalCategory("Stud Bolts") ||
+          (product.category && product.category.toLowerCase().includes("bolt")) ||
+          (product.title && product.title.toLowerCase().includes("bolt")) ||
+          (product.slug && product.slug.toLowerCase().includes("bolt")) ||
+          (product.slug && product.slug.toLowerCase().includes("threaded-rod"));
+        if (!isBolt) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Nuts") ||
+        targetCategory === canonicalCategory("Nut") ||
+        targetCategory === canonicalCategory("nuts") ||
+        targetCategory === canonicalCategory("nut")
+      ) {
+        // Special handling for "Nuts" Fasteners
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isNut =
+          pCat === canonicalCategory("Nuts") ||
+          pCat === canonicalCategory("Nut") ||
+          (product.category && product.category.toLowerCase().includes("nut")) ||
+          (product.title && product.title.toLowerCase().includes("nut")) ||
+          (product.slug && product.slug.toLowerCase().includes("nut"));
+        if (!isNut) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Screws") ||
+        targetCategory === canonicalCategory("Screw") ||
+        targetCategory === canonicalCategory("screws") ||
+        targetCategory === canonicalCategory("screw")
+      ) {
+        // Special handling for "Screws" Fasteners
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isScrew =
+          pCat === canonicalCategory("Screws") ||
+          pCat === canonicalCategory("Screw") ||
+          (product.category && product.category.toLowerCase().includes("screw")) ||
+          (product.title && product.title.toLowerCase().includes("screw")) ||
+          (product.slug && product.slug.toLowerCase().includes("screw"));
+        if (!isScrew) {
+          return false;
+        }
+      } else if (
+        targetCategory === canonicalCategory("Washers") ||
+        targetCategory === canonicalCategory("Washer") ||
+        targetCategory === canonicalCategory("washers") ||
+        targetCategory === canonicalCategory("washer")
+      ) {
+        // Special handling for "Washers" Fasteners
+        if (canonicalType(product.product_type) !== canonicalType("Fasteners")) {
+          return false;
+        }
+        const pCat = canonicalCategory(product.category);
+        const isWasher =
+          pCat === canonicalCategory("Washers") ||
+          pCat === canonicalCategory("Washer") ||
+          (product.category && product.category.toLowerCase().includes("washer")) ||
+          (product.title && product.title.toLowerCase().includes("washer")) ||
+          (product.slug && product.slug.toLowerCase().includes("washer"));
+        if (!isWasher) {
+          return false;
+        }
+      } else if (
         targetCategory === canonicalCategory("Toolox 33 Round Bars")
       ) {
         const pCat = canonicalCategory(product.category);

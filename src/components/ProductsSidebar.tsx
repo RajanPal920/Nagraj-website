@@ -367,7 +367,39 @@ export function ProductsSidebar({
                       canonicalCategory(currentCategory || "") ===
                         canonicalCategory(allLabel) ||
                       canonicalCategory(currentCategory || "") ===
-                        canonicalCategory(currentType || "")
+                        canonicalCategory(currentType || "") ||
+                      (canonicalType(currentType || "") === canonicalType("Fittings") &&
+                        [
+                          canonicalCategory("All Fittings"),
+                          canonicalCategory("All Fitting"),
+                          canonicalCategory("all-fittings"),
+                          canonicalCategory("all-fitting"),
+                        ].includes(canonicalCategory(currentCategory || ""))) ||
+                      (canonicalType(currentType || "") === canonicalType("Galvanized") &&
+                        [
+                          canonicalCategory("All Galvanized"),
+                          canonicalCategory("all-galvanized"),
+                          canonicalCategory("Galvanized"),
+                          canonicalCategory("galvanized"),
+                        ].includes(canonicalCategory(currentCategory || ""))) ||
+                      (canonicalType(currentType || "") === canonicalType("Pins") &&
+                        [
+                          canonicalCategory("All Pins"),
+                          canonicalCategory("All Pin"),
+                          canonicalCategory("all-pins"),
+                          canonicalCategory("all-pin"),
+                          canonicalCategory("Pins"),
+                          canonicalCategory("Pin"),
+                        ].includes(canonicalCategory(currentCategory || ""))) ||
+                      (canonicalType(currentType || "") === canonicalType("Fasteners") &&
+                        [
+                          canonicalCategory("All Fasteners"),
+                          canonicalCategory("All Fastener"),
+                          canonicalCategory("all-fasteners"),
+                          canonicalCategory("all-fastener"),
+                          canonicalCategory("Fasteners"),
+                          canonicalCategory("Fastener"),
+                        ].includes(canonicalCategory(currentCategory || "")))
                         ? "bg-[#e63946]/10 text-[#e63946] font-semibold"
                         : "text-gray-700 hover:bg-gray-100 hover:text-[#e63946]"
                     }`}
@@ -383,7 +415,101 @@ export function ProductsSidebar({
                 {subItems.map((subItem) => {
                   const isCurrentLabel =
                     canonicalCategory(currentCategory || "") ===
-                    canonicalCategory(subItem.label);
+                    canonicalCategory(subItem.label) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Buttweld Fittings") &&
+                      [
+                        canonicalCategory("Buttweld Fittings"),
+                        canonicalCategory("Buttweld Fitting"),
+                        canonicalCategory("Hastelloy Buttweld Fittings"),
+                        canonicalCategory("buttweld-fittings"),
+                        canonicalCategory("buttweld-fitting"),
+                        "buttweld",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Forged Fittings") &&
+                      [
+                        canonicalCategory("Forged Fittings"),
+                        canonicalCategory("Forged Fitting"),
+                        canonicalCategory("forged-fittings"),
+                        canonicalCategory("forged-fitting"),
+                        "forged",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Hot Dip Galvanized Angles") &&
+                      [
+                        canonicalCategory("Hot Dip Galvanized Angles"),
+                        canonicalCategory("Hot Dip Galvanized Angle"),
+                        canonicalCategory("hot-dip-galvanized-angles"),
+                        canonicalCategory("hot-dip-galvanized-angle"),
+                        canonicalCategory("Galvanized Angles"),
+                        canonicalCategory("Galvanized Angle"),
+                        "angles",
+                        "angle",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Hot Dip Galvanized Channels") &&
+                      [
+                        canonicalCategory("Hot Dip Galvanized Channels"),
+                        canonicalCategory("Hot Dip Galvanized Channel"),
+                        canonicalCategory("hot-dip-galvanized-channels"),
+                        canonicalCategory("hot-dip-galvanized-channel"),
+                        canonicalCategory("Galvanized Channels"),
+                        canonicalCategory("Galvanized Channel"),
+                        "channels",
+                        "channel",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("PTO Pins") &&
+                      [
+                        canonicalCategory("PTO Pins"),
+                        canonicalCategory("PTO Pin"),
+                        canonicalCategory("pto-pins"),
+                        canonicalCategory("pto-pin"),
+                        "pto",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Pipe Linch Pin") &&
+                      [
+                        canonicalCategory("Pipe Linch Pin"),
+                        canonicalCategory("Pipe Linch Pins"),
+                        canonicalCategory("pipe-linch-pin"),
+                        canonicalCategory("pipe-linch-pins"),
+                        canonicalCategory("Linch Pin"),
+                        canonicalCategory("Linch Pins"),
+                        "linch",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("High Tensile") &&
+                      [
+                        canonicalCategory("High Tensile"),
+                        canonicalCategory("High Tensile Steel"),
+                        canonicalCategory("High Tensile Fasteners"),
+                        canonicalCategory("high-tensile"),
+                        "high tensile",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Bolts") &&
+                      [
+                        canonicalCategory("Bolts"),
+                        canonicalCategory("Bolt"),
+                        canonicalCategory("Stud Bolts"),
+                        "bolts",
+                        "bolt",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Nuts") &&
+                      [
+                        canonicalCategory("Nuts"),
+                        canonicalCategory("Nut"),
+                        "nuts",
+                        "nut",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Screws") &&
+                      [
+                        canonicalCategory("Screws"),
+                        canonicalCategory("Screw"),
+                        "screws",
+                        "screw",
+                      ].includes(canonicalCategory(currentCategory || ""))) ||
+                    (canonicalCategory(subItem.label) === canonicalCategory("Washers") &&
+                      [
+                        canonicalCategory("Washers"),
+                        canonicalCategory("Washer"),
+                        "washers",
+                        "washer",
+                      ].includes(canonicalCategory(currentCategory || "")));
                   const hasNested = !!subItem.nested && subItem.nested.length > 0;
                   const isChildActive =
                     hasNested &&

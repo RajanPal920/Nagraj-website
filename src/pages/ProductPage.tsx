@@ -43,6 +43,11 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Toolox 44 Round Bars": "/images/products/c60-steel.jpg",
   Flanges: "/images/flange.jpg",
   Fasteners: "/images/fasteners.jpg",
+  "High Tensile": "/images/fasteners.jpg",
+  Bolts: "/images/fasteners.jpg",
+  Nuts: "/images/fasteners.jpg",
+  Screws: "/images/fasteners.jpg",
+  Washers: "/images/fasteners.jpg",
   Fittings: "/images/fitting.jpg",
   "Welding Electrodes": "/images/Welding-Electrodes.jpg",
   Galvanized: "/images/Galvanized.jpg",
@@ -111,6 +116,27 @@ function getCategoryFamily(p: ScrapedProduct) {
   return null;
 }
 
+export function getFastenerCategory(p: ScrapedProduct): "Bolts" | "Nuts" | "Screws" | "Washers" | null {
+  if (canonicalType(p.product_type) !== canonicalType("Fasteners")) return null;
+  const s = (p.slug || "").toLowerCase();
+  const t = (p.title || "").toLowerCase();
+  const c = (p.category || "").toLowerCase();
+
+  if (s.includes("washer") || t.includes("washer") || c.includes("washer")) {
+    return "Washers";
+  }
+  if (s.includes("nut") || t.includes("nut") || c.includes("nut")) {
+    return "Nuts";
+  }
+  if (s.includes("screw") || t.includes("screw") || c.includes("screw")) {
+    return "Screws";
+  }
+  if (s.includes("bolt") || t.includes("bolt") || c.includes("bolt") || s.includes("threaded-rod")) {
+    return "Bolts";
+  }
+  return null;
+}
+
 // ─── Category-First Strict Related Products ──────────────────────────────
 function getRelatedProducts(
   current: ScrapedProduct,
@@ -123,6 +149,21 @@ function getRelatedProducts(
 
   const seenSlugs = new Set<string>([current.slug]);
   const results: ScrapedProduct[] = [];
+
+  // Special strict category grouping for Fasteners:
+  // Bolts only relate to Bolts, Nuts to Nuts, Screws to Screws, Washers to Washers
+  const currentFastenerCat = getFastenerCategory(current);
+  if (currentFastenerCat) {
+    for (const p of all) {
+      if (seenSlugs.has(p.slug)) continue;
+      if (getFastenerCategory(p) === currentFastenerCat) {
+        seenSlugs.add(p.slug);
+        results.push(p);
+        if (results.length >= limit) return results;
+      }
+    }
+    return results;
+  }
 
   // Priority 1: Exact same category AND same product type
   for (const p of all) {
@@ -708,28 +749,36 @@ export function ProductPage() {
         {relatedProducts.length > 0 && (
           <div className="mt-12">
             {/* Header */}
-            <div className="flex items-end justify-between mb-5 pb-4 border-b border-gray-200">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3 uppercase tracking-wide">
-                  <span className="w-1 h-6 bg-[#8B1A1A]"></span>
-                  Related {product.category || product.product_type} Products
-                </h2>
-                <p className="text-xs text-gray-500 mt-1.5 ml-4 uppercase tracking-wider">
-                  Similar {product.category || product.product_type} products you may require
-                </p>
-              </div>
-              <Link
-                to={
-                  product.product_type && product.category
-                    ? `/products?type=${encodeURIComponent(product.product_type)}&category=${encodeURIComponent(product.category)}`
-                    : `/products?category=${encodeURIComponent(product.category || product.product_type)}`
-                }
-                className="text-xs text-[#8B1A1A] hover:text-[#6F1414] font-semibold whitespace-nowrap inline-flex items-center gap-1 uppercase tracking-wider"
-              >
-                View All {product.category || ""}
-                <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
-              </Link>
-            </div>
+            {(() => {
+              const fastenerCat = getFastenerCategory(product);
+              const relatedLabel = fastenerCat || product.category || product.product_type;
+              const relatedViewAllUrl = fastenerCat
+                ? `/products?type=Fasteners&category=${encodeURIComponent(fastenerCat)}`
+                : product.product_type && product.category
+                  ? `/products?type=${encodeURIComponent(product.product_type)}&category=${encodeURIComponent(product.category)}`
+                  : `/products?category=${encodeURIComponent(product.category || product.product_type)}`;
+
+              return (
+                <div className="flex items-end justify-between mb-5 pb-4 border-b border-gray-200">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3 uppercase tracking-wide">
+                      <span className="w-1 h-6 bg-[#8B1A1A]"></span>
+                      Related {relatedLabel} Products
+                    </h2>
+                    <p className="text-xs text-gray-500 mt-1.5 ml-4 uppercase tracking-wider">
+                      Similar {relatedLabel} products you may require
+                    </p>
+                  </div>
+                  <Link
+                    to={relatedViewAllUrl}
+                    className="text-xs text-[#8B1A1A] hover:text-[#6F1414] font-semibold whitespace-nowrap inline-flex items-center gap-1 uppercase tracking-wider"
+                  >
+                    View All {relatedLabel}
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                  </Link>
+                </div>
+              );
+            })()}
 
             {/* Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
