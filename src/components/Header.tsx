@@ -392,18 +392,18 @@ export function Header() {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center flex-shrink-0 group py-1 mr-14 lg:mr-20 xl:mr-24"
+          className="flex items-center flex-shrink-0 group py-1 mr-10 xl:mr-14"
           aria-label="Nagraj Metal Industries Home"
         >
           <img
             src="/images/logo.png"
             alt="Nagraj Metal Industries Logo"
-            className="h-16 sm:h-20 lg:h-22 w-auto max-w-[260px] sm:max-w-[320px] object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-18 sm:h-20 lg:h-24 w-auto max-w-[300px] lg:max-w-[360px] object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-5 xl:gap-7">
+        {/* Desktop Nav — truly centered */}
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-6 px-4">
           {navLinks.map((link) => {
             const isProductsLink = link.label === "Products";
             const isSpecializedLink = link.label === "Specialized Products";
@@ -552,7 +552,7 @@ export function Header() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`relative py-2 flex items-center gap-1.5 font-display text-[14px] xl:text-[15px] font-extrabold tracking-wide transition-all duration-200 ${isActive
+                  className={`relative py-2 flex items-center gap-1 font-display text-[13px] xl:text-[13.5px] font-bold tracking-normal transition-all duration-200 whitespace-nowrap ${isActive
                       ? "text-[#8B1A1A]"
                       : "text-gray-800 hover:text-[#8B1A1A]"
                     }`}
@@ -783,8 +783,8 @@ export function Header() {
           })}
         </nav>
 
-        {/* Header CTAs */}
-        <div className="hidden lg:flex items-center justify-end pl-5 ml-8 xl:ml-12">
+        {/* Header CTA */}
+        <div className="hidden lg:flex items-center flex-shrink-0 ml-4">
           <a
             href="tel:+917073875529"
             className="inline-flex items-center gap-2.5 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
