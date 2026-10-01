@@ -22,6 +22,7 @@ const certificates = [
     description: "Ministry of Micro, Small & Medium Enterprises (Govt. of India)",
     icon: ShieldCheck,
     image: "/certificates/udyam.jpg",
+    pdfUrl: "/certificates/udyam.pdf",
     registrationNumber: "UDYAM-MH-19-0231528",
     enterpriseName: "NAGRAJ METAL INDUSTRIES",
     enterpriseType: "Micro Enterprise",
@@ -45,11 +46,19 @@ export function CertificatesPage() {
     }
   }, [certParam]);
 
-  // Function to download certificate image
-  const downloadCertificate = (imageUrl: string, fileName: string) => {
+  // Function to view certificate PDF in new tab
+  const viewCertificate = (cert: (typeof certificates)[0]) => {
+    const fileUrl = cert.pdfUrl || cert.image;
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
+
+  // Function to download certificate file
+  const downloadCertificate = (cert: (typeof certificates)[0]) => {
+    const fileUrl = cert.pdfUrl || cert.image;
     const link = document.createElement("a");
-    link.href = imageUrl;
-    link.download = `${fileName}.jpg`;
+    link.href = fileUrl;
+    const ext = fileUrl.endsWith(".pdf") ? "pdf" : "jpg";
+    link.download = `Nagraj-Metal-Industries-${cert.id}-Certificate.${ext}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -328,8 +337,9 @@ export function CertificatesPage() {
 
                   {/* Visual Preview thumbnail */}
                   <div
-                    onClick={() => setSelectedCert(cert.id)}
+                    onClick={() => viewCertificate(cert)}
                     className="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-100 mb-6 cursor-pointer group/thumb h-64 sm:h-80 flex items-center justify-center shadow-inner"
+                    title="Click to view certificate in a new tab"
                   >
                     <img
                       src={cert.image}
@@ -338,24 +348,22 @@ export function CertificatesPage() {
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 text-white font-display font-bold text-xs uppercase tracking-wider backdrop-blur-[2px]">
                       <Eye size={18} />
-                      Click to Enlarge Full Certificate
+                      View Certificate in New Tab
                     </div>
                   </div>
 
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
-                      onClick={() => setSelectedCert(cert.id)}
-                      className="flex-1 flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-6 py-3.5 rounded-xl transition-all duration-300 text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                      onClick={() => viewCertificate(cert)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-6 py-3.5 rounded-xl transition-all duration-300 text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
                     >
                       <Eye size={16} />
                       View Certificate
                     </button>
                     <button
-                      onClick={() =>
-                        downloadCertificate(cert.image, `${cert.id}-Certificate`)
-                      }
-                      className="flex-1 flex items-center justify-center gap-2 border border-gray-300 hover:border-[#8B1A1A] hover:bg-[#8B1A1A]/5 text-gray-800 font-display font-bold px-6 py-3.5 rounded-xl transition-all duration-300 text-xs uppercase tracking-wider hover:-translate-y-0.5"
+                      onClick={() => downloadCertificate(cert)}
+                      className="flex-1 flex items-center justify-center gap-2 border border-gray-300 hover:border-[#8B1A1A] hover:bg-[#8B1A1A]/5 text-gray-800 font-display font-bold px-6 py-3.5 rounded-xl transition-all duration-300 text-xs uppercase tracking-wider hover:-translate-y-0.5 cursor-pointer"
                     >
                       <Download size={16} className="text-[#8B1A1A]" />
                       Download Document
@@ -397,24 +405,37 @@ export function CertificatesPage() {
                     className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-md bg-white p-2"
                   />
                 </div>
-                <div className="p-4 sm:px-6 bg-white border-t border-gray-100 flex items-center justify-between">
+                <div className="p-4 sm:px-6 bg-white border-t border-gray-100 flex items-center justify-between gap-3">
                   <p className="text-xs text-gray-500 font-body">
                     {certificates.find((c) => c.id === selectedCert)?.description}
                   </p>
-                  <button
-                    onClick={() => {
-                      const cert = certificates.find(
-                        (c) => c.id === selectedCert,
-                      );
-                      if (cert) {
-                        downloadCertificate(cert.image, `${cert.id}-Certificate`);
-                      }
-                    }}
-                    className="bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 text-xs uppercase tracking-wider shadow-md"
-                  >
-                    <Download size={15} />
-                    Download File
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const cert = certificates.find(
+                          (c) => c.id === selectedCert,
+                        );
+                        if (cert) viewCertificate(cert);
+                      }}
+                      className="px-4 py-2 border border-gray-300 hover:border-[#8B1A1A] hover:bg-gray-50 text-gray-800 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                    >
+                      Open in New Tab
+                    </button>
+                    <button
+                      onClick={() => {
+                        const cert = certificates.find(
+                          (c) => c.id === selectedCert,
+                        );
+                        if (cert) {
+                          downloadCertificate(cert);
+                        }
+                      }}
+                      className="bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 text-xs uppercase tracking-wider shadow-md cursor-pointer"
+                    >
+                      <Download size={15} />
+                      Download File
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

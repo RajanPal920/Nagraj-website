@@ -7,7 +7,6 @@ import {
   FileText,
   Layers,
   BookOpen,
-  ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";

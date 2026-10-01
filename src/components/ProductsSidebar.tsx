@@ -196,13 +196,26 @@ export function ProductsSidebar({
       });
     }
 
-    if (!currentMenu?.subItems) return [];
-    return currentMenu.subItems.map((sub) => {
-      if (typeof sub === "string") {
-        return { label: sub };
-      }
-      return { label: sub.name, nested: sub.subItems };
-    });
+    const items: { label: string; nested?: string[] }[] = [];
+    const seen = new Set<string>();
+
+    // Only menu-defined subItems (no extra subitems)
+    if (currentMenu?.subItems) {
+      currentMenu.subItems.forEach((sub) => {
+        if (typeof sub === "string") {
+          items.push({ label: sub });
+          seen.add(canonicalCategory(sub));
+        } else {
+          items.push({ label: sub.name, nested: sub.subItems });
+          seen.add(canonicalCategory(sub.name));
+          if (sub.subItems) {
+            sub.subItems.forEach((child) => seen.add(canonicalCategory(child)));
+          }
+        }
+      });
+    }
+
+    return items;
   };
 
   const subItems = getSubItems();
@@ -259,7 +272,7 @@ export function ProductsSidebar({
 
   return (
     <aside className="w-full lg:w-[300px] flex-shrink-0">
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden lg:sticky lg:top-28">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm lg:sticky lg:top-24 max-h-[calc(100vh-6.5rem)] overflow-y-auto sidebar-scroll">
         {/* ═══ CATEGORIES SECTION ═══ */}
         <div className="border-b border-gray-100">
           <button
@@ -357,7 +370,7 @@ export function ProductsSidebar({
             <div className="px-3 pb-4">
               <div className="w-10 h-[3px] bg-[#8B1A1A] rounded-full mb-3 ml-2" />
 
-              <ul className="space-y-0.5 max-h-[600px] overflow-y-auto pr-1 sidebar-scroll">
+              <ul className="space-y-0.5 pr-1">
                 {/* All option */}
                 <li>
                   <Link
@@ -635,6 +648,11 @@ export function ProductsSidebar({
       </div>
 
       <style>{`
+        .sidebar-scroll {
+          scrollbar-width: thin;
+          scrollbar-color: #8B1A1A #f1f1f1;
+          -webkit-overflow-scrolling: touch;
+        }
         .sidebar-scroll::-webkit-scrollbar {
           width: 6px;
         }

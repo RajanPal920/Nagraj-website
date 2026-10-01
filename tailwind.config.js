@@ -29,8 +29,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Cinzel", "serif"],
-        body: ["Poppins", "sans-serif"],
+        display: ["Manrope", "sans-serif"],
+        body: ["Manrope", "sans-serif"],
       },
       backgroundImage: {
         "brand-gradient":

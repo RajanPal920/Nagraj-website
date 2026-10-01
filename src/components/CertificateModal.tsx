@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { X, Download, ExternalLink, ShieldCheck } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export interface CertificateDoc {
   id: string;
@@ -8,6 +7,7 @@ export interface CertificateDoc {
   category: string;
   icon: typeof ShieldCheck;
   image: string;
+  pdfUrl?: string;
   regNo?: string;
   description: string;
 }
@@ -19,6 +19,7 @@ export const CERTIFICATE_DOCUMENTS: CertificateDoc[] = [
     category: "Ministry of MSME · Govt. of India",
     icon: ShieldCheck,
     image: "/certificates/udyam.jpg",
+    pdfUrl: "/certificates/udyam.pdf",
     regNo: "UDYAM-MH-19-0231528",
     description:
       "Official Micro, Small & Medium Enterprise registration under Ministry of MSME, Govt. of India. Office located in Girgaon, Mumbai.",
@@ -54,10 +55,17 @@ export function CertificateModal({
 
   const Icon = certificate.icon;
 
+  const handleView = () => {
+    const fileUrl = certificate.pdfUrl || certificate.image;
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleDownload = () => {
+    const fileUrl = certificate.pdfUrl || certificate.image;
     const link = document.createElement("a");
-    link.href = certificate.image;
-    link.download = `Nagraj-Metal-Industries-${certificate.id}-certificate.jpg`;
+    link.href = fileUrl;
+    const ext = fileUrl.endsWith(".pdf") ? "pdf" : "jpg";
+    link.download = `Nagraj-Metal-Industries-${certificate.id}-certificate.${ext}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -102,8 +110,12 @@ export function CertificateModal({
         </div>
 
         {/* Certificate Image Canvas */}
-        <div className="shrink min-h-0 bg-gray-100/90 p-4 sm:p-6 overflow-y-auto flex items-center justify-center">
-          <div className="relative bg-white rounded-xl shadow-md border border-gray-200 p-2 max-w-full">
+        <div
+          onClick={handleView}
+          className="shrink min-h-0 bg-gray-100/90 p-4 sm:p-6 overflow-y-auto flex items-center justify-center cursor-pointer group/img"
+          title="Click to open certificate in new tab"
+        >
+          <div className="relative bg-white rounded-xl shadow-md border border-gray-200 p-2 max-w-full group-hover/img:shadow-lg transition-shadow">
             <img
               src={certificate.image}
               alt={certificate.title}
@@ -127,14 +139,13 @@ export function CertificateModal({
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-            <Link
-              to="/certificates"
-              onClick={onClose}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-xs font-semibold text-gray-700 transition-colors"
+            <button
+              onClick={handleView}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-gray-300 hover:border-[#8B1A1A] hover:bg-gray-50 text-xs font-semibold text-gray-800 transition-colors cursor-pointer"
             >
-              <span>Full Details</span>
+              <span>Open in New Tab</span>
               <ExternalLink size={13} />
-            </Link>
+            </button>
             <button
               onClick={handleDownload}
               className="inline-flex items-center justify-center gap-1.5 bg-[#B22222] hover:bg-[#8B1A1A] text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer"

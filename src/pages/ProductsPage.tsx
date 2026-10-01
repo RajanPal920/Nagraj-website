@@ -47,6 +47,14 @@ const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Welding Electrodes": "/images/Welding-Electrodes.jpg",
   Galvanized: "/images/Galvanized.jpg",
   Pins: "/images/Pins.jpg",
+  "Perforated Sheet & Jali": "/images/perforated-sheet-jali.jpg",
+  "Perforated Sheet": "/images/perforated-sheet-jali.jpg",
+  Jali: "/images/perforated-sheet-jali.jpg",
+  Valves: "/images/valves.jpg",
+  Valve: "/images/valves.jpg",
+  "Engineering Plastics & Polymers": "/images/engineering-plastics.jpg",
+  "Engineering Plastics": "/images/engineering-plastics.jpg",
+  "Cast Nylon": "/images/engineering-plastics.jpg",
 };
 
 // ─── Main Category Cards (UNCHANGED) ──────────────────────────────────────
@@ -104,6 +112,24 @@ const CATEGORY_CARDS = [
     slug: "Galvanized",
     image: "/images/Galvanized.jpg",
     description: "Hot Dip Galvanized Angles & Channels",
+  },
+  {
+    name: "Perforated Sheet & Jali",
+    slug: "Perforated Sheet & Jali",
+    image: "/images/perforated-sheet-jali.jpg",
+    description: "Perforated Sheets, Wire Mesh & Decorative Jali",
+  },
+  {
+    name: "Valves",
+    slug: "Valves",
+    image: "/images/valves.jpg",
+    description: "Industrial Gate, Globe, Check, Ball & Butterfly Valves",
+  },
+  {
+    name: "Engineering Plastics & Polymers",
+    slug: "Engineering Plastics & Polymers",
+    image: "/images/engineering-plastics.jpg",
+    description: "Cast Nylon, PEEK, PTFE, Delrin & Acrylic Rods and Sheets",
   },
   {
     name: "Pins",
@@ -803,19 +829,19 @@ export function ProductsPage() {
               </p>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-3 mb-6 flex-wrap">
+              <div className="flex items-center gap-3.5 mb-6">
                 <Link
                   to="/products"
-                  className="inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white font-display font-bold text-xs sm:text-sm px-5 py-3 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl border border-white/30 backdrop-blur-sm hover:-translate-y-0.5 transition-all duration-300"
                 >
                   <span>← All Products</span>
                 </Link>
                 <button
                   onClick={() => downloadProductCatalogue()}
-                  className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-2 bg-[#B22222] hover:bg-[#8B1A1A] text-white font-display font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                 >
                   <Download size={14} />
-                  <span>Download Catalogue</span>
+                  <span>Download Product Catalogue (PDF)</span>
                 </button>
               </div>
 
@@ -1076,8 +1102,8 @@ export function ProductsPage() {
                 </>
               ) : filteredProducts.length === 0 ? (
                 /* ═══ EMPTY STATE ═══ */
-                <div className="bg-white border border-gray-200 p-12 sm:p-16 text-center max-w-2xl mx-auto">
-                  <div className="w-16 h-16 bg-[#8B1A1A]/5 border border-[#8B1A1A]/20 flex items-center justify-center mx-auto mb-6">
+                <div className="bg-white rounded-2xl border border-gray-200/90 shadow-sm p-12 text-center">
+                  <div className="w-16 h-16 bg-[#8B1A1A]/5 border border-[#8B1A1A]/20 flex items-center justify-center mx-auto mb-6 rounded-2xl">
                     <Package
                       className="w-7 h-7 text-[#8B1A1A]"
                       strokeWidth={1.5}
@@ -1101,13 +1127,13 @@ export function ProductsPage() {
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Link
                       to="/products"
-                      className="inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-semibold py-3 px-6 transition-all duration-200 text-xs uppercase tracking-wider hover:shadow-lg"
+                      className="inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-xs uppercase tracking-wider hover:shadow-lg"
                     >
                       ← Browse All Categories
                     </Link>
                     <a
                       href="tel:+917073875529"
-                      className="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-[#8B1A1A] hover:text-[#8B1A1A] text-gray-700 font-semibold py-3 px-6 transition-all duration-200 text-xs uppercase tracking-wider"
+                      className="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-[#8B1A1A] hover:text-[#8B1A1A] text-gray-700 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-xs uppercase tracking-wider"
                     >
                       📞 Ask for Availability
                     </a>

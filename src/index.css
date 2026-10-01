@@ -5,10 +5,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    font-family: 'Manrope', sans-serif;
   }
 
   body {
     @apply font-body text-brand-charcoal bg-white antialiased;
+    font-family: 'Manrope', sans-serif;
     overflow-x: hidden;
     max-width: 100%;
   }

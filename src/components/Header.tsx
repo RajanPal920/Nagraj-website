@@ -134,6 +134,8 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Corten Steel",
       "EFSW/SAW/HSAW/LSAW Pipes",
       "Welded Wear Resistant",
+      "Brass",
+      "Aluminium",
     ],
   },
   {
@@ -145,6 +147,9 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Carbon Steel",
       "Copper Nickel",
       "Duplex & Super Duplex",
+      "Brass Sheet Strip",
+      "SS Coil",
+      "Round Circle",
     ],
   },
   {
@@ -164,6 +169,7 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Hastelloy",
       "Stainless Steel",
       "Precipitation Hardening Steel",
+      "Gun Metal",
     ],
   },
   {
@@ -184,6 +190,8 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
       "Nickel Alloy",
       "Inconel",
       "Incoloy",
+      "Copper Flange",
+      "Brass Flange",
     ],
   },
   {
@@ -197,7 +205,15 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
   },
   {
     name: "Fittings",
-    subItems: ["Buttweld Fittings", "Forged Fittings"],
+    subItems: [
+      "Buttweld Fittings",
+      "Forged Fittings",
+      "Copper Brass Fittings",
+      "IC Fitting",
+      "Dairy Fittings",
+      "Furniture Fitting",
+      "TC Fitting TC Set",
+    ],
   },
   {
     name: "Welding Electrodes",
@@ -214,7 +230,25 @@ export const PRODUCTS_MENU_DATA: ProductMenuItem[] = [
   },
   {
     name: "Galvanized",
-    subItems: ["Hot Dip Galvanized Angles", "Hot Dip Galvanized Channels"],
+    subItems: ["Angle", "Channel", "Flat"],
+  },
+  {
+    name: "Perforated Sheet & Jali",
+    subItems: ["Perforated Sheet"],
+  },
+  {
+    name: "Valves",
+    subItems: ["Valve"],
+  },
+  {
+    name: "Engineering Plastics & Polymers",
+    subItems: [
+      "Cast Nylon",
+      "PEEK Rod Sheet",
+      "PTFE Rod Sheet",
+      "Delrin Rod Sheet",
+      "Acrylic Sheet",
+    ],
   },
   { name: "Pins", subItems: ["PTO Pins", "Pipe Linch Pin"] },
 ];

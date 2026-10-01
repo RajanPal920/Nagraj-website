@@ -22,26 +22,29 @@ interface CatalogueModalProps {
   defaultTab?: "all" | "company" | "product";
 }
 
-export function CatalogueModal({
-  isOpen,
-  onClose,
-}: CatalogueModalProps) {
+export function CatalogueModal({ isOpen, onClose }: CatalogueModalProps) {
   const [downloadingCompany, setDownloadingCompany] = useState(false);
   const [downloadingProduct, setDownloadingProduct] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
+  const showToast = (msg: string) => {
+    setSuccessMsg(msg);
+    setTimeout(() => setSuccessMsg(null), 3000);
+  };
+
   const handleDownloadCompany = () => {
     try {
       setDownloadingCompany(true);
       downloadCompanyCatalogue();
-      setSuccessMsg("Company Catalogue downloaded successfully!");
-      setTimeout(() => setSuccessMsg(null), 4000);
+      showToast("Opening Company Profile in a new tab...");
     } catch (e) {
-      console.error(e);
+      console.error("Company catalogue error:", e);
+      showToast("❌ Could not open catalogue. Please try again.");
     } finally {
-      setDownloadingCompany(false);
+      // Chhota delay taaki user ko "Opening..." text dikhe
+      setTimeout(() => setDownloadingCompany(false), 800);
     }
   };
 
@@ -49,18 +52,17 @@ export function CatalogueModal({
     try {
       setDownloadingProduct(true);
       downloadProductCatalogue();
-      setSuccessMsg("Product Catalogue downloaded successfully!");
-      setTimeout(() => setSuccessMsg(null), 4000);
+      showToast("Opening Product Catalogue in a new tab...");
     } catch (e) {
-      console.error(e);
+      console.error("Product catalogue error:", e);
+      showToast("❌ Could not open catalogue. Please try again.");
     } finally {
-      setDownloadingProduct(false);
+      setTimeout(() => setDownloadingProduct(false), 800);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
-      {/* Backdrop click to close */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
       <div className="absolute inset-0" onClick={onClose} />
 
       <div className="relative z-10 w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 animate-slideDown">
@@ -91,7 +93,7 @@ export function CatalogueModal({
           </div>
         </div>
 
-        {/* Success toast if any */}
+        {/* Success toast */}
         {successMsg && (
           <div className="bg-emerald-50 border-b border-emerald-200 px-6 py-2.5 flex items-center gap-2 text-emerald-800 text-xs font-semibold">
             <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
@@ -99,7 +101,7 @@ export function CatalogueModal({
           </div>
         )}
 
-        {/* Content Body */}
+        {/* Body */}
         <div className="p-6 sm:p-8 space-y-6">
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-body">
             Get instant access to our official, ISO 9001:2015 verified documentation. Choose the specific catalogue you need below or request customized specification sheets.
@@ -141,7 +143,9 @@ export function CatalogueModal({
                 className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-gray-900 to-gray-950 hover:from-[#8B1A1A] hover:to-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50"
               >
                 <Download size={14} />
-                <span>{downloadingCompany ? "Generating PDF..." : "Download Company Catalogue"}</span>
+                <span>
+                  {downloadingCompany ? "Opening PDF..." : "Download Company Catalogue"}
+                </span>
               </button>
             </div>
 
@@ -180,12 +184,14 @@ export function CatalogueModal({
                 className="w-full inline-flex items-center justify-center gap-2 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50"
               >
                 <Download size={14} />
-                <span>{downloadingProduct ? "Generating PDF..." : "Download Product Catalogue"}</span>
+                <span>
+                  {downloadingProduct ? "Opening PDF..." : "Download Product Catalogue"}
+                </span>
               </button>
             </div>
           </div>
 
-          {/* Quick WhatsApp assistance banner */}
+          {/* WhatsApp banner */}
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2.5 text-gray-700">
               <IoLogoWhatsapp size={20} className="text-emerald-600 shrink-0" />

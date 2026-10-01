@@ -133,6 +133,14 @@ export const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
   "Welding Electrodes": "/images/Welding-Electrodes.jpg",
   Galvanized: "/images/Galvanized.jpg",
   Pins: "/images/Pins.jpg",
+  "Perforated Sheet & Jali": "/images/perforated-sheet-jali.jpg",
+  "Perforated Sheet": "/images/perforated-sheet-jali.jpg",
+  Jali: "/images/perforated-sheet-jali.jpg",
+  Valves: "/images/valves.jpg",
+  Valve: "/images/valves.jpg",
+  "Engineering Plastics & Polymers": "/images/engineering-plastics.jpg",
+  "Engineering Plastics": "/images/engineering-plastics.jpg",
+  "Cast Nylon": "/images/engineering-plastics.jpg",
 };
 
 export const PRODUCT_HERO_FALLBACK = "/images/productHero.png";

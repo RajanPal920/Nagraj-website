@@ -327,6 +327,21 @@ export const normalizeProductType = (type: string): string => {
     "cold work tool steels": "Cold Work Tool Steels",
     "tool steel": "Cold Work Tool Steels",
     "tool steels": "Cold Work Tool Steels",
+
+    // Perforated Sheet & Jali
+    "perforated sheet & jali": "Perforated Sheet & Jali",
+    "perforated sheet": "Perforated Sheet & Jali",
+    "perforated sheets": "Perforated Sheet & Jali",
+    jali: "Perforated Sheet & Jali",
+
+    // Valves
+    valves: "Valves",
+    valve: "Valves",
+
+    // Engineering Plastics
+    "engineering plastics & polymers": "Engineering Plastics & Polymers",
+    "engineering plastics": "Engineering Plastics & Polymers",
+    "cast nylon": "Engineering Plastics & Polymers",
   };
 
   if (TYPE_MAP[lower]) return TYPE_MAP[lower];
