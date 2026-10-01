@@ -389,10 +389,10 @@ export function Header() {
         }`}
     >
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo - Increased height & clarity */}
+        {/* Logo */}
         <Link
           to="/"
-          className="flex items-center flex-shrink-0 group py-1"
+          className="flex items-center flex-shrink-0 group py-1 mr-14 lg:mr-20 xl:mr-24"
           aria-label="Nagraj Metal Industries Home"
         >
           <img
@@ -403,7 +403,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-5 xl:gap-7 pl-6 xl:pl-8">
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-5 xl:gap-7">
           {navLinks.map((link) => {
             const isProductsLink = link.label === "Products";
             const isSpecializedLink = link.label === "Specialized Products";
@@ -552,7 +552,7 @@ export function Header() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`relative py-2 flex items-center gap-1.5 font-display text-[13px] xl:text-sm font-bold tracking-wide transition-all duration-200 ${isActive
+                  className={`relative py-2 flex items-center gap-1.5 font-display text-[14px] xl:text-[15px] font-extrabold tracking-wide transition-all duration-200 ${isActive
                       ? "text-[#8B1A1A]"
                       : "text-gray-800 hover:text-[#8B1A1A]"
                     }`}
@@ -784,7 +784,7 @@ export function Header() {
         </nav>
 
         {/* Header CTAs */}
-        <div className="hidden lg:flex items-center justify-end pl-5">
+        <div className="hidden lg:flex items-center justify-end pl-5 ml-8 xl:ml-12">
           <a
             href="tel:+917073875529"
             className="inline-flex items-center gap-2.5 bg-[#8B1A1A] hover:bg-[#6F1414] text-white font-display font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
@@ -813,6 +813,16 @@ export function Header() {
           className="lg:hidden fixed inset-x-0 top-24 bottom-0 z-50 bg-white overflow-y-auto border-t border-gray-200 shadow-2xl flex flex-col justify-between"
           style={{ height: "calc(100vh - 6rem)" }}
         >
+          {/* Mobile Menu Logo */}
+          <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+            <Link to="/" onClick={() => setMobileOpen(false)}>
+              <img
+                src="/images/logo.png"
+                alt="Nagraj Metal Industries"
+                className="h-14 w-auto object-contain"
+              />
+            </Link>
+          </div>
           <nav className="p-4 sm:p-5 flex flex-col gap-1.5 bg-white">
             {navLinks.map((link) => {
               const isProductsLink = link.label === "Products";

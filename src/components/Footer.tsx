@@ -90,7 +90,7 @@ export function Footer() {
               <img
                 src="/images/logo.png"
                 alt="Nagraj Metal Industries Logo"
-                className="h-10 sm:h-12 w-auto object-contain"
+                className="h-14 sm:h-16 w-auto object-contain"
               />
             </Link>
             <p className="font-body text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
