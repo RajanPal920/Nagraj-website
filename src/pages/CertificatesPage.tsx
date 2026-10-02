@@ -17,12 +17,27 @@ import { downloadCompanyCatalogue } from "../utils/catalogueGenerator";
 // Certificate data - Official Government Document
 const certificates = [
   {
+    id: "iso",
+    title: "ISO 9001:2015 Certification",
+    description: "Quality Management System Certification",
+    icon: Award,
+    image: "/certificates/udyam.jpg", // Fallback image if needed
+    pdfUrl: "/certificates/nagraj-iso.pdf",
+    registrationNumber: "ISO-9001-2015",
+    enterpriseName: "NAGRAJ METAL INDUSTRIES",
+    enterpriseType: "Manufacturer & Supplier",
+    majorActivity: "Quality Management System",
+    dateOfRegistration: "Valid",
+    registeredAddress:
+      "Plot-2, Jalaram Niwas, Durgadevi Udyan, Office No. 1, 1st Floor, 1st Kumbharwada, Bhandari Street, Girgaon, Mumbai – 400 004, Maharashtra",
+  },
+  {
     id: "udyam",
     title: "Udyam Registration Certificate (MSME)",
     description: "Ministry of Micro, Small & Medium Enterprises (Govt. of India)",
     icon: ShieldCheck,
     image: "/certificates/udyam.jpg",
-    pdfUrl: "/certificates/udyam.pdf",
+    pdfUrl: "/certificates/nagraj-udyam.pdf",
     registrationNumber: "UDYAM-MH-19-0231528",
     enterpriseName: "NAGRAJ METAL INDUSTRIES",
     enterpriseType: "Micro Enterprise",
@@ -55,13 +70,10 @@ export function CertificatesPage() {
   // Function to download certificate file
   const downloadCertificate = (cert: (typeof certificates)[0]) => {
     const fileUrl = cert.pdfUrl || cert.image;
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    const ext = fileUrl.endsWith(".pdf") ? "pdf" : "jpg";
-    link.download = `Nagraj-Metal-Industries-${cert.id}-Certificate.${ext}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const win = window.open(fileUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
+      window.location.href = fileUrl;
+    }
   };
 
   return (

@@ -14,12 +14,23 @@ export interface CertificateDoc {
 
 export const CERTIFICATE_DOCUMENTS: CertificateDoc[] = [
   {
+    id: "iso",
+    title: "ISO 9001:2015 Certification",
+    category: "Quality Management System",
+    icon: ShieldCheck,
+    image: "/certificates/udyam.jpg", // Using udyam.jpg as fallback if iso image isn't available
+    pdfUrl: "/certificates/nagraj-iso.pdf",
+    regNo: "ISO-9001-2015",
+    description:
+      "Quality Management System Certification for Manufacturing & Supply.",
+  },
+  {
     id: "udyam",
     title: "Udyam Registration Certificate (MSME)",
     category: "Ministry of MSME · Govt. of India",
     icon: ShieldCheck,
     image: "/certificates/udyam.jpg",
-    pdfUrl: "/certificates/udyam.pdf",
+    pdfUrl: "/certificates/nagraj-udyam.pdf",
     regNo: "UDYAM-MH-19-0231528",
     description:
       "Official Micro, Small & Medium Enterprise registration under Ministry of MSME, Govt. of India. Office located in Girgaon, Mumbai.",
@@ -62,13 +73,10 @@ export function CertificateModal({
 
   const handleDownload = () => {
     const fileUrl = certificate.pdfUrl || certificate.image;
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    const ext = fileUrl.endsWith(".pdf") ? "pdf" : "jpg";
-    link.download = `Nagraj-Metal-Industries-${certificate.id}-certificate.${ext}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const win = window.open(fileUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
+      window.location.href = fileUrl;
+    }
   };
 
   return (

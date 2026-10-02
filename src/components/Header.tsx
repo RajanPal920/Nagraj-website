@@ -491,7 +491,7 @@ export function Header() {
                           </span>
                           <span className="text-gray-300">•</span>
                           <span className="text-[11px] text-gray-500 font-medium font-body">
-                            1 Official Document
+                            {CERTIFICATE_DOCUMENTS.length} Official Document{CERTIFICATE_DOCUMENTS.length !== 1 ? 's' : ''}
                           </span>
                         </div>
                         <span className="text-[10px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded-full border border-green-200">
@@ -506,7 +506,7 @@ export function Header() {
                           return (
                             <a
                               key={doc.id}
-                              href={doc.image}
+                              href={doc.pdfUrl || doc.image}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={() => {
@@ -522,11 +522,13 @@ export function Header() {
                                   <span className="text-[13px] font-bold text-gray-900 group-hover/doc:text-[#0F2942] transition-colors leading-snug font-display block">
                                     {doc.title}
                                   </span>
-                                  <span className="text-[11px] text-[#B22222] font-mono font-semibold block mt-0.5">
-                                    UDYAM-MH-19-0231528
-                                  </span>
+                                  {doc.regNo && (
+                                    <span className="text-[11px] text-[#B22222] font-mono font-semibold block mt-0.5">
+                                      {doc.regNo}
+                                    </span>
+                                  )}
                                   <span className="text-[10px] text-gray-500 font-body block">
-                                    Ministry of MSME · Govt. of India (Click to open certificate)
+                                    {doc.category || "Official Document"} (Click to open certificate)
                                   </span>
                                 </div>
                               </div>
@@ -1099,7 +1101,7 @@ export function Header() {
                           return (
                             <a
                               key={doc.id}
-                              href={doc.image}
+                              href={doc.pdfUrl || doc.image}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={() => {
@@ -1115,11 +1117,13 @@ export function Header() {
                                   <span className="text-xs font-bold text-gray-900 leading-snug block">
                                     {doc.title}
                                   </span>
-                                  <span className="text-[10px] font-mono text-[#B22222] font-semibold block">
-                                    UDYAM-MH-19-0231528
-                                  </span>
+                                  {doc.regNo && (
+                                    <span className="text-[10px] font-mono text-[#B22222] font-semibold block">
+                                      {doc.regNo}
+                                    </span>
+                                  )}
                                   <span className="text-[9px] text-gray-500 font-body block">
-                                    Opens certificate image in new tab ↗
+                                    Opens certificate document in new tab ↗
                                   </span>
                                 </div>
                               </div>
