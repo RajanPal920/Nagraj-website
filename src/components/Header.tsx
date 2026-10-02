@@ -31,6 +31,7 @@ const navLinks = [
   { label: "Why Us", href: "/why-us" },
   { label: "Certificates", href: "/certificates" },
   { label: "Technical Info", href: "/technical-info" },
+  { label: "Weight Calculator", href: "/weight-calculator" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -392,7 +393,7 @@ export function Header() {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center flex-shrink-0 group py-1 mr-10 xl:mr-14"
+          className="flex items-center flex-shrink-0 group py-1 mr-4 xl:mr-10"
           aria-label="Nagraj Metal Industries Home"
         >
           <img
@@ -403,7 +404,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav — truly centered */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-6 px-4">
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-2.5 xl:gap-5 2xl:gap-6 px-2">
           {navLinks.map((link) => {
             const isProductsLink = link.label === "Products";
             const isSpecializedLink = link.label === "Specialized Products";
@@ -418,7 +419,9 @@ export function Header() {
               (link.href === "/products?specialized=true" &&
                 location.search === "?specialized=true") ||
               (link.href === "/certificates" &&
-                location.pathname.startsWith("/certificates"));
+                location.pathname.startsWith("/certificates")) ||
+              (link.href === "/weight-calculator" &&
+                location.pathname.startsWith("/weight-calculator"));
 
             // ─── CERTIFICATES ITEM (Matches Reference Image 1) ───
             if (isCertificatesLink) {

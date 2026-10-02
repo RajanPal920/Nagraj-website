@@ -9,6 +9,7 @@ import { WhyUsPage } from "./pages/WhyUsPage";
 import { ContactPage } from "./pages/ContactPage";
 import { CertificatesPage } from "./pages/CertificatesPage";
 import { TechnicalInfoPage } from "./pages/TechnicalInfoPage";
+import { WeightCalculatorPage } from "./pages/WeightCalculatorPage";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { WhatsAppButton } from "./components/WhatsAppButton";
@@ -27,6 +28,7 @@ function App() {
         <Route path="/why-us" element={<WhyUsPage />} />
         <Route path="/certificates" element={<CertificatesPage />} />
         <Route path="/technical-info" element={<TechnicalInfoPage />} />
+        <Route path="/weight-calculator" element={<WeightCalculatorPage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
       <Footer />
